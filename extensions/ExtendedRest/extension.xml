@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF	-8"?>
+<root release="3.0" version="3">
+	<properties>
+		<name>Extended Rest</name>
+		<version>1.0</version>
+		<author>MeAndUnique</author>
+		<description>Adds support for an Extended Rest and Powers that refresh during one.</description>
+		
+		<ruleset>
+			<name>5E</name>
+		</ruleset>
+	</properties>
+
+	<base>
+		<string name="extended_rest_label">Extended</string>
+		<string name="menu_restextended">Extended Rest</string>
+		<string name="message_restextended">Taking extended rest.</string>
+		<string name="message_ct_restextended">Party taking extended rest.</string>
+
+		<script name="ExtendedRest" file="scripts/ExtendedRest.lua"/>
+				
+		<windowclass name="charsheet" merge="join">
+            <script file="scripts/char.lua"/>
+		</windowclass>
+				
+		<windowclass name="combattracker_host" merge="join">
+			<sheetdata>
+				<button_ct_menu merge="replace">
+					<script file="scripts/ct_host.lua"/>
+				</button_ct_menu>
+			</sheetdata>
+		</windowclass>
+				
+		<windowclass name="power_groupdetail" merge="join">
+			<sheetdata>
+				<cycler_power_useperiod name="usesperiod" merge="delete"/>
+				<button_stringcycler name="usesperiod">
+					<anchored to="uses" width="60" height="20">
+						<top />
+						<left anchor="right" offset="10" />
+					</anchored>
+					<parameters>
+						<defaultlabelres>power_label_useperiod_daily</defaultlabelres>
+						<labelsres>power_label_useperiod_enc|power_label_useperiod_once|extended_rest_label</labelsres>
+						<values>enc|once|extended</values>
+					</parameters>
+				</button_stringcycler>
+			</sheetdata>
+		</windowclass>
+	
+	</base>
+
+</root>
