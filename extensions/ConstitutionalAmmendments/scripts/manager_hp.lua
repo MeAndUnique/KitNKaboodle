@@ -14,6 +14,7 @@ local bAddingPregen = false;
 local nodeAddedPregenChar;
 
 local bAddingInfo = false;
+local bAddingUnconscious = false;
 
 function onInit()
 	OptionsManager.registerOption2("HRHP", false, "option_header_houserule", "option_label_HRHP", "option_entry_cycler", 
@@ -45,12 +46,7 @@ function onInit()
 		DB.addHandler("charsheet.*.classes.*.rolls.*", "onUpdate", onRollChanged);
 
 		initializeEffects();
-		Interface.onDesktopInit = onDesktopInit;
 	end
-end
-
-function onDesktopInit()
-	Debug.chat("sup");
 end
 
 -- Overrides
@@ -148,12 +144,28 @@ function onCombatantDeleted(nodeCombatant)
 end
 
 function onCombatantEffectUpdated(nodeEffectList)
+	if bAddingUnconscious then
+		return;
+	end
+
 	local nodeCombatant = nodeEffectList.getParent();
 	local class, record = DB.getValue(nodeCombatant, "link");
 	if class == "charsheet" then
 		local nodeChar = DB.findNode(record);
 		if nodeChar then
-			recalculateTotal(nodeChar);
+			local nOriginal = DB.getValue(nodeChar, "hp.total", 0);
+			local nTotal = recalculateTotal(nodeChar);
+
+			if nOriginal ~= nTotal then
+				local nWounds = DB.getValue(nodeChar, "hp.wounds", 0);
+				if nWounds >= nTotal then
+					if not EffectManager5E.hasEffect(nodeChar, "Unconscious") then
+						EffectManager.addEffect("", "", nodeCombatant, { sName = "Unconscious", nDuration = 0 }, true);
+						Comm.deliverChatMessage({font="msgfont", text="[STATUS: Dying]"});
+						DB.setValue(nodeChar, "hp.wounds", "number", nTotal);
+					end
+				end
+			end
 		end
 	end
 end
@@ -242,28 +254,33 @@ function recalculateTotal(nodeChar)
 	local nBaseHP = DB.getValue(nodeChar, "hp.base", 0)
 	local nAdjustHP = DB.getValue(nodeChar, "hp.adjust", 0)
 	local nConAdjustment = getConAdjustment(nodeChar);
-	DB.setValue(nodeChar, "hp.total", "number", nBaseHP+nAdjustHP+nConAdjustment);
+	local nTotal = nBaseHP + nAdjustHP + nConAdjustment;
+	DB.setValue(nodeChar, "hp.total", "number", nTotal);
+	return nTotal;
 end
 
 function recalculateAdjust(nodeChar)
 	local nTotalHP = DB.getValue(nodeChar, "hp.total", 0)
 	local nBaseHP = DB.getValue(nodeChar, "hp.base", 0)
 	local nConAdjustment = getConAdjustment(nodeChar);
-	DB.setValue(nodeChar, "hp.adjust", "number", nTotalHP-nBaseHP-nConAdjustment);
+	local nAdjust = nTotalHP - nBaseHP - nConAdjustment;
+	DB.setValue(nodeChar, "hp.adjust", "number", nAdjust);
+	return nAdjust;
 end
 
 function recalculateBase(nodeChar)
 	local nConBonus = DB.getValue(nodeChar, "abilities.constitution.bonus", 0);
 	local nMiscBonus = getMiscHpBonus(nodeChar);
-	local nTotal = DB.getValue(nodeChar, "hp.discrepancy", 0);
+	local nSum = DB.getValue(nodeChar, "hp.discrepancy", 0);
 	for _,nodeClass in pairs(DB.getChildren(nodeChar, "classes")) do
 		for _,nodeRoll in pairs(DB.getChildren(nodeClass, "rolls")) do
-			nTotal = nTotal + math.max(1, nodeRoll.getValue() + nConBonus) + nMiscBonus;
+			nSum = nSum + math.max(1, nodeRoll.getValue() + nConBonus) + nMiscBonus;
 		end
 	end
 
-	DB.setValue(nodeChar, "hp.base", "number", nTotal);
+	DB.setValue(nodeChar, "hp.base", "number", nSum);
 	recalculateTotal(nodeChar);
+	return nSum;
 end
 
 -- Utility
