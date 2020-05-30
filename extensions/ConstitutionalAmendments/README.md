@@ -1,4 +1,4 @@
-# Constitutional Ammendments
+# Constitutional Amendments
 Adds tracking of individual values for HP gained at each level, automated modifications of HP based on constitution changes, and tracking adjustments to maximum HP.
 
 A new option has been added to indicate whether average hitpoints should be added when level or if they should be rolled.
