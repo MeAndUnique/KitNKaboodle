@@ -318,10 +318,13 @@ end
 
 function getHdInfo(nodeClass)
 	local aDice = DB.getValue(nodeClass, "hddie");
-	local nHDMult = table.getn(aDice);
+	local nHDMult = 0;
 	local nHDSides = 0;
-	if nHDMult > 0 then
-		nHDSides = tonumber(aDice[1]:sub(2));
+	if aDice then
+		nHDMult = table.getn(aDice);
+		if nHDMult > 0 then
+			nHDSides = tonumber(aDice[1]:sub(2));
+		end
 	end
 	return nHDMult, nHDSides;
 end
