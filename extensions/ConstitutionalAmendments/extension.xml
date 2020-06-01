@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root release="3.0" version="3">
+	<properties>
+		<name>5E Constitutional Amendments</name>
+		<version>1.0</version>
+		<loadorder>50</loadorder>
+		<author>MeAndUnique</author>
+		<description>Adds tracking of individual values for HP gained at each level, automated modifications of HP based on constitution changes, and tracking adjustments to maximum HP.</description>
+		
+		<ruleset>
+			<name>5E</name>
+		</ruleset>
+	</properties>
+
+	<base>
+		<string name="option_label_HRHP">PC: HP on level up</string>
+		<string name="option_val_hp_average">Average</string>
+		<string name="option_val_hp_roll">Roll</string>
+
+		<string name="char_label_hpadj">ADJ</string>
+		<string name="hpadj">HP Adjustment</string>
+		<string name="hp_title">Hit Points</string>
+
+		<script name="HpManager" file="scripts/manager_hp.lua"/>
+		<script name="ActionDamage2" file="scripts/manager_action_damage2.lua"/>
+
+		<windowclass name="charsheet_main" merge="join">
+			<script>
+				function onInit()
+					if super.onInit then
+						super.onInit();
+					end
+					HpManager.messageDiscrepancy(getDatabaseNode());
+				end
+				function onHealthChanged()
+					HpManager.recalculateTotal(getDatabaseNode());
+					super.onHealthChanged();
+				end
+			</script>
+			<sheetdata>
+				<number_charabilityscore name="constitution">
+					<script>
+						function onValueChanged()
+							super.onValueChanged();
+							HpManager.recalculateBase(window.getDatabaseNode());
+						end
+					</script>
+				</number_charabilityscore>
+
+				<label_charframetop name="healthtitle">
+					<anchored height="20">
+						<top anchor="bottom" offset="-120" />
+						<left offset="90" />
+						<right offset="-90" />
+					</anchored>
+					<icons>char_stats</icons>
+				</label_charframetop>
+				<number_charwounds name="wounds">
+					<anchored>
+						<left anchor="center" offset="-88" />
+					</anchored>
+				</number_charwounds>
+				<number_dropadd name="hp" source="hp.base">
+					<readonly/>
+				</number_dropadd>
+				<button_charhealthcalc name="button_healthcalc">
+					<anchored to="label_hd" position="righthigh" offset="190,0" />
+				</button_charhealthcalc>
+
+				<number_dropadd name="adjhp" source="hp.adjust">
+					<anchored to="temphp" position="righthigh" offset="15,0" width="40" height="30" />
+					<font>reference-b-large</font>
+					<color>4400AA</color>
+					<description textres="hpadj" />
+					<hideonvalue>0</hideonvalue>
+					<script>
+						function onValueChanged()
+							window.onHealthChanged();
+						end
+					</script>
+				</number_dropadd>
+				<label_charfieldtop name="adjhp_label">
+					<anchored to="adjhp" offset="5,15" />
+					<static textres="char_label_hpadj" />
+				</label_charfieldtop>
+			</sheetdata>
+		</windowclass>
+
+		<windowclass name="charsheet_class" merge="join">
+			<script>
+				function toggleDetail()
+					list.setVisible(activateDetail.getValue() == 1);
+				end
+			</script>
+			<sheetdata>
+				<string_textlistitem name="name">
+					<anchored>
+						<left offset="30" />
+					</anchored>
+				</string_textlistitem>
+
+				<button_toggledetail name="activateDetail">
+					<anchored position="insidetopleft" offset="5,3" />
+				</button_toggledetail>
+
+				<windowlist name="list">
+					<anchored>
+						<top parent="name" anchor="bottom" offset="5" />
+						<left offset="30" />
+						<right offset="-10" />
+					</anchored>
+					<class>hp_roll</class>
+					<skipempty />
+					<invisible />
+					<columns width="50" fillwidth="true" />
+					<datasource>.rolls</datasource>
+				</windowlist>
+			</sheetdata>
+		</windowclass>
+
+		<windowclass name="hp_roll">
+			<script>
+				function onInit()
+					local number = string.match(getDatabaseNode().getName(), "[1-9]%d*");
+					label.setValue(number);
+				end
+			</script>
+			<margins control="0,0,7,5" />
+			<sheetdata>
+				<basicnumber name="value" source=".">
+					<anchored position="insidetopleft" offset="7,20" height="20" width="30" />
+				</basicnumber>
+				<stringcontrol name="label">
+					<anchored to="value" position="above" offset="0,0" height="20" />
+					<center />
+					<font>sheetlabel</font>
+					<static />
+				</stringcontrol>
+			</sheetdata>
+		</windowclass>
+
+		<windowclass name="ct_entry" merge="join">
+			<script>
+				function onHealthChanged()
+					if hptotal.hasFocus() then
+						local sClass,_ = link.getValue();
+						if sClass == "charsheet" then
+							HpManager.recalculateAdjust(link.getTargetDatabaseNode());
+						end
+					end
+					super.onHealthChanged();
+				end
+			</script>
+		</windowclass>
+
+	</base>
+</root>

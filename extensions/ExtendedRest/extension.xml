@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root release="3.0" version="3">
 	<properties>
-		<name>Extended Rest</name>
+		<name>5E Extended Rest</name>
 		<version>1.0</version>
 		<loadorder>50</loadorder>
 		<author>MeAndUnique</author>
