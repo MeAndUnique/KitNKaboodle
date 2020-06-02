@@ -11,6 +11,17 @@ local messageDamageOriginal;
 local decodeResult;
 
 function onInit()
+	table.insert(DataCommon.dmgtypes, "max");
+	table.insert(DataCommon.dmgtypes, "steal");
+	table.insert(DataCommon.dmgtypes, "hsteal");
+	table.insert(DataCommon.dmgtypes, "stealtemp");
+	table.insert(DataCommon.dmgtypes, "hstealtemp");
+	table.insert(DataCommon.specialdmgtypes, "max");
+	table.insert(DataCommon.specialdmgtypes, "steal");
+	table.insert(DataCommon.specialdmgtypes, "hsteal");
+	table.insert(DataCommon.specialdmgtypes, "stealtemp");
+	table.insert(DataCommon.specialdmgtypes, "hstealtemp");
+
 	applyDamageOriginal = ActionDamage.applyDamage;
 	ActionDamage.applyDamage = applyDamage;
 
