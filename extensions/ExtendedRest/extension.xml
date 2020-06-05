@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root release="3.0" version="3">
 	<properties>
-		<name>5E Extended Rest</name>
-		<version>1.0</version>
+		<name>5E - Extended Rest</name>
+		<version>1.0.1</version>
 		<loadorder>50</loadorder>
 		<author>MeAndUnique</author>
-		<description>Adds support for an Extended Rest and Powers that refresh during one.</description>
+		<description>Adds support for an Extended Rest and Powers that refresh during</description>
 		
 		<ruleset>
 			<name>5E</name>
@@ -26,7 +26,7 @@
 				
 		<windowclass name="combattracker_host" merge="join">
 			<sheetdata>
-				<button_ct_menu merge="replace">
+				<button_ct_menu merge="join">
 					<script file="scripts/ct_host.lua"/>
 				</button_ct_menu>
 			</sheetdata>
