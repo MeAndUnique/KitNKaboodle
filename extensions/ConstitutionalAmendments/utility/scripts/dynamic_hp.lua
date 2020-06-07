@@ -9,6 +9,10 @@ local sTotal;
 local sWounds;
 local sLink = nil;
 
+-- For reasons known only to the Old Gods, and perhaps the Lunar Arcanum,
+-- the OptionsManager is sometimes a nil value during updateDisplayMode, so a local reference is needed.
+local optionsManager;
+
 function onInit()
 	if super and super.onInit then
 		super.onInit();
@@ -21,6 +25,7 @@ function onInit()
 	DB.addHandler(sTotal, "onUpdate", onSourceTotalUpdate);
 	DB.addHandler(sWounds, "onUpdate", onSourceWoundsUpdate);
 
+	optionsManager = OptionsManager;
 	updateDisplayMode()
 	OptionsManager.registerCallback("HPDM", updateDisplayMode);
 end
@@ -154,7 +159,7 @@ function update()
 end
 
 function updateDisplayMode()
-	bShowWounds = OptionsManager.isOption("HPDM", "");
+	bShowWounds = optionsManager.isOption("HPDM", "");
 	if bUpdating then
 		return;
 	end
