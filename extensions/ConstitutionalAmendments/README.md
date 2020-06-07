@@ -1,7 +1,8 @@
 # Constitutional Amendments
 Adds tracking of individual values for HP gained at each level, automated modifications of HP based on constitution changes, and tracking adjustments to maximum HP.
 
-A new option has been added to indicate whether average hitpoints should be added when level or if they should be rolled.
+Added an option to indicate whether average hitpoints should be added when level or if they should be rolled.
+Added an option to toggle between displaying Wounds or Current Hit Points.
 
 5 new damage types have been added:
 - max: The target's maximum hitpoints are reduced by the damage dealt.
