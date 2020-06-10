@@ -17,9 +17,6 @@ local bAddingInfo = false;
 local bAddingUnconscious = false;
 
 function onInit()
-	OptionsManager.registerOption2("HRHP", false, "option_header_houserule", "option_label_HRHP", "option_entry_cycler", 
-		{ labels="option_val_hp_roll", values="roll", baselabel="option_val_hp_average", baseval="", default="" });
-
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_ROLLHP, handleRollHp);
 	ActionsManager.registerResultHandler("hp", onHpRoll);
 
