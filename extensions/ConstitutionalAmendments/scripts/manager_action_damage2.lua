@@ -3,9 +3,7 @@
 -- attribution and copyright information.
 --
 
-local applyDamageOriginal;
 local decodeDamageTextOriginal;
-local getDamageAdjustOriginal;
 local messageDamageOriginal;
 
 local decodeResult;
@@ -22,21 +20,11 @@ function onInit()
 	table.insert(DataCommon.specialdmgtypes, "stealtemp");
 	table.insert(DataCommon.specialdmgtypes, "hstealtemp");
 
-	applyDamageOriginal = ActionDamage.applyDamage;
-	ActionDamage.applyDamage = applyDamage;
-
 	decodeDamageTextOriginal = ActionDamage.decodeDamageText;
 	ActionDamage.decodeDamageText = decodeDamageText;
 
-	getDamageAdjustOriginal = ActionDamage.getDamageAdjust;
-	ActionDamage.getDamageAdjust = getDamageAdjust;
-
 	messageDamageOriginal = ActionDamage.messageDamage;
 	ActionDamage.messageDamage = messageDamage;
-end
-
-function applyDamage(rSource, rTarget, bSecret, sDamage, nTotal)
-	applyDamageOriginal(rSource, rTarget, bSecret, sDamage, nTotal);
 end
 
 function decodeDamageText(nDamage, sDamageDesc)
@@ -125,9 +113,4 @@ function messageDamage(rSource, rTarget, bSecret, sDamageType, sDamageDesc, sTot
 		end
 		applyDamageOriginal(rSource, rSource, bSecret, sDamage, nStolen);
 	end
-end
-
-function getDamageAdjust(rSource, rTarget, nTotal, rDamageOutput)
-	local nDamageAdjust, bVulnerable, bResist = getDamageAdjustOriginal(rSource, rTarget, nTotal, rDamageOutput);
-	return nDamageAdjust, bVulnerable, bResist;
 end

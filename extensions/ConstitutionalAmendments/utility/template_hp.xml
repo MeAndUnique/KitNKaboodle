@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<template name="dynamic_hp_simple">
+		<simplenumberc>
+			<script file="utility/scripts/dynamic_hp.lua" />
+				<sourceTotal>hptotal</sourceTotal>
+				<sourceWounds>wounds</sourceWounds>
+				<min value="0" />
+		</simplenumberc>
+	</template>
+	<template name="dynamic_hp_basic">
+		<basicnumberc>
+			<script file="utility/scripts/dynamic_hp.lua" />
+				<sourceTotal>hptotal</sourceTotal>
+				<sourceWounds>wounds</sourceWounds>
+				<min value="0" />
+		</basicnumberc>
+	</template>
+</root>
