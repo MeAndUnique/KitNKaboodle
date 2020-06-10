@@ -58,6 +58,7 @@
 			</dynamic_hp_basic>
 
 			<number_dropadd name="hp" source="hp.base">
+				<frame name="fieldlight" offset="7,5,7,5" />
 				<readonly/>
 			</number_dropadd>
 			<button_charhealthcalc name="button_healthcalc">
