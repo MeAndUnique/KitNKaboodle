@@ -4,6 +4,7 @@
 
 * Added an option to indicate whether average hitpoints should be added when level or if they should be rolled.
 * Added an option to toggle between displaying Wounds or Current Hit Points.
+  * Inspired by the [Current HP](https://www.fantasygrounds.com/forums/showthread.php?44140-Current-HP-Extension-for-5E-Ruleset) extension created by Tielc and zuilin.
 
 * 5 new damage types have been added:
   * max: The target's maximum hitpoints are reduced by the damage dealt.
