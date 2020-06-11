@@ -59,7 +59,7 @@ function messageDamage(rSource, rTarget, bSecret, sDamageType, sDamageDesc, sTot
 
 			if bMax or (nSteal > 0) then
 				local rDamageOutput = {aDamageTypes={[sTypes]=nDamage}};
-				local nDamageAdjust = getDamageAdjust(rSource, rTarget, nDamage, rDamageOutput);
+				local nDamageAdjust = ActionDamage.getDamageAdjust(rSource, rTarget, nDamage, rDamageOutput);
 				nDamageAdjust = nDamageAdjust + nDamage;
 				nStolen = math.floor(nDamageAdjust * nSteal);
 
@@ -111,6 +111,6 @@ function messageDamage(rSource, rTarget, bSecret, sDamageType, sDamageDesc, sTot
 		if bStealTemp then
 			sDamage = sDamage .. "[TEMP]";
 		end
-		applyDamageOriginal(rSource, rSource, bSecret, sDamage, nStolen);
+		ActionDamage.applyDamage(rSource, rSource, bSecret, sDamage, nStolen);
 	end
 end
