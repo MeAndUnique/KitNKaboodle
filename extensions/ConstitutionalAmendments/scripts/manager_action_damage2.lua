@@ -66,9 +66,6 @@ function messageDamage(rSource, rTarget, bSecret, sDamageType, sDamageDesc, sTot
 				if bMax and (nDamageAdjust > 0) then
 					sExtraResult = sExtraResult .. " [MAX REDUCED]";
 					if sTargetType == "pc" then
-						local nWounds = DB.getValue(nodeTarget, "hp.wounds", 0);
-						DB.setValue(nodeTarget, "hp.wounds", "number", math.max(0, nWounds - nDamageAdjust));
-
 						local nAdjust = DB.getValue(nodeTarget, "hp.adjust", 0) - nDamageAdjust;
 						DB.setValue(nodeTarget, "hp.adjust", "number", nAdjust);
 						HpManager.recalculateTotal(nodeTarget);
@@ -83,6 +80,9 @@ function messageDamage(rSource, rTarget, bSecret, sDamageType, sDamageDesc, sTot
 							DB.setValue(nodeTarget, "hp.adjust", "number", nAdjust);
 							DB.setValue(nodeTarget, "hp.deathsavefail", "number", 3);
 						end
+
+						local nWounds = DB.getValue(nodeTarget, "hp.wounds", 0);
+						DB.setValue(nodeTarget, "hp.wounds", "number", math.max(0, nWounds - nDamageAdjust));
 					else
 						local nTotal = DB.getValue(nodeTarget, "hptotal", 0) - nDamageAdjust;
 						if nTotal < 0 then
