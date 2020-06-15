@@ -13,7 +13,7 @@
 				HpManager.messageDiscrepancy(getDatabaseNode());
 			end
 			function onHealthChanged()
-				HpManager.recalculateTotal(getDatabaseNode());
+				-- HpManager.recalculateTotal(getDatabaseNode());
 				super.onHealthChanged();
 			end
 			function changeHealthDisplay()
@@ -65,18 +65,18 @@
 				<anchored to="label_hd" position="righthigh" offset="190,0" />
 			</button_charhealthcalc>
 
-			<number_dropadd name="adjhp" source="hp.adjust">
+			<basicnumberc name="adjhp">
 				<anchored to="temphp" position="righthigh" offset="15,0" width="40" height="30" />
+				<stateframe>
+					<drophilight name="fieldfocusplus" />
+				</stateframe>
+				<script file="campaign/scripts/hp_adj.lua" />
+				<source>hp.adjust</source>
 				<font>reference-b-large</font>
 				<color>8030FF</color>
 				<description textres="hpadj" />
 				<hideonvalue>0</hideonvalue>
-				<script>
-					function onValueChanged()
-						window.onHealthChanged();
-					end
-				</script>
-			</number_dropadd>
+			</basicnumberc>
 			
 			<label_charfieldtop name="adjhp_label">
 				<anchored to="adjhp" offset="5,15" />

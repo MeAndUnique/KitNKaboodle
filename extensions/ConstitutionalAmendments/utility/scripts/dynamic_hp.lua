@@ -52,7 +52,7 @@ function onDrop(x, y, draginfo)
 end
 
 function onSourceTotalUpdate()
-	if bUpdating or isReadOnly() then
+	if bUpdating then
 		return;
 	end
 

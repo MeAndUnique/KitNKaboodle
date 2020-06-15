@@ -37,21 +37,23 @@
 	</windowclass>
 
 	<windowclass name="ct_entry" merge="join">
-		<script>
-			function onHealthChanged()
-				local sClass,_ = link.getValue();
-				if sClass == "charsheet" then
-					HpManager.recalculateAdjust(link.getTargetDatabaseNode());
-				end
-				super.onHealthChanged();
-			end
-		</script>
 		<sheetdata>
 			<!-- Shift HP and Temp right, move Wnd to where HP was -->
 			<number_ct_crosslink name="hptemp" insertbefore="wounds">
 				<tabtarget prev="hptemp" next="strength" />
 			</number_ct_crosslink>
 			<number_ct_crosslink name="hptotal" insertbefore="wounds">
+				<script>
+					function onValueChanged()
+						if super and super.onValueChanged then
+							super.onValueChanged();
+						end
+						local sClass,_ = window.link.getValue();
+						if sClass == "charsheet" then
+							HpManager.recalculateAdjust(window.link.getTargetDatabaseNode());
+						end
+					end
+				</script>
 				<tabtarget prev="hptotal" next="wounds" />
 			</number_ct_crosslink>
 			

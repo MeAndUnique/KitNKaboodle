@@ -18,5 +18,6 @@
 	<string name="char_label_currenthp">CUR</string>
 	<string name="char_tooltip_currenthp">Current HP</string>
 
-	<string name="hp_title">Hit Points</string>
+	<string name="power_label_healtypecur">CUR</string>
+	<string name="power_label_healtypemax">MAX</string>
 </root>
