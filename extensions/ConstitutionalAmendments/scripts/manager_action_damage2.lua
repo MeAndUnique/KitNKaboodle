@@ -29,6 +29,9 @@ end
 
 function decodeDamageText(nDamage, sDamageDesc)
 	decodeResult = decodeDamageTextOriginal(nDamage, sDamageDesc);
+	if string.match(sDamageDesc, "%[HEAL") and string.match(sDamageDesc, "%[MAX%]") then
+		decodeResult.sTypeOutput = "Maximum hit points";
+	end
 	return decodeResult;
 end
 
