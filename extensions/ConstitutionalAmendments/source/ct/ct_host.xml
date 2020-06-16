@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<windowclass name="combattracker_host" merge="join">
+		<script>
+			function onInit()
+				changeHealthDisplay();
+				OptionsManager.registerCallback("HPDM", changeHealthDisplay);
+				if super and super.onInit then
+					super.onInit();
+				end
+			end
+			function changeHealthDisplay()
+				if OptionsManager.isOption("HPDM", "") then
+					label_wounds.setValue(Interface.getString("ct_label_wounds"));
+					label_wounds.setTooltipText(Interface.getString("ct_tooltip_wounds"));
+				else
+					label_wounds.setValue(Interface.getString("ct_label_current"));
+					label_wounds.setTooltipText(Interface.getString("ct_tooltip_current"));
+				end
+			end
+		</script>
+		<sheetdata>
+			<!-- Shift HP and Temp right, move Wnd to where HP was -->
+			<label_ct name="label_hp">
+				<anchored to="header_labels" position="insidetopright" offset="55,3" width="30" />
+				<!-- Be more specific about Max HP -->
+				<static textres="ct_label_max" />
+				<tooltip textres="ct_tooltip_max" />
+			</label_ct>
+			<label_ct name="label_temp">
+				<anchored to="header_labels" position="insidetopright" offset="15,3" width="30" />
+			</label_ct>
+			<label_ct name="label_wounds">
+				<anchored to="header_labels" position="insidetopright" offset="95,3" width="30" />
+			</label_ct>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="ct_entry" merge="join">
+		<sheetdata>
+			<!-- Shift HP and Temp right, move Wnd to where HP was -->
+			<number_ct_crosslink name="hptemp" insertbefore="wounds">
+				<tabtarget prev="hptemp" next="strength" />
+			</number_ct_crosslink>
+			<number_ct_crosslink name="hptotal" insertbefore="wounds">
+				<script>
+					function onValueChanged()
+						if super and super.onValueChanged then
+							super.onValueChanged();
+						end
+						local sClass,_ = window.link.getValue();
+						if sClass == "charsheet" then
+							HpManager.recalculateAdjust(window.link.getTargetDatabaseNode());
+						end
+					end
+				</script>
+				<tabtarget prev="hptotal" next="wounds" />
+			</number_ct_crosslink>
+			
+			<!-- Remove the wounds field -->
+			<number_ct_crosslink name="wounds" merge="delete" />
+			<!-- And replace it with a field that can toggle between wounds and current -->
+			<dynamic_hp_basic name="wounds" insertbefore="initresult">
+				<anchored to="rightanchor" width="30" height="20">
+					<top />
+					<right anchor="left" relation="relative" offset="-10" />
+				</anchored>
+				<tabtarget prev="initresult" next="hptemp" />
+			</dynamic_hp_basic>
+		</sheetdata>
+	</windowclass>
+</root>

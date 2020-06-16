@@ -15,7 +15,7 @@
   * stealtemp: The attacker is gains temporary hitpoints equivalent to the damage dealt.
   * hstealtemp: The attacker is gains temporary hitpoints equivalent to half of the damage dealt.
 
-![Preview](ConstitutionalAmendments.png)
+![Preview](images/ConstitutionalAmendments.png)
 
 ## Installation
 Download [ConstitutionalAmendments.ext](https://github.com/MeAndUnique/FantasyGrounds/raw/master/extensions/ConstitutionalAmendments/ConstitutionalAmendments.ext) and place in the extensions subfolder of the Fantasy Grounds data folder.

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<windowclass name="charsheet_main" merge="join">
+		<script>
+			function onInit()
+				if super.onInit then
+					super.onInit();
+				end
+				onHealthChanged();
+				OptionsManager.registerCallback("WNDC", onHealthChanged);
+				changeHealthDisplay();
+				OptionsManager.registerCallback("HPDM", changeHealthDisplay);
+				HpManager.messageDiscrepancy(getDatabaseNode());
+			end
+			function onHealthChanged()
+				-- HpManager.recalculateTotal(getDatabaseNode());
+				super.onHealthChanged();
+			end
+			function changeHealthDisplay()
+				if OptionsManager.isOption("HPDM", "") then
+					wounds_label.setValue(Interface.getString("char_label_wounds"));
+					wounds.setDescriptionText(Interface.getString("char_tooltip_wounds"));
+				else
+					wounds_label.setValue(Interface.getString("char_label_currenthp"));
+					wounds.setDescriptionText(Interface.getString("char_tooltip_currenthp"));
+				end
+			end
+		</script>
+		<sheetdata>
+			<number_charabilityscore name="constitution">
+				<script>
+					function onValueChanged()
+						super.onValueChanged();
+						HpManager.recalculateBase(window.getDatabaseNode());
+					end
+				</script>
+			</number_charabilityscore>
+
+			<label_charframetop name="healthtitle">
+				<anchored height="20">
+					<top anchor="bottom" offset="-120" />
+					<left offset="90" />
+					<right offset="-90" />
+				</anchored>
+				<icons>char_stats</icons>
+			</label_charframetop>
+
+			<number_charwounds name="wounds" merge="delete" />
+			<dynamic_hp_basic name="wounds" insertbefore="wounds_label">
+				<anchored to="healthtitle" width="40" height="30">
+					<top anchor="bottom" offset="15" />
+					<left anchor="center" offset="-88" />
+				</anchored>
+				<sourceTotal>hp.total</sourceTotal>
+				<sourceWounds>hp.wounds</sourceWounds>
+				<font>reference-b-large</font>
+				<description textres="char_tooltip_wounds" />
+			</dynamic_hp_basic>
+
+			<number_dropadd name="hp" source="hp.base">
+				<frame name="fieldlight" offset="7,5,7,5" />
+				<readonly/>
+			</number_dropadd>
+			<button_charhealthcalc name="button_healthcalc">
+				<anchored to="label_hd" position="righthigh" offset="190,0" />
+			</button_charhealthcalc>
+
+			<basicnumberc name="adjhp">
+				<anchored to="temphp" position="righthigh" offset="15,0" width="40" height="30" />
+				<stateframe>
+					<drophilight name="fieldfocusplus" />
+				</stateframe>
+				<script file="campaign/scripts/hp_adj.lua" />
+				<source>hp.adjust</source>
+				<font>reference-b-large</font>
+				<color>8030FF</color>
+				<description textres="hpadj" />
+				<hideonvalue>0</hideonvalue>
+			</basicnumberc>
+			
+			<label_charfieldtop name="adjhp_label">
+				<anchored to="adjhp" offset="5,15" />
+				<static textres="char_label_hpadj" />
+			</label_charfieldtop>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="charsheet_class" merge="join">
+		<script>
+			function toggleDetail()
+				list.setVisible(activateDetail.getValue() == 1);
+			end
+		</script>
+		<sheetdata>
+			<string_textlistitem name="name">
+				<anchored>
+					<left offset="30" />
+				</anchored>
+			</string_textlistitem>
+
+			<button_toggledetail name="activateDetail">
+				<anchored position="insidetopleft" offset="5,3" />
+			</button_toggledetail>
+
+			<windowlist name="list">
+				<anchored>
+					<top parent="name" anchor="bottom" offset="5" />
+					<left offset="30" />
+					<right offset="-10" />
+				</anchored>
+				<class>hp_roll</class>
+				<skipempty />
+				<invisible />
+				<columns width="50" fillwidth="true" />
+				<datasource>.rolls</datasource>
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="hp_roll">
+		<script>
+			function onInit()
+				local number = string.match(getDatabaseNode().getName(), "[1-9]%d*");
+				label.setValue(number);
+			end
+		</script>
+		<margins control="0,0,7,5" />
+		<sheetdata>
+			<basicnumber name="value" source=".">
+				<anchored position="insidetopleft" offset="7,20" height="20" width="30" />
+			</basicnumber>
+			<stringcontrol name="label">
+				<anchored to="value" position="above" offset="0,0" height="20" />
+				<center />
+				<font>sheetlabel</font>
+				<static />
+			</stringcontrol>
+		</sheetdata>
+	</windowclass>
+</root>
