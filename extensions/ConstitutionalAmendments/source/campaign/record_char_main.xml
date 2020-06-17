@@ -65,18 +65,31 @@
 				<anchored to="label_hd" position="righthigh" offset="190,0" />
 			</button_charhealthcalc>
 
-			<basicnumberc name="adjhp">
+			<basicsmartnumber name="adjhp">
 				<anchored to="temphp" position="righthigh" offset="15,0" width="40" height="30" />
 				<stateframe>
 					<drophilight name="fieldfocusplus" />
 				</stateframe>
-				<script file="campaign/scripts/hp_adj.lua" />
 				<source>hp.adjust</source>
 				<font>reference-b-large</font>
 				<color>8030FF</color>
 				<description textres="hpadj" />
 				<hideonvalue>0</hideonvalue>
-			</basicnumberc>
+				<script>
+					function onUpdated(bUser, previousValue, newValue)
+						if bUser then
+							HpManager.recalculateTotal(window.getDatabaseNode());
+						end
+						window.onHealthChanged();
+					end
+					function onDrop(x, y, draginfo)
+						if draginfo.isType("number") then
+							setValue(getValue() + draginfo.getNumberData());
+							return true;
+						end
+					end
+				</script>
+			</basicsmartnumber>
 			
 			<label_charfieldtop name="adjhp_label">
 				<anchored to="adjhp" offset="5,15" />

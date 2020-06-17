@@ -138,7 +138,7 @@ function onRollChanged(nodeRoll)
 end
 
 function onCombatantDeleted(nodeCombatant)
-	DB.removeHandler(nodeCombatant.getPath(".effects"), "onChildUpdate", onCombatantEffectUpdated);
+	DB.removeHandler(nodeCombatant.getPath("effects"), "onChildUpdate", onCombatantEffectUpdated);
 end
 
 function onCombatantEffectUpdated(nodeEffectList)

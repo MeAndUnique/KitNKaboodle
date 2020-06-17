@@ -54,7 +54,7 @@
 						end
 					end
 				</script>
-				<tabtarget prev="hptotal" next="wounds" />
+				<tabtarget prev="hptemp" next="wounds" />
 			</number_ct_crosslink>
 			
 			<!-- Remove the wounds field -->
