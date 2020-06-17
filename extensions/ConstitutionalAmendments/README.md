@@ -6,6 +6,8 @@
 * Added an option to toggle between displaying Wounds or Current Hit Points.
   * Inspired by the [Current HP](https://www.fantasygrounds.com/forums/showthread.php?44140-Current-HP-Extension-for-5E-Ruleset) extension created by Tielc and zuilin.
 
+* Added a Heal action type to increase maximum HP.
+
 * 5 new damage types have been added:
   * max: The target's maximum hitpoints are reduced by the damage dealt.
   * steal: The attacker is healed for the damage dealt to the target.
@@ -13,7 +15,7 @@
   * stealtemp: The attacker is gains temporary hitpoints equivalent to the damage dealt.
   * hstealtemp: The attacker is gains temporary hitpoints equivalent to half of the damage dealt.
 
-![Preview](ConstitutionalAmendments.png)
+![Preview](images/ConstitutionalAmendments.png)
 
 ## Installation
 Download [ConstitutionalAmendments.ext](https://github.com/MeAndUnique/FantasyGrounds/raw/master/extensions/ConstitutionalAmendments/ConstitutionalAmendments.ext) and place in the extensions subfolder of the Fantasy Grounds data folder.
