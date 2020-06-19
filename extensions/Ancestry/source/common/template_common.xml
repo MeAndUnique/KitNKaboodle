@@ -10,19 +10,15 @@
 	<template name="linkcontrol" merge="join">
 		<windowreferencecontrol>
 			<icon normal="button_link" pressed="button_link_down" empty="button_link_empty" />
-			<description mergerule="replace" field="name" />
 			<script>
 				function onDragStart(button, x, y, dragdata)
-					if super and super.onDragStart then
-						super.onDragStart(button, x, y, dragdata);
-					end
-					Debug.chat(class);
-					dragdata = dragdata.createBaseData();
-					--dragdata.desc = "test";
-					Debug.chat(dragdata);
-				end
-				function onDragEnd(dragdata)
-					Debug.chat(dragdata);
+					local name = DB.getValue(window.getDatabaseNode(), "name", "");
+					name = AncestryManager.getReplacement(name);
+					dragdata.setDescription(name);
+					dragdata.setIcon("button_link");
+					dragdata.setShortcutData(getValue());
+					dragdata.setType("shortcut");
+					return true;
 				end
 			</script>
 		</windowreferencecontrol>
