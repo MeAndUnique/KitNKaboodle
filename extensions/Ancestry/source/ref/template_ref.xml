@@ -87,6 +87,25 @@
 		</smartstring>
 	</template>
 
+	<template name="ft_refblock">
+		<simplesmartft>
+			<anchored position="insidetop" offset="-20,0" />
+			<invisible />
+			<readonly />
+			<script>
+				function onUpdating(bUser, sPrevious, sNew)
+					if not bUser then
+						setValue(AncestryManager.getReplacement(sNew));
+						return true;
+					end
+				end
+				function onLinkActivated(sClass, sRecord)
+					local wTop = UtilityManager.getTopWindow(window);
+					wTop.activateLink(sClass, sRecord);
+				end
+			</script>
+		</simplesmartft>
+	</template>
 	<template name="string_refblock_caption">
 		<smartstring name="caption">
 			<anchored position="insidetopleft" />

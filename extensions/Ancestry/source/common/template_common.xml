@@ -44,7 +44,7 @@
 	</template>
 
 	<!-- CoreRPG -->
-	<template name="simpleft">
+	<!-- <template name="simpleft">
 		<smartformattedtext>
 			<script>
 				function onUpdating(bUser, sPrevious, sNew)
@@ -55,5 +55,5 @@
 				end
 			</script>
 		</smartformattedtext>
-	</template>
+	</template> -->
 </root>

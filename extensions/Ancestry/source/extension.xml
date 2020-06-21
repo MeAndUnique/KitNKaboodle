@@ -13,10 +13,13 @@
 	</properties>
 
 	<base>
-		<script name="AncestryManager" file="scripts/manager_ancestry.lua" />
-
 		<includefile source="strings/strings_campaign.xml" />
 		<includefile source="strings/strings_5e.xml" />
+
+		<includefile source="graphics/graphics.xml" />
+
+		<script name="AncestryManager" file="scripts/manager_ancestry.lua" />
+		<script name="LibraryDataAncestry" file="scripts/data_library_ancestry.lua" />
 
 		<includefile source="common/template_common.xml" />
 		<includefile source="common/template_records.xml" />

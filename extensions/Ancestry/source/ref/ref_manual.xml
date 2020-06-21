@@ -62,4 +62,39 @@
 			</smartstring>
 		</sheetdata>
 	</windowclass>
+	
+	<!-- CoreRPG -->
+	<!-- <windowclass name="referencemanualpagecontent" merge="join">
+		<sheetdata>
+			<simpleft name="text" merge="delete" />
+			<simplesmartft name="text" insertbefore="blocks">
+				<anchored>
+					<top offset="5" />
+					<left />
+					<right />
+				</anchored>
+				<readonly />
+				<script>
+					function onInit()
+						if super and super.onInit then
+							super.onInit();
+						end
+						if isEmpty() then
+							setVisible(false);
+						end
+					end
+					function onUpdating(bUser, sPrevious, sNew)
+						if not bUser then
+							setValue(AncestryManager.getReplacement(sNew));
+							return true;
+						end
+					end
+					function onLinkActivated(sClass, sRecord)
+						local wTop = UtilityManager.getTopWindow(window);
+						wTop.activateLink(sClass, sRecord);
+					end
+				</script>
+			</simplesmartft>
+		</sheetdata>
+	</windowclass> -->
 </root>

@@ -38,5 +38,5 @@ end
 
 function getReplacement(sText)
 	-- TODO write a custom substitution algorithm to avoid multiple passes
-	return sText:gsub("a [-%.%a]+", replacement):gsub("%.?[-%a]+", replacement);
+	return sText:gsub("a [-%.%a]+", replacement):gsub("[%._]?[-%a]+", replacement);
 end
