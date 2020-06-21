@@ -13,7 +13,6 @@
 				function onUpdating(bUser, sPrevious, sNew)
 					if not bUser then
 						setValue(AncestryManager.getReplacement(sNew));
-						Debug.chat(getValue());
 						return true;
 					end
 				end

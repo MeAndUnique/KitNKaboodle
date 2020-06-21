@@ -28,14 +28,6 @@ local replacement = {
 	["sub-races"] = "heritages"
 };
 
-function onInit()
-	Interface.onWindowOpened = onWindowOpened;
-end
-
-function onWindowOpened(window)
-	Debug.chat(window);
-end
-
 function getReplacement(sText)
 	-- TODO write a custom substitution algorithm to avoid multiple passes
 	return sText:gsub("a [-%.%a]+", replacement):gsub("[%._]?[-%a]+", replacement);
