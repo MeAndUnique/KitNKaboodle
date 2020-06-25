@@ -22,7 +22,7 @@
 			<script>
 				function onUpdating(bUser, sPrevious, sNew)
 					if not bUser then
-						setValue(AncestryManager.getReplacement(sNew));
+						setValue(AncestryManager.sanitizeText(sNew));
 						return true;
 					end
 				end
@@ -49,7 +49,7 @@
 			<script>
 				function onUpdating(bUser, sPrevious, sNew)
 					if not bUser then
-						setValue(AncestryManager.getReplacement(sNew));
+						setValue(AncestryManager.sanitizeText(sNew));
 						return true;
 					end
 				end
@@ -79,7 +79,7 @@
 			<script>
 				function onUpdating(bUser, sPrevious, sNew)
 					if not bUser then
-						setValue(AncestryManager.getReplacement(sNew));
+						setValue(AncestryManager.sanitizeText(sNew));
 						return true;
 					end
 				end
@@ -95,7 +95,7 @@
 			<script>
 				function onUpdating(bUser, sPrevious, sNew)
 					if not bUser then
-						setValue(AncestryManager.getReplacement(sNew));
+						setValue(AncestryManager.sanitizeText(sNew, DB.getChild(window.getDatabaseNode(), "...")));
 						return true;
 					end
 				end
@@ -117,7 +117,7 @@
 			<script>
 				function onUpdating(bUser, sPrevious, sNew)
 					if not bUser then
-						setValue(AncestryManager.getReplacement(sNew));
+						setValue(AncestryManager.sanitizeText(sNew));
 						return true;
 					end
 				end
@@ -134,7 +134,7 @@
 			<script>
 				function onUpdating(bUser, sPrevious, sNew)
 					if not bUser then
-						setValue(AncestryManager.getReplacement(sNew));
+						setValue(AncestryManager.sanitizeText(sNew));
 						return true;
 					end
 				end

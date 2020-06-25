@@ -28,7 +28,21 @@ local replacement = {
 	["sub-races"] = "heritages"
 };
 
-function getReplacement(sText)
+local exclusions = {
+	["reference.refmanualdata.refpage_racing@DD Tomb of Annihilation"] = true,
+	["reference.refmanualdata.refpage_dinosaurracing@DD Tomb of Annihilation"] = true
+};
+
+function sanitizeText(sText, nodeContext)
+	if nodeContext then
+		if type(nodeContext) == "databasenode" then
+			nodeContext = nodeContext.getPath();
+		end
+		if exclusions[nodeContext] then
+			return sText;
+		end
+	end
+
 	-- TODO write a custom substitution algorithm to avoid multiple passes
 	return sText:gsub("a [-%.%a]+", replacement):gsub("[%._]?[-%a]+", replacement);
 end

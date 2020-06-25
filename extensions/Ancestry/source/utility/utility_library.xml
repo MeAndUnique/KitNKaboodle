@@ -15,7 +15,7 @@
 						if super and super.onInit then
 							super.onInit();
 						end
-						setValue(AncestryManager.getReplacement(getValue()));
+						setValue(AncestryManager.sanitizeText(getValue()));
 					end
 				</script>
 			</stringc_list_link>

@@ -13,7 +13,7 @@
 			<script>
 				function onDragStart(button, x, y, dragdata)
 					local name = DB.getValue(window.getDatabaseNode(), "name", "");
-					name = AncestryManager.getReplacement(name);
+					name = AncestryManager.sanitizeText(name);
 					dragdata.setDescription(name);
 					dragdata.setIcon("button_link");
 					dragdata.setShortcutData(getValue());
@@ -35,25 +35,11 @@
 			<script>
 				function onUpdating(bUser, sPrevious, sNew)
 					if not bUser then
-						setValue(AncestryManager.getReplacement(sNew));
+						setValue(AncestryManager.sanitizeText(sNew));
 						return true;
 					end
 				end
 			</script>
 		</smartstring>
 	</template>
-
-	<!-- CoreRPG -->
-	<!-- <template name="simpleft">
-		<smartformattedtext>
-			<script>
-				function onUpdating(bUser, sPrevious, sNew)
-					if not bUser then
-						setValue(AncestryManager.getReplacement(sNew));
-						return true;
-					end
-				end
-			</script>
-		</smartformattedtext>
-	</template> -->
 </root>

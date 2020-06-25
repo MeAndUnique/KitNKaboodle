@@ -30,7 +30,7 @@
 						super.onInit();
 					end
 					if widgetTitle then
-						setValue(AncestryManager.getReplacement(widgetTitle.getText()));
+						setValue(AncestryManager.sanitizeText(widgetTitle.getText()));
 					end
 				end
 			</script>
