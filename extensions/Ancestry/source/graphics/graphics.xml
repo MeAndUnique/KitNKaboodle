@@ -8,4 +8,6 @@
 <root>	
 	<icon name="button_races" file="graphics/sidebar/button_races.png" />
 	<icon name="button_races_down" file="graphics/sidebar/button_races_down.png" />
+
+	<icon name="ancestry_icon" file="graphics/icons/Ancestry.png" />
 </root>

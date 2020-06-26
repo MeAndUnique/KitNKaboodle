@@ -3,7 +3,7 @@
 	<properties>
 		<name>Ancestry</name>
 		<version>1.0</version>
-		<loadorder>100</loadorder>
+		<loadorder>10</loadorder>
 		<author>MeAndUnique</author>
 		<description></description>
 
@@ -32,5 +32,7 @@
 
 		<includefile source="smart_fields/smart_field.xml" />
 	</base>
-<!-- reference_race -->
+
+	<announcement text="Ancestry v1.0.0 for 5E by MeAndUnique." icon="ancestry_icon" font="emotefont" />
+
 </root>
