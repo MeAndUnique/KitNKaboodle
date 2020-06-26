@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root release="3.0" version="3">
 	<properties>
-		<name>Ancestry</name>
+		<name>5E - Ancestry</name>
 		<version>1.0</version>
 		<loadorder>10</loadorder>
 		<author>MeAndUnique</author>
