@@ -32,13 +32,11 @@ function setSource(sNewSource)
 	end
 
 	if sNewSource then
-		local node = DB.createNode(sNewSource, fieldtype[1]);
-		if node then
-			sSource = sNewSource;
-			DB.addHandler(sSource, "onUpdate", onSourceUpdate);
-			previousValue = node.getValue();
-		end
+		DB.createNode(sNewSource, fieldtype[1]);
+		sSource = sNewSource;
+		DB.addHandler(sSource, "onUpdate", onSourceUpdate);
 	end
+	onSourceUpdate();
 end
 
 function onSourceUpdate()
@@ -48,7 +46,9 @@ function onSourceUpdate()
 
 	bUpdating = true;
 	local newValue = DB.getValue(sSource);
-	setValue(newValue);
+	if not self.onUpdating or not self.onUpdating(false, previousValue, newValue) then
+		setValue(newValue);
+	end
 	if self.onUpdated then
 		self.onUpdated(false, previousValue, newValue);
 	end
@@ -63,7 +63,7 @@ function onValueChanged()
 
 	bUpdating = true;
 	local newValue = getValue();
-	if sSource then
+	if (not self.onUpdating or not self.onUpdating(true, previousValue, newValue)) and sSource then
 		DB.setValue(sSource, fieldtype[1], newValue);
 	end
 	if self.onUpdated then
