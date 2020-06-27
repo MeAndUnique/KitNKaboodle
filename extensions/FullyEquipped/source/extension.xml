@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root release="3.0" version="3">
+	<properties>
+		<name>5E - Fully Equipped</name>
+		<version>1.0</version>
+		<loadorder>50</loadorder>
+		<author>MeAndUnique</author>
+		<description>Adds support for adding actions to items and giving items to NPCs.</description>
+		
+		<ruleset>
+			<name>5E</name>
+		</ruleset>
+	</properties>
+
+	<base>
+		<includefile source="campaign/record_item.xml" />
+	</base>
+
+</root>

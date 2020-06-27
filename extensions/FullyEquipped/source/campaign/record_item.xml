@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<windowclass name="item" merge="join">
+		<sizelimits>
+			<minimum width="350" />
+		</sizelimits>
+		<script>
+			function onStateChanged()
+				if super and super.onStateChanged then
+					super.onStateChanged();
+				end
+				actions.update()
+			end
+		</script>
+		<sheetdata>
+			<frame_record_content name="contentframe" merge="delete" />
+			<frame_record_content_tabbed name="contentframe" insertbefore="main" />
+
+			<subwindow_record name="actions">
+				<class>item_actions</class>
+			</subwindow_record>
+
+			<scrollbar_record>
+				<target>actions</target>
+			</scrollbar_record>
+
+			<tabs_recordsheet name="tabs">
+				<tab>
+					<icon>tab_main</icon>
+					<subwindow>main</subwindow>
+				</tab>
+				<tab>
+					<icon>tab_actions</icon>
+					<subwindow>actions</subwindow>
+				</tab>
+			</tabs_recordsheet>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_actions">
+		<script file="/campaign/scripts/item_actions.lua" />
+		<sheetdata>
+			<windowlist name="powers">
+				<anchored>
+					<top />
+					<left />
+					<right />
+				</anchored>
+				<datasource>.powers</datasource>
+				<class>item_power</class>
+				<skipempty />
+				<noscroll />
+				<allowcreate />
+				<allowdelete />
+				<footer>footer_wide</footer>
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_power">
+		<script file="/campaign/scripts/item_power.lua" />
+		<sheetdata>
+			<genericcontrol name="rightanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<right />
+				</anchored>
+			</genericcontrol>
+			<linkcontrol name="shortcut">
+				<anchored to="rightanchor" width="20" height="20">
+					<top />
+					<right anchor="left" relation="relative" offset="-5" />
+				</anchored>
+				<class>power</class>
+				<readonly />
+			</linkcontrol>
+			<button_idelete name="idelete">
+				<anchored to="rightanchor">
+					<top />
+					<right anchor="left" offset="-5" />
+				</anchored>
+			</button_idelete>
+			
+			<button_toggledetail name="activatedetail">
+				<anchored to="rightanchor">
+					<top />
+					<right anchor="left" relation="relative" offset="0" />
+				</anchored>
+				<invisible />
+				<script>
+					function onInit()
+						local node = window.getDatabaseNode();
+						DB.addHandler(DB.getPath(node, "actions"), "onChildAdded", update);
+						DB.addHandler(DB.getPath(node, "actions"), "onChildDeleted", update);
+						
+						local bShow = (DB.getChildCount(window.getDatabaseNode(), "actions") > 0);
+						setVisible(bShow);
+					end
+					
+					function onClose()
+						local node = window.getDatabaseNode();
+						DB.removeHandler(DB.getPath(node, "actions"), "onChildAdded", update);
+						DB.removeHandler(DB.getPath(node, "actions"), "onChildDeleted", update);
+					end
+					
+					function update()
+						if DB.getChildCount(window.getDatabaseNode(), "actions") > 0 then
+							setValue(1);
+							setVisible(true);
+						else
+							setValue(0);
+							setVisible(false);
+						end
+					end
+				</script>
+			</button_toggledetail>
+
+			<subwindow name="header">
+				<anchored>
+					<top />
+					<left />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-2" />
+				</anchored>
+				<class>power_item_header</class>
+				<activate />
+				<fastinit />
+			</subwindow>
+
+			<windowlist name="actions">
+				<anchored>
+					<top parent="header" anchor="bottom" relation="relative" offset="5" />
+					<left offset="10" />
+					<right offset="-10" />
+				</anchored>
+				<class>empty</class>
+				<skipempty />
+				<noscroll />
+				<invisible />
+				<footer>footer_wide</footer>
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_action_cast">
+		<margins control="0,0,0,5" />
+		<script file="campaign/scripts/item_power_action.lua" />
+		<sheetdata>
+			<!-- <button_poweraction name="castbutton">
+				<anchored position="insidetopleft" offset="2,2" />
+			</button_poweraction> -->
+			<!-- <label name="castlabel">
+				<anchored position="insidetopleft" offset="2,2" />
+				<static textres="power_label_cast" />
+			</label> -->
+
+			<label name="attackviewlabel">
+				<!-- <anchored to="castbutton" position="righthigh" offset="5,0" /> -->
+				<anchored position="insidetopleft" offset="2,2" />
+				<static textres="power_label_atk" />
+			</label>
+			<stringcontrol name="attackview">
+				<anchored to="attackviewlabel" position="righthigh" offset="24,0" width="70" />
+				<frame name="fieldlight" offset="7,5,7,5" />
+				<multilinespacing>20</multilinespacing>
+				<font>sheettext</font>
+				<center />
+				<nodrag />
+				<readonly />
+			</stringcontrol>
+
+			<label name="saveviewlabel">
+				<anchored to="attackview" position="righthigh" offset="15,0" />
+				<static textres="power_label_save" />
+			</label>
+			<stringcontrol name="saveview">
+				<anchored to="saveviewlabel" position="righthigh" offset="10,0" width="70" />
+				<frame name="fieldlight" offset="7,5,7,5" />
+				<multilinespacing>20</multilinespacing>
+				<font>sheettext</font>
+				<center />
+				<nodrag />
+				<readonly />
+			</stringcontrol>
+
+			<button_poweractioneditor name="castdetail">
+				<!-- <bounds merge="delete" />
+				<anchored to="saveview" position="righthigh" offset="10,0" /> -->
+				<editor>power_cast_editor</editor>
+			</button_poweractioneditor>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_action_damage">
+		<margins control="0,0,0,5" />
+		<script file="campaign/scripts/item_action.lua" />
+		<sheetdata>
+			<label name="damagelabel">
+				<anchored position="insidetopleft" offset="2,2" />
+				<static textres="power_label_dmg" />
+			</label>
+			<string_poweractionview name="damageview">
+				<anchored to="damagelabel" position="righthigh" offset="20,0">
+					<right parent="" offset="-36" />
+				</anchored>
+			</string_poweractionview>
+			<button_poweractioneditor name="damagedetail">
+				<editor>power_damage_editor</editor>
+			</button_poweractioneditor>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_action_effect">
+		<margins control="0,0,0,5" />
+		<script file="campaign/scripts/item_action.lua" />
+		<sheetdata>
+			<!-- <button_poweraction name="effectbutton">
+				<anchored position="insidetopleft" offset="2,2" />
+				<icon normal="button_action_effect" pressed="button_action_effect_down" />
+			</button_poweraction> -->
+			<label name="effectlabel">
+				<anchored position="insidetopleft" offset="2,2" />
+				<!-- <anchored to="effectbutton" position="righthigh" offset="5,0" width="35" /> -->
+				<static textres="power_label_effect" />
+			</label>
+			<string_poweractionview name="effectview">
+				<anchored to="effectlabel" position="righthigh" offset="10,0">
+					<right parent="" offset="-96" />
+				</anchored>
+			</string_poweractionview>
+			<string_poweractionview name="durationview">
+				<anchored to="effectview" position="righthigh" offset="10,0" width="50" />
+			</string_poweractionview>
+			<button_poweractioneditor name="effectdetail">
+				<editor>power_effect_editor</editor>
+			</button_poweractioneditor>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_action_heal">
+		<margins control="0,0,0,5" />
+		<script file="campaign/scripts/item_action.lua" />
+		<sheetdata>
+			<!-- <button_poweraction name="healbutton">
+				<anchored position="insidetopleft" offset="2,2" />
+				<icon normal="button_action_heal" pressed="button_action_heal_down" />
+			</button_poweraction> -->
+			<label name="heallabel">
+				<anchored position="insidetopleft" offset="2,2" />
+				<!-- <anchored to="healbutton" position="righthigh" offset="5,0" width="35" /> -->
+				<static textres="power_label_heal" />
+			</label>
+			<string_poweractionview name="healview">
+				<anchored to="heallabel" position="righthigh" offset="20,0">
+					<right parent="" offset="-36" />
+				</anchored>
+			</string_poweractionview>
+			<button_poweractioneditor name="healdetail">
+				<editor>power_heal_editor</editor>
+			</button_poweractioneditor>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="empty" />
+</root>
