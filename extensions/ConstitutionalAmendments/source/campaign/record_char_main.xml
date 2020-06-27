@@ -12,9 +12,6 @@
 				OptionsManager.registerCallback("HPDM", changeHealthDisplay);
 				HpManager.messageDiscrepancy(getDatabaseNode());
 			end
-			function onHealthChanged()
-				super.onHealthChanged();
-			end
 			function changeHealthDisplay()
 				if OptionsManager.isOption("HPDM", "") then
 					wounds_label.setValue(Interface.getString("char_label_wounds"));
