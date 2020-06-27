@@ -13,7 +13,6 @@
 				HpManager.messageDiscrepancy(getDatabaseNode());
 			end
 			function onHealthChanged()
-				-- HpManager.recalculateTotal(getDatabaseNode());
 				super.onHealthChanged();
 			end
 			function changeHealthDisplay()
