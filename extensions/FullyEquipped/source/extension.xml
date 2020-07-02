@@ -13,6 +13,10 @@
 	</properties>
 
 	<base>
+		<includefile source="strings/strings.xml" />
+
+		<script name="CharManager2" file="scripts/manager_char2.lua" />
+
 		<includefile source="campaign/record_item.xml" />
 	</base>
 

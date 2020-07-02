@@ -9,7 +9,7 @@
 				if super and super.onStateChanged then
 					super.onStateChanged();
 				end
-				actions.update()
+				actions.update();
 			end
 		</script>
 		<sheetdata>
@@ -58,6 +58,7 @@
 	</windowclass>
 
 	<windowclass name="item_power">
+		<margins control="0,0,0,5" />
 		<script file="/campaign/scripts/item_power.lua" />
 		<sheetdata>
 			<genericcontrol name="rightanchor">
@@ -66,14 +67,14 @@
 					<right />
 				</anchored>
 			</genericcontrol>
-			<linkcontrol name="shortcut">
+			<!-- <linkcontrol name="shortcut">
 				<anchored to="rightanchor" width="20" height="20">
 					<top />
 					<right anchor="left" relation="relative" offset="-5" />
 				</anchored>
 				<class>power</class>
 				<readonly />
-			</linkcontrol>
+			</linkcontrol> -->
 			<button_idelete name="idelete">
 				<anchored to="rightanchor">
 					<top />
@@ -115,7 +116,20 @@
 				</script>
 			</button_toggledetail>
 
-			<subwindow name="header">
+			<simplestring name="name">
+				<anchored>
+					<top offset="2" />
+					<left offset="10" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
+				</anchored>
+				<frame name="fieldlight" offset="7,5,7,5" />
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<empty textres="library_recordtype_empty_spell" />
+				<delaykeyupdate />
+			</simplestring>
+
+			<!-- <subwindow name="header">
 				<anchored>
 					<top />
 					<left />
@@ -124,11 +138,12 @@
 				<class>power_item_header</class>
 				<activate />
 				<fastinit />
-			</subwindow>
+			</subwindow> -->
 
 			<windowlist name="actions">
 				<anchored>
-					<top parent="header" anchor="bottom" relation="relative" offset="5" />
+					<top parent="name" anchor="bottom" relation="relative" offset="5" />
+					<!-- <top parent="header" anchor="bottom" relation="relative" offset="5" /> -->
 					<left offset="10" />
 					<right offset="-10" />
 				</anchored>
@@ -192,7 +207,7 @@
 
 	<windowclass name="item_action_damage">
 		<margins control="0,0,0,5" />
-		<script file="campaign/scripts/item_action.lua" />
+		<script file="campaign/scripts/item_power_action.lua" />
 		<sheetdata>
 			<label name="damagelabel">
 				<anchored position="insidetopleft" offset="2,2" />
@@ -211,7 +226,7 @@
 
 	<windowclass name="item_action_effect">
 		<margins control="0,0,0,5" />
-		<script file="campaign/scripts/item_action.lua" />
+		<script file="campaign/scripts/item_power_action.lua" />
 		<sheetdata>
 			<!-- <button_poweraction name="effectbutton">
 				<anchored position="insidetopleft" offset="2,2" />
@@ -238,7 +253,7 @@
 
 	<windowclass name="item_action_heal">
 		<margins control="0,0,0,5" />
-		<script file="campaign/scripts/item_action.lua" />
+		<script file="campaign/scripts/item_power_action.lua" />
 		<sheetdata>
 			<!-- <button_poweraction name="healbutton">
 				<anchored position="insidetopleft" offset="2,2" />

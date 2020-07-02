@@ -47,7 +47,7 @@ function createAction(sType)
 			if nodeAction then
 				DB.setValue(nodeAction, "type", "string", sType);
 				showAction(nodeAction, sType);
-				actions.createWindowWithClass("item_action_" .. sType, nodeAction);
+				-- actions.createWindowWithClass("item_action_" .. sType, nodeAction);
 			end
 		end
 	end
