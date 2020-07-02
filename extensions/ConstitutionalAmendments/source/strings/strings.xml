@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
 <root>
-	<string name="option_label_HRHP">PC: HP on level up</string>
-	<string name="option_val_hp_average">Average</string>
-	<string name="option_val_hp_roll">Roll</string>
 	<string name="option_label_HPDM">HP: Display Mode</string>
 	<string name="option_val_hp_wounds">Wounds</string>
 	<string name="option_val_hp_current">Current HP</string>
+	<string name="option_label_LRAD">PC: Clear HP Adjust on Long Rest</string>
+	<string name="option_label_HRHP">PC: HP on level up</string>
+	<string name="option_val_hp_average">Average</string>
+	<string name="option_val_hp_roll">Roll</string>
 
 	<string name="ct_label_max">Max</string>
 	<string name="ct_tooltip_max">Maximum Hit Points</string>
