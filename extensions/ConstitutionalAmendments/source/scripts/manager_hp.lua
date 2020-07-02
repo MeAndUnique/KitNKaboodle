@@ -49,7 +49,7 @@ end
 -- Overrides
 function resetHealth(nodeChar, bLong)
 	resetHealthOriginal(nodeChar, bLong);
-	if bLong then
+	if bLong and OptionsManager.getOption("LRAD") == "" then
 		DB.setValue(nodeChar, "hp.adjust", "number", 0);
 		recalculateTotal(nodeChar);
 	end
