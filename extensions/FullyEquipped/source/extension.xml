@@ -17,6 +17,7 @@
 
 		<script name="CharManager2" file="scripts/manager_char2.lua" />
 
+		<includefile source="campaign/record_char_actions.xml" />
 		<includefile source="campaign/record_item.xml" />
 	</base>
 

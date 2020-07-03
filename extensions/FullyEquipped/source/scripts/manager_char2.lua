@@ -16,6 +16,7 @@ end
 
 function onCharItemAdd(nodeItem)
 	onCharItemAddOriginal(nodeItem);
+	if true then return end
 
 	-- Get the power list we are going to add to
 	local nodeChar = nodeItem.getChild("...");
