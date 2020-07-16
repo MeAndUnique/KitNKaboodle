@@ -18,6 +18,10 @@ function onClose()
 	-- DB.removeHandler(getDatabaseNode(), "onChildUpdate", onDataChanged);
 end
 
+function update(bReadOnly)
+	details.setVisible(not bReadOnly);
+end
+
 function onMenuSelection(selection, subselection)
 	if selection == 4 and subselection == 3 then
 		getDatabaseNode().delete();

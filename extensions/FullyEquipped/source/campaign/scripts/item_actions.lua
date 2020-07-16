@@ -6,6 +6,8 @@
 -- Initialization
 function onInit()
 	local nodeRecord = getDatabaseNode();
+	DB.addHandler(nodeRecord.getPath("locked"), "onUpdate", onLockChanged);
+	-- TODO cleanup
 	local bReadOnly = WindowManager.getReadOnlyState(nodeRecord);
 	local nodePowers = nodeRecord.getChild("powers");
 	if not bReadOnly then
@@ -18,10 +20,15 @@ function onInit()
 	end
 end
 
-function update()
+function onClose()
 	local nodeRecord = getDatabaseNode();
-	local bReadOnly = WindowManager.getReadOnlyState(nodeRecord);
-	for _, window in pairs(powers.getWindows()) do
-		window.update(bReadOnly);
+	DB.removeHandler(nodeRecord.getPath("locked"), "onUpdate", onLockChanged);
+end
+
+function onLockChanged(nodeLocked)
+	local bLocked = nodeLocked.getValue() ~= 0;
+	powers.setReadOnly(bLocked);
+	for _, win in ipairs(powers.getWindows()) do
+		win.update(bLocked);
 	end
 end

@@ -38,13 +38,8 @@
 	<windowclass name="char_item_group">
 		<margins control="0,0,0,5" />
 		<script>
-			function onInit()
-				Debug.chat(DB.getChild(getDatabaseNode(), "powers"));
-				Debug.chat(DB.getChildCount(getDatabaseNode(), "powers"));
-			end
 			function onToggle()
 				list.setVisible(not list.isVisible());
-				Debug.chat(list.isVisible());
 			end
 		</script>
 		<sheetdata>
@@ -88,11 +83,6 @@
 				</stringfield>
 			<!-- </genericcontrol> -->
 			<windowlist name="list">
-				<script>
-					function onInit()
-						Debug.chat(getSize());
-					end
-				</script>
 				<anchored>
 					<top parent="name" anchor="bottom" relation="relative" offset="5" />
 					<!-- <top parent="header" anchor="bottom" relation="relative" offset="5" /> -->
@@ -100,8 +90,9 @@
 					<right offset="-10" />
 				</anchored>
 				<datasource>.powers</datasource>
-				<class>char_item_power</class>
+				<class>item_power</class>
 				<footer>footer_wide</footer>
+				<readonly />
 				<noscroll />
 				<invisible />
 			</windowlist>
@@ -110,17 +101,25 @@
 
 	<windowclass name="char_item_power">
 		<margins control="0,0,0,5" />
-		<script>
-			function onInit()
-				Debug.chat("sup");
-			end
-		</script>
 		<sheetdata>
-			<stringfield name="type">
-				<anchored position="insidetopleft" height="20" />
-				<static>Success</static>
+			<genericcontrol name="rightanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<right />
+				</anchored>
+			</genericcontrol>
+			<simplestring name="name">
+				<anchored>
+					<top offset="2" />
+					<left offset="10" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
+				</anchored>
+				<frame name="fieldlight" offset="7,5,7,5" />
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<empty textres="library_recordtype_empty_spell" />
 				<readonly />
-			</stringfield>
+			</simplestring>
 		</sheetdata>
 	</windowclass>
 </root>

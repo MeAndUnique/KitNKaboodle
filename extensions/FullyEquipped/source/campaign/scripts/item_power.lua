@@ -5,18 +5,7 @@
 
 -- Initialization
 function onInit()
-	if not windowlist.isReadOnly() then
-		-- registerMenuItem(Interface.getString("list_menu_deleteitem"), "delete", 6);
-		-- registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 6, 7);
-
-		registerMenuItem(Interface.getString("power_menu_addaction"), "pointer", 3);
-		registerMenuItem(Interface.getString("power_menu_addcast"), "radial_sword", 3, 2);
-		registerMenuItem(Interface.getString("power_menu_adddamage"), "radial_damage", 3, 3);
-		registerMenuItem(Interface.getString("power_menu_addheal"), "radial_heal", 3, 4);
-		registerMenuItem(Interface.getString("power_menu_addeffect"), "radial_effect", 3, 5);
-		
-		-- registerMenuItem(Interface.getString("power_menu_reparse"), "textlist", 4);
-	end
+	update(windowlist.isReadOnly())
 
 	for _,nodeAction in pairs(DB.getChildren(getDatabaseNode(), "actions")) do
 		showAction(nodeAction);
@@ -69,4 +58,27 @@ function toggleDetail()
 end
 
 function update(bReadOnly)
+	name.setReadOnly(bReadOnly);
+
+	if bReadOnly then
+		name.setFrame(nil);
+		resetMenuItems();
+	else
+		name.setFrame("fieldlight", 7, 5, 7, 5);
+
+		-- registerMenuItem(Interface.getString("list_menu_deleteitem"), "delete", 6);
+		-- registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 6, 7);
+
+		registerMenuItem(Interface.getString("power_menu_addaction"), "pointer", 3);
+		registerMenuItem(Interface.getString("power_menu_addcast"), "radial_sword", 3, 2);
+		registerMenuItem(Interface.getString("power_menu_adddamage"), "radial_damage", 3, 3);
+		registerMenuItem(Interface.getString("power_menu_addheal"), "radial_heal", 3, 4);
+		registerMenuItem(Interface.getString("power_menu_addeffect"), "radial_effect", 3, 5);
+		
+		-- registerMenuItem(Interface.getString("power_menu_reparse"), "textlist", 4);
+	end
+
+	for _,win in ipairs(actions.getWindows()) do
+		win.update(bReadOnly);
+	end
 end
