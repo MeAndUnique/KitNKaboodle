@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<string name="item_use_atwill">At Will</string>
-	<string name="item_use_Charges">Charges</string>
+	<string name="item_use_charges">Charges</string>
 	<string name="item_use_atwill">Consumable</string>
 
 	<string name="item_recharge_never">Never</string>

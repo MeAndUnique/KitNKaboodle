@@ -4,6 +4,12 @@
 		<margins control="0,0,0,5" />
 		<script file="/campaign/scripts/item_power.lua" />
 		<sheetdata>
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
 			<genericcontrol name="rightanchor">
 				<anchored height="0" width="0">
 					<top offset="2" />
@@ -59,11 +65,19 @@
 				</script>
 			</button_toggledetail>
 
+			<counter_power name="counter">
+				<anchored>
+					<top offset="2" />
+					<left parent="leftanchor" anchor="right" relation="relative" offset="" />
+				</anchored>
+				<invisible />
+			</counter_power>
+
 			<simplestring name="name">
 				<anchored>
 					<top offset="2" />
-					<left offset="10" />
 					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
+					<left parent="leftanchor" anchor="right" relation="relative" offset="10" />
 				</anchored>
 				<!-- <frame name="fieldlight" offset="7,5,7,5" /> -->
 				<multilinespacing>20</multilinespacing>
@@ -103,21 +117,47 @@
 		<margins control="0,0,0,5" />
 		<script file="campaign/scripts/item_power_action.lua" />
 		<sheetdata>
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
 			<!-- <button_poweraction name="castbutton">
 				<anchored position="insidetopleft" offset="2,2" />
 			</button_poweraction> -->
+			<button_itemaction name="castbutton">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" offset="2" />
+				</anchored>
+			</button_itemaction>
 			<!-- <label name="castlabel">
 				<anchored position="insidetopleft" offset="2,2" />
 				<static textres="power_label_cast" />
 			</label> -->
 
 			<label name="attackviewlabel">
-				<!-- <anchored to="castbutton" position="righthigh" offset="5,0" /> -->
-				<anchored position="insidetopleft" offset="2,2" />
+				<anchored to="leftanchor" width="35">
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
 				<static textres="power_label_atk" />
 			</label>
+			<label name="saveviewlabel">
+				<anchored to="leftanchor">
+					<top />
+					<left parent="" anchor="center" />
+				</anchored>
+				<static textres="power_label_save" />
+			</label>
+
 			<stringcontrol name="attackview">
-				<anchored to="attackviewlabel" position="righthigh" offset="24,0" width="70" />
+				<anchored to="leftanchor" width="70">
+					<top />
+					<left anchor="right" relation="relative" offset="10" />
+					<right parent="saveviewlabel" anchor="left" offset="-15" />
+				</anchored>
 				<frame name="fieldlight" offset="7,5,7,5" />
 				<multilinespacing>20</multilinespacing>
 				<font>sheettext</font>
@@ -126,12 +166,12 @@
 				<readonly />
 			</stringcontrol>
 
-			<label name="saveviewlabel">
-				<anchored to="attackview" position="righthigh" offset="15,0" />
-				<static textres="power_label_save" />
-			</label>
 			<stringcontrol name="saveview">
-				<anchored to="saveviewlabel" position="righthigh" offset="10,0" width="70" />
+				<anchored to="leftanchor">
+					<top />
+					<left parent="saveviewlabel" anchor="right" relation="relative" offset="10" />
+					<right parent="" offset="-35" />
+				</anchored>
 				<frame name="fieldlight" offset="7,5,7,5" />
 				<multilinespacing>20</multilinespacing>
 				<font>sheettext</font>
@@ -141,8 +181,6 @@
 			</stringcontrol>
 
 			<button_poweractioneditor name="details">
-				<!-- <bounds merge="delete" />
-				<anchored to="saveview" position="righthigh" offset="10,0" /> -->
 				<editor>power_cast_editor</editor>
 			</button_poweractioneditor>
 		</sheetdata>
@@ -152,12 +190,30 @@
 		<margins control="0,0,0,5" />
 		<script file="campaign/scripts/item_power_action.lua" />
 		<sheetdata>
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
+			<button_itemaction name="castbutton">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" offset="2" />
+				</anchored>
+				<icon normal="button_action_damage" pressed="button_action_damage_down" />
+			</button_itemaction>
 			<label name="damagelabel">
-				<anchored position="insidetopleft" offset="2,2" />
+				<anchored to="leftanchor" width="35">
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
 				<static textres="power_label_dmg" />
 			</label>
 			<string_poweractionview name="damageview">
-				<anchored to="damagelabel" position="righthigh" offset="20,0">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" offset="10" />
 					<right parent="" offset="-35" />
 				</anchored>
 			</string_poweractionview>
@@ -171,17 +227,30 @@
 		<margins control="0,0,0,5" />
 		<script file="campaign/scripts/item_power_action.lua" />
 		<sheetdata>
-			<!-- <button_poweraction name="effectbutton">
-				<anchored position="insidetopleft" offset="2,2" />
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
+			<button_itemaction name="castbutton">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" offset="2" />
+				</anchored>
 				<icon normal="button_action_effect" pressed="button_action_effect_down" />
-			</button_poweraction> -->
+			</button_itemaction>
 			<label name="effectlabel">
-				<anchored position="insidetopleft" offset="2,2" />
-				<!-- <anchored to="effectbutton" position="righthigh" offset="5,0" width="35" /> -->
+				<anchored to="leftanchor" width="35">
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
 				<static textres="power_label_effect" />
 			</label>
 			<string_poweractionview name="effectview">
-				<anchored to="effectlabel" position="righthigh" offset="10,0">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" offset="10" />
 					<right parent="" offset="-95" />
 				</anchored>
 			</string_poweractionview>
@@ -198,17 +267,30 @@
 		<margins control="0,0,0,5" />
 		<script file="campaign/scripts/item_power_action.lua" />
 		<sheetdata>
-			<!-- <button_poweraction name="healbutton">
-				<anchored position="insidetopleft" offset="2,2" />
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
+			<button_itemaction name="castbutton">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" />
+				</anchored>
 				<icon normal="button_action_heal" pressed="button_action_heal_down" />
-			</button_poweraction> -->
+			</button_itemaction>
 			<label name="heallabel">
-				<anchored position="insidetopleft" offset="2,2" />
-				<!-- <anchored to="healbutton" position="righthigh" offset="5,0" width="35" /> -->
+				<anchored to="leftanchor" width="35">
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
 				<static textres="power_label_heal" />
 			</label>
 			<string_poweractionview name="healview">
-				<anchored to="heallabel" position="righthigh" offset="20,0">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" offset="10" />
 					<right parent="" offset="-35" />
 				</anchored>
 			</string_poweractionview>
@@ -219,4 +301,27 @@
 	</windowclass>
 
 	<windowclass name="empty" />
+
+	<template name="button_itemaction">
+		<button_roll>
+			<script>
+				function action(draginfo)
+					local nodeAction = window.getDatabaseNode();
+					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, sSubRoll);
+					rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+					Debug.chat(rActor);
+					PowerManager.performAction(draginfo, rActor, rAction, nodeAction.getChild("..."));
+				end
+
+				function onButtonPress(x, y)
+					action();
+				end
+				
+				function onDragStart(button, x, y, draginfo)
+					action(draginfo);
+					return true;
+				end
+			</script>
+		</button_roll>
+	</template>
 </root>

@@ -18,8 +18,9 @@ function onClose()
 	-- DB.removeHandler(getDatabaseNode(), "onChildUpdate", onDataChanged);
 end
 
-function update(bReadOnly)
+function update(bReadOnly, bHideCast)
 	details.setVisible(not bReadOnly);
+	castbutton.setVisible(not bHideCast);
 end
 
 function onMenuSelection(selection, subselection)

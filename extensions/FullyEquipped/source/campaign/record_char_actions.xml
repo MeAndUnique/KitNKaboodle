@@ -38,53 +38,82 @@
 	<windowclass name="char_item_group">
 		<margins control="0,0,0,5" />
 		<script>
+			function onInit()
+				local node = getDatabaseNode();
+				onChargesChanged();
+				DB.addHandler(node.getPath("count"), "onUpdate", onChargesChanged);
+				DB.addHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
+				DB.addHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+			end
+			function onClose()
+				local node = getDatabaseNode();
+				DB.removeHandler(node.getPath("count"), "onUpdate", onChargesChanged);
+				DB.removeHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
+				DB.removeHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+			end
+			function onChargesChanged()
+				local node = getDatabaseNode();
+				local nTotal = DB.getValue(node, "prepared", 0) * DB.getValue(node, "count", 0);
+				local nUsed = countCharges();
+				for _, win in ipairs(list.getWindows()) do
+					win.updateUses(nTotal, nUsed);
+				end
+			end
+			function countCharges()
+				local node = getDatabaseNode();
+				local nCount = 0;
+				for _,powerNode in pairs(DB.getChildren(node.getPath("powers"))) do
+					nCount = nCount + DB.getValue(powerNode, "cast", 0);
+				end
+				return nCount;
+			end
 			function onToggle()
 				list.setVisible(not list.isVisible());
 			end
 		</script>
 		<sheetdata>
-			<!-- <genericcontrol name="header">
-				<anchored>
-					<top />
-					<left />
-					<right offset="-2" />
+			<linkcontrol name="shortcut">
+				<anchored width="20" height="20">
+					<top offset="10" />
+					<right />
+				</anchored>
+				<class>item</class>
+				<readonly />
+			</linkcontrol>
+			<stringfield name="name">
+				<script>
+					function onInit()
+						if super and super.onInit then
+							super.onInit();
+						end
+
+						local widget = addBitmapWidget("char_inventory");
+						widget.setPosition("topleft", 2, 8);
+					end
+
+					function onClickDown()
+						return true;
+					end
+
+					function onClickRelease()
+						window.onToggle();
+						return true;
+					end
+				</script>
+				<anchored height="20">
+					<top offset="10" />
+					<left offset="15" />
+					<right parent="shortcut" anchor="left" offset="-10" />
 				</anchored> -->
-				<stringfield name="name">
-					<script>
-						function onInit()
-							if super and super.onInit then
-								super.onInit();
-							end
-
-							local widget = addBitmapWidget("char_inventory");
-							widget.setPosition("topleft", 2, 8);
-						end
-
-						function onClickDown()
-							return true;
-						end
-
-						function onClickRelease()
-							window.onToggle();
-							return true;
-						end
-					</script>
-					<anchored height="20">
-						<top offset="10" />
-						<left offset="15" />
-						<right offset="-10" />
-					</anchored> -->
-					<!-- <bounds>15,10,-10,20</bounds> -->
-					<frame name="metalplate" offset="10,2,10,2"/>
-					<font>subwindowsmalltitle</font>
-					<center />
-					<nodrag />
-					<readonly />
-				</stringfield>
-			<!-- </genericcontrol> -->
+				<frame name="metalplate" offset="10,2,10,2"/>
+				<font>subwindowsmalltitle</font>
+				<center />
+				<nodrag />
+				<readonly />
+			</stringfield>
 			<windowlist name="list">
 				<anchored>
-					<top parent="name" anchor="bottom" relation="relative" offset="5" />
+					<top parent="name" anchor="bottom" offset="5" />
 					<!-- <top parent="header" anchor="bottom" relation="relative" offset="5" /> -->
 					<left offset="10" />
 					<right offset="-10" />
@@ -102,17 +131,24 @@
 	<windowclass name="char_item_power">
 		<margins control="0,0,0,5" />
 		<sheetdata>
-			<genericcontrol name="rightanchor">
+			<genericcontrol name="leftanchor">
 				<anchored height="0" width="0">
 					<top offset="2" />
-					<right />
+					<left />
 				</anchored>
 			</genericcontrol>
+			<counter_power name="counter">
+				<anchored>
+					<top offset="2" />
+					<left parent="leftanchor" anchor="right" relation="relative" offset="" />
+				</anchored>
+				<invisible />
+			</counter_power>
 			<simplestring name="name">
 				<anchored>
 					<top offset="2" />
-					<left offset="10" />
-					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
+					<left parent="leftanchor" anchor="right" relation="relative" offset="10" />
+					<right offset="-10" />
 				</anchored>
 				<frame name="fieldlight" offset="7,5,7,5" />
 				<multilinespacing>20</multilinespacing>

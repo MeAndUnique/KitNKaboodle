@@ -32,6 +32,14 @@
 	<windowclass name="item_actions">
 		<script file="/campaign/scripts/item_actions.lua" />
 		<sheetdata>
+			<label name="chargesLabel">
+				<anchored position="insidetopleft" offset="5,2" />
+				<static textres="item_use_charges" />
+			</label>
+			<basicnumber name="prepared">
+				<anchored to="chargesLabel" position="right" offset="5" width="20" />
+			</basicnumber>
+
 			<windowlist name="powers">
 				<script>
 					function update()
@@ -49,9 +57,9 @@
 					end
 				</script>
 				<anchored>
-					<top />
-					<left />
-					<right />
+					<top parent="prepared" anchor="bottom" offset="5" />
+					<left parent="" />
+					<right parent="" />
 				</anchored>
 				<datasource>.powers</datasource>
 				<class>item_power</class>

@@ -3,13 +3,26 @@
 -- attribution and copyright information.
 --
 
+-- aliases for self, used by counter
+parentcontrol = nil;
+window = nil;
+
 -- Initialization
 function onInit()
-	update(windowlist.isReadOnly())
-
+	parentcontrol = self;
+	parentcontrol.window = self;
 	for _,nodeAction in pairs(DB.getChildren(getDatabaseNode(), "actions")) do
 		showAction(nodeAction);
 	end
+
+	update(windowlist.isReadOnly())
+
+	-- Debug.chat(parentcontrol);
+	-- Debug.chat(parentcontrol.window);
+	Debug.chat(counter);
+	Debug.chat(counter.window);
+	Debug.chat(counter.window.parentcontrol);
+	Debug.chat(counter.window.parentcontrol.window);
 end
 
 function onMenuSelection(selection, subselection)
@@ -57,7 +70,7 @@ function toggleDetail()
 	actions.setVisible(status);
 end
 
-function update(bReadOnly)
+function update(bReadOnly, bHideCast)
 	name.setReadOnly(bReadOnly);
 
 	if bReadOnly then
@@ -79,6 +92,33 @@ function update(bReadOnly)
 	end
 
 	for _,win in ipairs(actions.getWindows()) do
-		win.update(bReadOnly);
+		win.update(bReadOnly, bHideCast);
 	end
+end
+
+function updateUses(nTotal, nUsed)
+	local node = getDatabaseNode();
+	DB.setValue(node, "prepared", "number", nTotal);
+	counter.setVisible(nTotal > 0);
+	counter.update("standard", true, nTotal, nUsed, nTotal);
+end
+
+function getDescription(bShowFull)
+	local node = getDatabaseNode();
+	
+	local s = DB.getValue(node, "name", "");
+	
+	if bShowFull then
+		local sShort = DB.getValue(node, "shortdescription", "");
+		if sShort ~= "" then
+			s = s .. " - " .. sShort;
+		end
+	end
+
+	return s;
+end
+
+function usePower(bShowFull)
+	local node = getDatabaseNode();
+	ChatManager.Message(getDescription(bShowFull), true, ActorManager.getActor("pc", node.getChild("...")));
 end
