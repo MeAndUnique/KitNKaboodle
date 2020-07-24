@@ -37,8 +37,28 @@
 				<static textres="item_use_charges" />
 			</label>
 			<basicnumber name="prepared">
-				<anchored to="chargesLabel" position="right" offset="5" width="20" />
+				<anchored to="chargesLabel" position="right" offset="5" height="20" width="30" />
 			</basicnumber>
+
+			<label_charframetop name="powerstitle">
+				<anchored height="20">
+					<top parent="prepared" anchor="bottom" offset="5" />
+					<left offset="9" />
+					<right offset="-13" />
+				</anchored>
+				<static textres="char_label_powers" />
+				<icons>char_powers</icons>
+				<target>powers</target>
+			</label_charframetop>
+
+			<button_iedit name="powers_iedit">
+				<anchored to="powerstitle" position="insidetopright" offset="0,0" />
+				<target>powers</target>
+			</button_iedit>
+			<button_iadd name="powers_iadd">
+				<anchored to="powers_iedit" position="lefthigh" offset="5,0" />
+				<target>powers</target>
+			</button_iadd>
 
 			<windowlist name="powers">
 				<script>
@@ -57,7 +77,7 @@
 					end
 				</script>
 				<anchored>
-					<top parent="prepared" anchor="bottom" offset="5" />
+					<top parent="powerstitle" anchor="bottom" offset="5" />
 					<left parent="" />
 					<right parent="" />
 				</anchored>
@@ -69,15 +89,6 @@
 				<allowdelete />
 				<footer>footer_wide</footer>
 			</windowlist>
-
-			<button_iedit name="powers_iedit">
-				<anchored position="insidebottomright" offset="10,10" />
-				<target>powers</target>
-			</button_iedit>
-			<button_iadd name="powers_iadd">
-				<anchored to="powers_iedit" position="lefthigh" offset="5,0" />
-				<target>powers</target>
-			</button_iadd>
 		</sheetdata>
 	</windowclass>
 </root>

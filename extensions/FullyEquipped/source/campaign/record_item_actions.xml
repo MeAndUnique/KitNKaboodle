@@ -309,7 +309,6 @@
 					local nodeAction = window.getDatabaseNode();
 					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, sSubRoll);
 					rActor = ActorManager.getActor("", nodeAction.getChild("......."));
-					Debug.chat(rActor);
 					PowerManager.performAction(draginfo, rActor, rAction, nodeAction.getChild("..."));
 				end
 

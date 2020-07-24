@@ -16,13 +16,6 @@ function onInit()
 	end
 
 	update(windowlist.isReadOnly())
-
-	-- Debug.chat(parentcontrol);
-	-- Debug.chat(parentcontrol.window);
-	Debug.chat(counter);
-	Debug.chat(counter.window);
-	Debug.chat(counter.window.parentcontrol);
-	Debug.chat(counter.window.parentcontrol.window);
 end
 
 function onMenuSelection(selection, subselection)

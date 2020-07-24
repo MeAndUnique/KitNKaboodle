@@ -17,17 +17,6 @@ function onInit()
 	onChargesChanged();
 	DB.addHandler(nodeRecord.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeRecord.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-
-	-- TODO cleanup
-	local nodePowers = nodeRecord.getChild("powers");
-	if not bReadOnly then
-		local text = DB.getValue(nodeRecord, "description", "crap")
-		if type(text) == "string" and StringManager.contains({"spell"}, text) then
-			Debug.chat("success");
-		else
-			Debug.chat(text);
-		end
-	end
 end
 
 function onClose()
@@ -47,8 +36,13 @@ function update(bLocked)
 	if bLocked then
 		prepared.setFrame(nil);
 	else
-		prepared.setFrame("fielddark");
+		prepared.setFrame("fielddark", 7, 5, 7, 5);
 	end
+
+	if bLocked then
+		powers_iedit.setValue(0);
+	end
+	powers_iedit.setVisible(not bLocked);
 
 	powers.setReadOnly(bLocked);
 	for _, win in ipairs(powers.getWindows()) do
