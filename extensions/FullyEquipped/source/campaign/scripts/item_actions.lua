@@ -3,12 +3,9 @@
 -- attribution and copyright information.
 --
 
-local sNodePath;
-
 -- Initialization
 function onInit()
 	local nodeRecord = getDatabaseNode();
-	sNodePath = nodeRecord.getPath()
 	DB.addHandler(nodeRecord.getPath("locked"), "onUpdate", onLockChanged);
 
 	local bReadOnly = WindowManager.getReadOnlyState(nodeRecord);

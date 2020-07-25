@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<windowclass name="ct_entry" merge="join">
+		<sheetdata>
+			<!-- <label insertbefore="spacer_action2">
+				<anchored height="24">
+					<top parent="active_spacer_top" anchor="bottom" relation="relative" offset="3" />
+					<left parent="activeicon" anchor="right" offset="75" />
+					<right offset="-17" />
+				</anchored>
+				<static>Hello!</static>
+			</label> -->
+			<windowlist name="items" insertbefore="spacer_action2">
+				<anchored height="24">
+					<top parent="active_spacer_top" anchor="bottom" relation="relative" offset="3" />
+					<left parent="activeicon" anchor="right" offset="75" />
+					<right offset="-17" />
+				</anchored>
+				<class>ct_npc_items</class>
+				<datasource>.inventorylist</datasource>
+				<noscroll />
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="ct_npc_items">
+		<sheetdata>
+			<stringfield name="name">
+				<script>
+					function onInit()
+						Debug.chat(getDatabaseNode());
+					end
+				</script>
+				<anchored position="lefthigh" offset="5,0" width="60" height="20" />
+				<font>sheetlabel</font>
+				<nodrag />
+				<readonly />
+			</stringfield>
+			<windowlist name="powers">
+				<anchored>
+					<top offset="3" />
+					<left parent="name" anchor="right" offset="5" />
+					<right offset="-17" />
+					<sizelimits><minimum height="24" /></sizelimits>
+				</anchored>
+				<class>ct_npc_item_power</class>
+				<noscroll />
+				<!-- <script>
+					function addEntry()
+						local w = createWindow();
+						w.value.setFocus(true);
+					end
+					function onListChanged()
+						window.setActiveVisible();
+					end
+				</script> -->
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="ct_npc_item_power">
+		<margins control="0,0,0,2" />
+		<sheetdata>
+			<linkcontrol name="shortcut">
+				<anchored position="insidetopleft" offset="5,2" width="20" height="20" />
+				<class>item</class>
+			</linkcontrol>
+			<string_textlistitem name="value">
+				<anchored position="insidetopleft" offset="30,2">
+					<right />
+				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<lineoffset default="on">0</lineoffset>
+				<nohighlight />
+				<actortype>ct</actortype>
+				<actorpath>......</actorpath>
+				<script file="ct/scripts/ct_power.lua" />
+			</string_textlistitem>
+		</sheetdata>
+	</windowclass>
+</root>

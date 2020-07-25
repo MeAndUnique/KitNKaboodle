@@ -15,11 +15,13 @@
 	<base>
 		<includefile source="strings/strings.xml" />
 
-		<script name="CharManager2" file="scripts/manager_char2.lua" />
+		<script name="ItemPowerManager" file="scripts/manager_item_power.lua" />
 
 		<includefile source="campaign/record_char_actions.xml" />
 		<includefile source="campaign/record_item.xml" />
 		<includefile source="campaign/record_item_actions.xml" />
+		<includefile source="campaign/record_npc.xml" />
+		<includefile source="ct/ct_host.xml" />
 	</base>
 
 </root>
