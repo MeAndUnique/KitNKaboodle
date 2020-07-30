@@ -7,15 +7,27 @@
 parentcontrol = nil;
 window = nil;
 
+local bAdding = false;
+local bReadOnly;
+local bHideCast;
+
 -- Initialization
 function onInit()
 	parentcontrol = self;
 	parentcontrol.window = self;
+	refreshActions();
+	update(windowlist.isReadOnly())
+
+	local node = getDatabaseNode();
+	DB.addHandler(node.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.addHandler(node.getPath("actions.*.type"), "onUpdate", onTypeChanged);
+end
+
+function refreshActions()
+	actions.closeAll()
 	for _,nodeAction in pairs(DB.getChildren(getDatabaseNode(), "actions")) do
 		showAction(nodeAction);
 	end
-
-	update(windowlist.isReadOnly())
 end
 
 function onMenuSelection(selection, subselection)
@@ -33,6 +45,18 @@ function onMenuSelection(selection, subselection)
 	end
 end
 
+function onTypeChanged(nodeType)
+	if bAdding then
+		local sType = nodeType.getValue();
+		local nodeAction = DB.getChild(nodeType, "..");
+		showAction(nodeAction, sType);
+	end
+end
+
+function onActionAdded(nodePower, nodeAction)
+	bAdding = true;
+end
+
 function createAction(sType)
 	local nodePower = getDatabaseNode();
 	if nodePower then
@@ -41,8 +65,6 @@ function createAction(sType)
 			local nodeAction = nodeActions.createChild();
 			if nodeAction then
 				DB.setValue(nodeAction, "type", "string", sType);
-				showAction(nodeAction, sType);
-				-- actions.createWindowWithClass("item_action_" .. sType, nodeAction);
 			end
 		end
 	end
@@ -54,8 +76,10 @@ function showAction(nodeAction, sType)
 	end
 
 	if (sType or "") ~= "" then
-		actions.createWindowWithClass("item_action_" .. sType, nodeAction);
+		local win = actions.createWindowWithClass("item_action_" .. sType, nodeAction);
+		win.update(bReadOnly, bHideCast);
 	end
+	bAdding = false;
 end
 
 function toggleDetail()
@@ -63,7 +87,9 @@ function toggleDetail()
 	actions.setVisible(status);
 end
 
-function update(bReadOnly, bHideCast)
+function update(bNewReadOnly, bNewHideCast)
+	bReadOnly = bNewReadOnly;
+	bHideCast = bNewHideCast;
 	name.setReadOnly(bReadOnly);
 
 	if bReadOnly then
@@ -71,17 +97,14 @@ function update(bReadOnly, bHideCast)
 		resetMenuItems();
 	else
 		name.setFrame("fieldlight", 7, 5, 7, 5);
-
-		-- registerMenuItem(Interface.getString("list_menu_deleteitem"), "delete", 6);
-		-- registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 6, 7);
-
+		
 		registerMenuItem(Interface.getString("power_menu_addaction"), "pointer", 3);
 		registerMenuItem(Interface.getString("power_menu_addcast"), "radial_sword", 3, 2);
 		registerMenuItem(Interface.getString("power_menu_adddamage"), "radial_damage", 3, 3);
 		registerMenuItem(Interface.getString("power_menu_addheal"), "radial_heal", 3, 4);
 		registerMenuItem(Interface.getString("power_menu_addeffect"), "radial_effect", 3, 5);
 		
-		-- registerMenuItem(Interface.getString("power_menu_reparse"), "textlist", 4);
+		registerMenuItem(Interface.getString("power_menu_reparse"), "textlist", 4);
 	end
 
 	for _,win in ipairs(actions.getWindows()) do

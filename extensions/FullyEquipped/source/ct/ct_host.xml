@@ -2,58 +2,57 @@
 <root>
 	<windowclass name="ct_entry" merge="join">
 		<sheetdata>
-			<!-- <label insertbefore="spacer_action2">
-				<anchored height="24">
-					<top parent="active_spacer_top" anchor="bottom" relation="relative" offset="3" />
-					<left parent="activeicon" anchor="right" offset="75" />
-					<right offset="-17" />
-				</anchored>
-				<static>Hello!</static>
-			</label> -->
+			<genericcontrol name="spacer_action">
+				<script>
+					function onVisibilityChanged()
+						window.items.setVisible(isVisible());
+					end
+				</script>
+			</genericcontrol>
 			<windowlist name="items" insertbefore="spacer_action2">
-				<anchored height="24">
-					<top parent="active_spacer_top" anchor="bottom" relation="relative" offset="3" />
-					<left parent="activeicon" anchor="right" offset="75" />
-					<right offset="-17" />
+				<script>
+					function onFilter(instance)
+						local nodeInstance = instance.getDatabaseNode();
+						return DB.getValue(nodeInstance, "carried", 0) == 2 and
+							DB.getValue(nodeInstance, "isidentified", 0) == 1 and
+							DB.getChildCount(nodeInstance, "powers") ~= 0;
+					end
+				</script>
+				<anchored>
+					<top parent="active_spacer_top" anchor="bottom" relation="relative" />
+					<left parent="activeicon" anchor="right" />
+					<right />
 				</anchored>
 				<class>ct_npc_items</class>
 				<datasource>.inventorylist</datasource>
+				<skipempty />
 				<noscroll />
+				<invisible />
 			</windowlist>
 		</sheetdata>
 	</windowclass>
 
 	<windowclass name="ct_npc_items">
+		<margins>0,3,0,0</margins>
 		<sheetdata>
 			<stringfield name="name">
-				<script>
-					function onInit()
-						Debug.chat(getDatabaseNode());
-					end
-				</script>
-				<anchored position="lefthigh" offset="5,0" width="60" height="20" />
+				<anchored position="insidetopleft" offset="10,0" width="60" />
 				<font>sheetlabel</font>
+				<multilinespacing>20</multilinespacing>
 				<nodrag />
 				<readonly />
 			</stringfield>
 			<windowlist name="powers">
 				<anchored>
-					<top offset="3" />
+					<top />
 					<left parent="name" anchor="right" offset="5" />
 					<right offset="-17" />
 					<sizelimits><minimum height="24" /></sizelimits>
 				</anchored>
+				<datasource>.powers</datasource>
 				<class>ct_npc_item_power</class>
+				<skipempty />
 				<noscroll />
-				<!-- <script>
-					function addEntry()
-						local w = createWindow();
-						w.value.setFocus(true);
-					end
-					function onListChanged()
-						window.setActiveVisible();
-					end
-				</script> -->
 			</windowlist>
 		</sheetdata>
 	</windowclass>
@@ -63,7 +62,7 @@
 		<sheetdata>
 			<linkcontrol name="shortcut">
 				<anchored position="insidetopleft" offset="5,2" width="20" height="20" />
-				<class>item</class>
+				<class>power</class>
 			</linkcontrol>
 			<string_textlistitem name="value">
 				<anchored position="insidetopleft" offset="30,2">

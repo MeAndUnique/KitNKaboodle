@@ -38,40 +38,12 @@
 	<windowclass name="char_item_group">
 		<margins control="0,0,0,5" />
 		<script>
-			function onInit()
-				local node = getDatabaseNode();
-				onChargesChanged();
-				DB.addHandler(node.getPath("count"), "onUpdate", onChargesChanged);
-				DB.addHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
-				DB.addHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-			end
-			function onClose()
-				local node = getDatabaseNode();
-				DB.removeHandler(node.getPath("count"), "onUpdate", onChargesChanged);
-				DB.removeHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
-				DB.removeHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-			end
-			function onChargesChanged()
-				local node = getDatabaseNode();
-				local nTotal = DB.getValue(node, "prepared", 0) * DB.getValue(node, "count", 0);
-				local nUsed = countCharges();
-				for _, win in ipairs(list.getWindows()) do
-					win.updateUses(nTotal, nUsed);
-				end
-			end
-			function countCharges()
-				local node = getDatabaseNode();
-				local nCount = 0;
-				for _,powerNode in pairs(DB.getChildren(node.getPath("powers"))) do
-					nCount = nCount + DB.getValue(powerNode, "cast", 0);
-				end
-				return nCount;
-			end
 			function onToggle()
-				list.setVisible(not list.isVisible());
+				powerlist.setVisible(not powerlist.isVisible());
 			end
 		</script>
 		<sheetdata>
+			<item_charge_tracker />
 			<linkcontrol name="shortcut">
 				<anchored width="20" height="20">
 					<top offset="10" />
@@ -111,10 +83,9 @@
 				<nodrag />
 				<readonly />
 			</stringfield>
-			<windowlist name="list">
+			<windowlist name="powerlist">
 				<anchored>
 					<top parent="name" anchor="bottom" offset="5" />
-					<!-- <top parent="header" anchor="bottom" relation="relative" offset="5" /> -->
 					<left offset="10" />
 					<right offset="-10" />
 				</anchored>

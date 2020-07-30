@@ -16,21 +16,20 @@
 					<right />
 				</anchored>
 			</genericcontrol>
-			<!-- <linkcontrol name="shortcut">
-				<anchored to="rightanchor" width="20" height="20">
-					<top />
-					<right anchor="left" relation="relative" offset="-5" />
-				</anchored>
-				<class>power</class>
-				<readonly />
-			</linkcontrol> -->
 			<button_idelete name="idelete">
 				<anchored to="rightanchor">
 					<top />
 					<right anchor="left" relation="relative" offset="-5" />
 				</anchored>
 			</button_idelete>
-			
+			<linkcontrol name="shortcut">
+				<anchored to="rightanchor" width="20" height="20">
+					<top />
+					<right anchor="left" relation="relative" offset="-5" />
+				</anchored>
+				<class>power</class>
+				<readonly />
+			</linkcontrol>
 			<button_toggledetail name="activatedetail">
 				<anchored to="rightanchor">
 					<top />
@@ -79,28 +78,15 @@
 					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
 					<left parent="leftanchor" anchor="right" relation="relative" offset="10" />
 				</anchored>
-				<!-- <frame name="fieldlight" offset="7,5,7,5" /> -->
 				<multilinespacing>20</multilinespacing>
 				<nodrag />
 				<empty textres="library_recordtype_empty_spell" />
 				<delaykeyupdate />
 			</simplestring>
 
-			<!-- <subwindow name="header">
-				<anchored>
-					<top />
-					<left />
-					<right parent="rightanchor" anchor="left" relation="relative" offset="-2" />
-				</anchored>
-				<class>power_item_header</class>
-				<activate />
-				<fastinit />
-			</subwindow> -->
-
 			<windowlist name="actions">
 				<anchored>
 					<top parent="name" anchor="bottom" relation="relative" offset="5" />
-					<!-- <top parent="header" anchor="bottom" relation="relative" offset="5" /> -->
 					<left offset="10" />
 					<right offset="-10" />
 				</anchored>
@@ -123,19 +109,12 @@
 					<left />
 				</anchored>
 			</genericcontrol>
-			<!-- <button_poweraction name="castbutton">
-				<anchored position="insidetopleft" offset="2,2" />
-			</button_poweraction> -->
 			<button_itemaction name="castbutton">
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="2" />
 				</anchored>
 			</button_itemaction>
-			<!-- <label name="castlabel">
-				<anchored position="insidetopleft" offset="2,2" />
-				<static textres="power_label_cast" />
-			</label> -->
 
 			<label name="attackviewlabel">
 				<anchored to="leftanchor" width="35">
@@ -152,8 +131,8 @@
 				<static textres="power_label_save" />
 			</label>
 
-			<stringcontrol name="attackview">
-				<anchored to="leftanchor" width="70">
+			<string_item_poweractionview name="attackview">
+				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
 					<right parent="saveviewlabel" anchor="left" offset="-15" />
@@ -164,9 +143,9 @@
 				<center />
 				<nodrag />
 				<readonly />
-			</stringcontrol>
+			</string_item_poweractionview>
 
-			<stringcontrol name="saveview">
+			<string_item_poweractionview name="saveview">
 				<anchored to="leftanchor">
 					<top />
 					<left parent="saveviewlabel" anchor="right" relation="relative" offset="10" />
@@ -178,7 +157,7 @@
 				<center />
 				<nodrag />
 				<readonly />
-			</stringcontrol>
+			</string_item_poweractionview>
 
 			<button_poweractioneditor name="details">
 				<editor>power_cast_editor</editor>
@@ -210,13 +189,13 @@
 				</anchored>
 				<static textres="power_label_dmg" />
 			</label>
-			<string_poweractionview name="damageview">
+			<string_item_poweractionview name="damageview">
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
 					<right parent="" offset="-35" />
 				</anchored>
-			</string_poweractionview>
+			</string_item_poweractionview>
 			<button_poweractioneditor name="details">
 				<editor>power_damage_editor</editor>
 			</button_poweractioneditor>
@@ -247,16 +226,16 @@
 				</anchored>
 				<static textres="power_label_effect" />
 			</label>
-			<string_poweractionview name="effectview">
+			<string_item_poweractionview name="effectview">
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
 					<right parent="" offset="-95" />
 				</anchored>
-			</string_poweractionview>
-			<string_poweractionview name="durationview">
+			</string_item_poweractionview>
+			<string_item_poweractionview name="durationview">
 				<anchored to="effectview" position="righthigh" offset="10,0" width="50" />
-			</string_poweractionview>
+			</string_item_poweractionview>
 			<button_poweractioneditor name="details">
 				<editor>power_effect_editor</editor>
 			</button_poweractioneditor>
@@ -287,13 +266,13 @@
 				</anchored>
 				<static textres="power_label_heal" />
 			</label>
-			<string_poweractionview name="healview">
+			<string_item_poweractionview name="healview">
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
 					<right parent="" offset="-35" />
 				</anchored>
-			</string_poweractionview>
+			</string_item_poweractionview>
 			<button_poweractioneditor name="details">
 				<editor>power_heal_editor</editor>
 			</button_poweractioneditor>
@@ -322,5 +301,72 @@
 				end
 			</script>
 		</button_roll>
+	</template>
+
+	<template name="string_item_poweractionview">
+		<stringcontrol>
+			<frame name="fieldlight" offset="7,5,7,5" />
+			<multilinespacing>20</multilinespacing>
+			<font>sheettext</font>
+			<center />
+			<nodrag />
+			<readonly />
+			<cursor hover="hand" />
+			<script>
+				function action(draginfo)
+					local nodeAction = window.getDatabaseNode();
+					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, sSubRoll);
+					rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+					PowerManager.performAction(draginfo, rActor, rAction, nodeAction.getChild("..."));
+				end
+
+				function onDoubleClick(x, y)
+					action();
+					return true;
+				end
+				
+				function onDragStart(button, x, y, draginfo)
+					action(draginfo);
+					return true;
+				end
+			</script>
+		</stringcontrol>
+	</template>
+
+	<template name="item_charge_tracker">
+		<genericcontrol>
+			<anchored position="insidetopleft" width="0" height="0" />
+			<script>
+				function onInit()
+					local node = window.getDatabaseNode();
+					onChargesChanged();
+					DB.addHandler(node.getPath("count"), "onUpdate", onChargesChanged);
+					DB.addHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
+					DB.addHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+				end
+				function onClose()
+					local node = window.getDatabaseNode();
+					DB.removeHandler(node.getPath("count"), "onUpdate", onChargesChanged);
+					DB.removeHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
+					DB.removeHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+				end
+				function onChargesChanged()
+					local node = window.getDatabaseNode();
+					local nTotal = DB.getValue(node, "prepared", 0) * DB.getValue(node, "count", 1);
+					local nUsed = countCharges();
+					for _, win in ipairs(window.powerlist.getWindows()) do
+						win.updateUses(nTotal, nUsed);
+					end
+				end
+				function countCharges()
+					local node = window.getDatabaseNode();
+					local nCount = 0;
+					for _,powerNode in pairs(DB.getChildren(node.getPath("powers"))) do
+						nCount = nCount + DB.getValue(powerNode, "cast", 0);
+					end
+					return nCount;
+				end
+			</script>
+		</genericcontrol>
 	</template>
 </root>

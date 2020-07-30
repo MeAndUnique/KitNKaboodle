@@ -9,18 +9,32 @@ function onInit()
 	registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
 
 	getDatabaseNode().onChildUpdate = onDataChanged;
-	-- DB.addHandler(getDatabaseNode(), "onChildUpdate", onDataChanged);
 	onDataChanged();
 end
 
 function onClose()
 	getDatabaseNode().onChildUpdate = nil;
-	-- DB.removeHandler(getDatabaseNode(), "onChildUpdate", onDataChanged);
 end
 
 function update(bReadOnly, bHideCast)
 	details.setVisible(not bReadOnly);
 	castbutton.setVisible(not bHideCast);
+
+	if attackview then
+		attackview.setEnabled(not bHideCast);
+	end
+	if saveview then
+		saveview.setEnabled(not bHideCast);
+	end
+	if damageview then
+		damageview.setEnabled(not bHideCast);
+	end
+	if healview then
+		healview.setEnabled(not bHideCast);
+	end
+	if effectview then
+		effectview.setEnabled(not bHideCast);
+	end
 end
 
 function onMenuSelection(selection, subselection)
@@ -30,38 +44,102 @@ function onMenuSelection(selection, subselection)
 end
 
 function onDataChanged()
+	local nodeAction = getDatabaseNode();
 	local sType = DB.getValue(getDatabaseNode(), "type", "");
 	
 	if sType == "cast" then
-		onCastChanged();
+		onCastChanged(nodeAction);
 	elseif sType == "damage" then
-		onDamageChanged();
+		onDamageChanged(nodeAction);
 	elseif sType == "heal" then
-		onHealChanged();
+		onHealChanged(nodeAction);
 	elseif sType == "effect" then
-		onEffectChanged();
+		onEffectChanged(nodeAction);
 	end
 end
 
-function onCastChanged()
-	local sAttack, sSave = PowerManager.getPCPowerCastActionText(getDatabaseNode());
+function onCastChanged(nodeAction)
+	local sAttack = "";
+	local sSave = "";
+
+	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
+	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	if rAction then
+		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
+		
+		if (rAction.range or "") ~= "" then
+			if rAction.range == "R" then
+				sAttack = Interface.getString("ranged");
+			else
+				sAttack = Interface.getString("melee");
+			end
+			if rAction.modifier ~= 0 then
+				sAttack = string.format("%s %+d", sAttack, rAction.modifier);
+			end
+		end
+		if (rAction.save or "") ~= "" then
+			sSave = StringManager.capitalize(rAction.save:sub(1,3)) .. " DC " .. rAction.savemod;
+			if rAction.onmissdamage == "half" then
+				sSave = sSave .. " (H)";
+			end
+		end
+	end
+
 	attackview.setValue(sAttack);
 	saveview.setValue(sSave);
 end
 
-function onDamageChanged()
-	local sDamage = PowerManager.getPCPowerDamageActionText(getDatabaseNode());
-	damageview.setValue(sDamage);
+function onDamageChanged(nodeAction)
+	local aOutput = {};
+	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
+	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	if rAction then
+		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
+		
+		local aDamage = ActionDamage.getDamageStrings(rAction.clauses);
+		for _,rDamage in ipairs(aDamage) do
+			local sDice = StringManager.convertDiceToString(rDamage.aDice, rDamage.nMod);
+			if rDamage.sType ~= "" then
+				table.insert(aOutput, string.format("%s %s", sDice, rDamage.sType));
+			else
+				table.insert(aOutput, sDice);
+			end
+		end
+	end
+
+	damageview.setValue(table.concat(aOutput, " + "));
 end
 
-function onHealChanged()
-	local sHeal = PowerManager.getPCPowerHealActionText(getDatabaseNode());
+function onHealChanged(nodeAction)
+	local sHeal = "";
+	
+	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
+	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	if rAction then
+		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
+		
+		local aHealDice = {};
+		local nHealMod = 0;
+		for _,vClause in ipairs(rAction.clauses) do
+			for _,vDie in ipairs(vClause.dice) do
+				table.insert(aHealDice, vDie);
+			end
+			nHealMod = nHealMod + vClause.modifier;
+		end
+		
+		sHeal = StringManager.convertDiceToString(aHealDice, nHealMod);
+		if DB.getValue(nodeAction, "healtype", "") == "temp" then
+			sHeal = sHeal .. " temporary";
+		end
+		if DB.getValue(nodeAction, "healtargeting", "") == "self" then
+			sHeal = sHeal .. " [SELF]";
+		end
+	end
+
 	healview.setValue(sHeal);
 end
 
-function onEffectChanged()
-	local nodeAction = getDatabaseNode();
-	
+function onEffectChanged(nodeAction)	
 	local sLabel = DB.getValue(nodeAction, "label", "");
 	
 	local sApply = DB.getValue(nodeAction, "apply", "");

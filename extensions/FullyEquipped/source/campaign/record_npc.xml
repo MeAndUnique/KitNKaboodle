@@ -29,10 +29,15 @@
 	</windowclass>
 
 	<windowclass name="npc_inventory">
+		<margins>0,3,0,0</margins>
 		<script file="campaign/scripts/npc_inventory.lua" />
 		<sheetdata>
 			<label_charframetop name="invtitle">
-				<bounds>15,10,-10,20</bounds>
+				<anchored height="20">
+					<top offset="2" />
+					<left offset="9" />
+					<right offset="-13" />
+				</anchored>
 				<icons>char_inventory</icons>
 				<static textres="char_label_inventory" />
 			</label_charframetop>
@@ -93,14 +98,36 @@
 				<allowdelete />
 			</windowlist>
 
-			<!-- <list_charinv name="inventorylist">
-				<anchored to="invtitle">
-					<top anchor="bottom" relation="relative" offset="2" />
-					<right offset="5" />
-					<left offset="-5" />
+			<label_charframetop name="powerstitle">
+				<anchored height="20">
+					<top parent="inventorylist" anchor="bottom" offset="5" />
+					<left offset="9" />
+					<right offset="-13" />
 				</anchored>
+				<static textres="char_label_powers" />
+				<icons>char_powers</icons>
+				<target>powers</target>
+			</label_charframetop>
+
+			<windowlist name="powers">
+				<script>
+					function onFilter(instance)
+						local nodeInstance = instance.getDatabaseNode();
+						return DB.getChildCount(nodeInstance, "powers") ~= 0;
+					end
+				</script>
+				<anchored>
+					<top parent="powerstitle" anchor="bottom" offset="5" />
+					<left parent="" />
+					<right parent="" offset="-5" />
+				</anchored>
+				<datasource>.inventorylist</datasource>
+				<class>npc_item_power_group</class>
+				<skipempty />
 				<noscroll />
-			</list_charinv> -->
+				<readonly />
+				<footer>footer_wide</footer>
+			</windowlist>
 		</sheetdata>
 	</windowclass>
 
@@ -151,6 +178,66 @@
 				</anchored>
 				<nodrop />
 				<tabtarget next="nonid_name" prev="count" />
+			</string_textlistitem>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="npc_item_power_group">
+		<margins control="0,0,0,5" />
+		<script>
+			function onToggle()
+				powerlist.setVisible(not powerlist.isVisible());
+			end
+		</script>
+		<sheetdata>
+			<stringfield name="name">
+				<anchored height="20">
+					<top offset="10" />
+					<left offset="15" />
+					<right offset="-10" />
+				</anchored>
+				<frame name="headersimple" offset="10,3,10,3" />
+				<font>sheetlabel</font>
+				<nodrag />
+				<readonly />
+				<center />
+			</stringfield>
+			<windowlist name="powers">
+				<anchored>
+					<top parent="name" anchor="bottom" offset="5" />
+					<left offset="10" />
+					<right offset="-5" />
+				</anchored>
+				<datasource>.powers</datasource>
+				<class>npc_item_power</class>
+				<skipempty />
+				<noscroll />
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="npc_item_power">
+		<margins control="0,0,0,2" />
+		<sheetdata>
+			<linkcontrol name="shortcut">
+				<anchored width="20" height="20">
+					<top offset="2" />
+					<right />
+				</anchored>
+				<class>power</class>
+			</linkcontrol>
+			<string_textlistitem name="value">
+				<anchored>
+					<left offset="5" />
+					<top offset="2" />
+					<right parent="shortcut" anchor="left" offset="-5" />
+				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<lineoffset default="on">0</lineoffset>
+				<nohighlight />
+				<actortype>ct</actortype>
+				<actorpath>......</actorpath>
+				<script file="ct/scripts/ct_power.lua" />
 			</string_textlistitem>
 		</sheetdata>
 	</windowclass>

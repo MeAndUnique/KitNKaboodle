@@ -37,7 +37,7 @@
 				<static textres="item_use_charges" />
 			</label>
 			<basicnumber name="prepared">
-				<anchored to="chargesLabel" position="right" offset="5" height="20" width="30" />
+				<anchored to="chargesLabel" position="right" offset="5" width="30" />
 			</basicnumber>
 
 			<label_charframetop name="powerstitle">
@@ -48,22 +48,22 @@
 				</anchored>
 				<static textres="char_label_powers" />
 				<icons>char_powers</icons>
-				<target>powers</target>
+				<target>powerlist</target>
 			</label_charframetop>
 
-			<button_iedit name="powers_iedit">
+			<button_iedit name="powerlist_iedit">
 				<anchored to="powerstitle" position="insidetopright" offset="0,0" />
-				<target>powers</target>
+				<target>powerlist</target>
 			</button_iedit>
-			<button_iadd name="powers_iadd">
-				<anchored to="powers_iedit" position="lefthigh" offset="5,0" />
-				<target>powers</target>
+			<button_iadd name="powerlist_iadd">
+				<anchored to="powerlist_iedit" position="lefthigh" offset="5,0" />
+				<target>powerlist</target>
 			</button_iadd>
 
-			<windowlist name="powers">
+			<windowlist name="powerlist">
 				<script>
 					function update()
-						local bEditMode = (window.powers_iedit.getValue() == 1);
+						local bEditMode = (window.powerlist_iedit.getValue() == 1);
 						for _,win in pairs(getWindows()) do
 							win.idelete.setVisibility(bEditMode);
 						end

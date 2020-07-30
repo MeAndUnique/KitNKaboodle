@@ -10,10 +10,6 @@ local addNPCOriginal;
 function onInit()
 	getItemSourceTypeOriginal = ItemManager.getItemSourceType;
 	ItemManager.getItemSourceType = getItemSourceType;
-
-	addNPCOriginal = CombatManager2.addNPC;
-	CombatManager2.addNPC = addNPC;
-	CombatManager.setCustomAddNPC(addNPC);
 end
 
 function getItemSourceType(vNode)
@@ -35,8 +31,4 @@ function getItemSourceType(vNode)
 		end
 	end
 	return sResult;
-end
-
-function addNPC(sClass, nodeNPC, sName)
-	local nodeEntry = addNPCOriginal(sClass, nodeNPC, sName);
 end

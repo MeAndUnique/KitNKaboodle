@@ -37,12 +37,12 @@ function update(bLocked)
 	end
 
 	if bLocked then
-		powers_iedit.setValue(0);
+		powerlist_iedit.setValue(0);
 	end
-	powers_iedit.setVisible(not bLocked);
+	powerlist_iedit.setVisible(not bLocked);
 
-	powers.setReadOnly(bLocked);
-	for _, win in ipairs(powers.getWindows()) do
+	powerlist.setReadOnly(bLocked);
+	for _, win in ipairs(powerlist.getWindows()) do
 		win.update(bLocked, true);
 	end
 end
@@ -50,7 +50,7 @@ end
 function onChargesChanged()
 	local nTotal = DB.getValue(getDatabaseNode(), "prepared", 0);
 	local nUsed = countCharges();
-	for _, win in ipairs(powers.getWindows()) do
+	for _, win in ipairs(powerlist.getWindows()) do
 		win.updateUses(nTotal, nUsed);
 	end
 end
@@ -62,4 +62,19 @@ function countCharges()
 		nCount = nCount + DB.getValue(powerNode, "cast", 0);
 	end
 	return nCount;
+end
+
+function onDrop(x, y, draginfo)
+	local node = getDatabaseNode();
+	if draginfo.isType("shortcut") and not WindowManager.getReadOnlyState(node) then
+		local sClass = draginfo.getShortcutData();
+		if sClass == "reference_spell" or
+		sClass == "power" or
+		sClass == "reference_classfeature" or
+		sClass == "reference_racialtrait" or
+		sClass == "reference_feat" or
+		sClass == "ref_ability" then
+			PowerManager.addPower(sClass, draginfo.getDatabaseNode(), node);
+		end
+	end
 end
