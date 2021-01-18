@@ -17,6 +17,7 @@
 
 	<windowclass name="char_item_power_list">
 		<sheetdata>
+			<anchor_column name="columnanchor" />
 			<windowlist name="list">
 				<script>
 					function onFilter(instance)
@@ -26,11 +27,16 @@
 							DB.getChildCount(nodeInstance, "powers") ~= 0;
 					end
 				</script>
-				<anchored position="insidetopleft" />
+				<anchored>
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="5" />
+					<left />
+					<right />
+				</anchored>
 				<datasource>.inventorylist</datasource>
 				<class>char_item_group</class>
 				<sortby><field>name</field></sortby>
 				<noscroll />
+				<footer>footer_wide</footer>
 			</windowlist>
 		</sheetdata>
 	</windowclass>
@@ -76,7 +82,7 @@
 					<top offset="10" />
 					<left offset="15" />
 					<right parent="shortcut" anchor="left" offset="-10" />
-				</anchored> -->
+				</anchored>
 				<frame name="metalplate" offset="10,2,10,2"/>
 				<font>subwindowsmalltitle</font>
 				<center />
