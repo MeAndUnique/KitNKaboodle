@@ -76,6 +76,9 @@ function messageDamage(rSource, rTarget, bSecret, sDamageType, sDamageDesc, sTot
 		if nMax > 0 then
 			sExtraResult = sExtraResult .. " [MAX REDUCED]";
 			if sTargetType == "pc" then
+				local nWounds = DB.getValue(nodeTarget, "hp.wounds", 0);
+				DB.setValue(nodeTarget, "hp.wounds", "number", math.max(0, nWounds - nMax));
+
 				local nAdjust = DB.getValue(nodeTarget, "hp.adjust", 0) - nMax;
 				DB.setValue(nodeTarget, "hp.adjust", "number", nAdjust);
 				HpManager.recalculateTotal(nodeTarget);
@@ -90,10 +93,10 @@ function messageDamage(rSource, rTarget, bSecret, sDamageType, sDamageDesc, sTot
 					DB.setValue(nodeTarget, "hp.adjust", "number", nAdjust);
 					DB.setValue(nodeTarget, "hp.deathsavefail", "number", 3);
 				end
-
-				local nWounds = DB.getValue(nodeTarget, "hp.wounds", 0);
-				DB.setValue(nodeTarget, "hp.wounds", "number", math.max(0, nWounds - nMax));
 			else
+				local nWounds = DB.getValue(nodeTarget, "wounds", 0);
+				DB.setValue(nodeTarget, "wounds", "number", math.max(0, nWounds - nMax));
+
 				local nTotal = DB.getValue(nodeTarget, "hptotal", 0) - nMax;
 				if nTotal < 0 then
 					if not string.match(sExtraResult, "%[INSTANT DEATH%]") then
@@ -102,9 +105,6 @@ function messageDamage(rSource, rTarget, bSecret, sDamageType, sDamageDesc, sTot
 					nTotal = 0;
 				end
 				DB.setValue(nodeTarget, "hptotal", "number", nTotal);
-
-				local nWounds = DB.getValue(nodeTarget, "wounds", 0);
-				DB.setValue(nodeTarget, "wounds", "number", math.max(0, nWounds - nMax));
 			end
 		end
 	elseif string.match(sDamageDesc, "%[STOLEN%]") then
