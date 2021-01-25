@@ -64,6 +64,8 @@ function onSourceTotalUpdate()
 		local nWounds = DB.getValue(sWounds, 0);
 		setValue(nTotal - nWounds);
 	end
+	
+	update();
 	bUpdating = false;
 end
 
