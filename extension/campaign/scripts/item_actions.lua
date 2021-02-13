@@ -48,11 +48,11 @@ function update(bLocked)
 end
 
 function onChargesChanged()
-	local nTotal = DB.getValue(getDatabaseNode(), "prepared", 0);
-	local nUsed = countCharges();
-	for _, win in ipairs(powerlist.getWindows()) do
-		win.updateUses(nTotal, nUsed);
-	end
+	-- local nTotal = DB.getValue(getDatabaseNode(), "prepared", 0);
+	-- local nUsed = countCharges();
+	-- for _, win in ipairs(powerlist.getWindows()) do
+	-- 	win.updateUses(nTotal, nUsed);
+	-- end
 end
 
 function countCharges()

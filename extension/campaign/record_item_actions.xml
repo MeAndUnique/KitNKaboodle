@@ -339,6 +339,7 @@
 			<script>
 				function onInit()
 					local node = window.getDatabaseNode();
+					Debug.chat(node);
 					onChargesChanged();
 					DB.addHandler(node.getPath("count"), "onUpdate", onChargesChanged);
 					DB.addHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);

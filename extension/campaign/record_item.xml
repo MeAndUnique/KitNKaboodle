@@ -29,9 +29,44 @@
 		</sheetdata>
 	</windowclass>
 
+	<windowclass name="item_header" merge="join">
+		<sheetdata>
+			<stringcontrol name="count" insertbefore="name">
+				<script>
+					function onInit()
+						local node = window.getDatabaseNode().getChild("count");
+						if node then
+							setVisible(true);
+							update(node);
+							DB.addHandler(node.getPath(), "onUpdate", update);
+						end
+					end
+					function onClose()
+						local node = window.getDatabaseNode().getChild("count");
+						if node then
+							DB.removeHandler(node.getPath(), "onUpdate", update);
+						end
+					end
+					function update(node)
+						setValue(string.format("(x%i)", node.getValue()));
+					end
+				</script>
+				<anchored width="25" height="20">
+					<top offset="5" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-5" />
+				</anchored>
+				<font>sheetlabel</font>
+				<nodrag />
+				<readonly />
+				<invisible />
+			</stringcontrol>
+		</sheetdata>
+	</windowclass>
+
 	<windowclass name="item_actions">
 		<script file="campaign/scripts/item_actions.lua" />
 		<sheetdata>
+			<item_charge_tracker />
 			<label name="chargesLabel">
 				<anchored position="insidetopleft" offset="5,2" />
 				<static textres="item_use_charges" />
