@@ -13,9 +13,7 @@
 				<script>
 					function onFilter(instance)
 						local nodeInstance = instance.getDatabaseNode();
-						return DB.getValue(nodeInstance, "carried", 0) == 2 and
-							DB.getValue(nodeInstance, "isidentified", 0) == 1 and
-							DB.getChildCount(nodeInstance, "powers") ~= 0;
+						return DB.getChildCount(nodeInstance, "powers") ~= 0;
 					end
 				</script>
 				<anchored>
