@@ -30,7 +30,7 @@
 	</windowclass>
 
 	<windowclass name="item_actions">
-		<script file="/campaign/scripts/item_actions.lua" />
+		<script file="campaign/scripts/item_actions.lua" />
 		<sheetdata>
 			<label name="chargesLabel">
 				<anchored position="insidetopleft" offset="5,2" />

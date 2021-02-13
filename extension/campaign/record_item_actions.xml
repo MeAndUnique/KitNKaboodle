@@ -2,7 +2,7 @@
 <root>
 	<windowclass name="item_power">
 		<margins control="0,0,0,5" />
-		<script file="/campaign/scripts/item_power.lua" />
+		<script file="campaign/scripts/item_power.lua" />
 		<sheetdata>
 			<genericcontrol name="leftanchor">
 				<anchored height="0" width="0">
