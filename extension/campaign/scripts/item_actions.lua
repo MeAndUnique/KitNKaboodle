@@ -10,17 +10,11 @@ function onInit()
 
 	local bReadOnly = WindowManager.getReadOnlyState(nodeRecord);
 	update(bReadOnly);
-
-	onChargesChanged();
-	DB.addHandler(nodeRecord.getPath("prepared"), "onUpdate", onChargesChanged);
-	DB.addHandler(nodeRecord.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
 end
 
 function onClose()
 	local node = getDatabaseNode()
 	DB.removeHandler(node.getPath("locked"), "onUpdate", onLockChanged);
-	DB.removeHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
-	DB.removeHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
 end
 
 function onLockChanged(nodeLocked)
@@ -45,14 +39,6 @@ function update(bLocked)
 	for _, win in ipairs(powerlist.getWindows()) do
 		win.update(bLocked, true);
 	end
-end
-
-function onChargesChanged()
-	-- local nTotal = DB.getValue(getDatabaseNode(), "prepared", 0);
-	-- local nUsed = countCharges();
-	-- for _, win in ipairs(powerlist.getWindows()) do
-	-- 	win.updateUses(nTotal, nUsed);
-	-- end
 end
 
 function countCharges()
