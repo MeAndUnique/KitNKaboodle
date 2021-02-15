@@ -23,9 +23,12 @@ function getItemSourceType(vNode)
 		end
 
 		if sNodePath then
+			if StringManager.startsWith(sNodePath, "combattracker") then
+				return "charsheet";
+			end
 			for _,vMapping in ipairs(LibraryData.getMappings("npc")) do
 				if StringManager.startsWith(sNodePath, vMapping) then
-					sResult = "charsheet";
+					return "charsheet";
 				end
 			end
 		end

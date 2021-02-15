@@ -19,8 +19,16 @@ function onInit()
 	update(windowlist.isReadOnly())
 
 	local node = getDatabaseNode();
+	DB.addHandler(node.getPath("group"), "onUpdate", onGroupChanged);
 	DB.addHandler(node.getPath("actions"), "onChildAdded", onActionAdded);
 	DB.addHandler(node.getPath("actions.*.type"), "onUpdate", onTypeChanged);
+end
+
+function onClose()
+	local node = getDatabaseNode();
+	DB.removeHandler(node.getPath("group"), "onUpdate", onGroupChanged);
+	DB.removeHandler(node.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.removeHandler(node.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 end
 
 function refreshActions()
@@ -42,6 +50,12 @@ function onMenuSelection(selection, subselection)
 			createAction("effect");
 		end
 		activatedetail.setValue(1);
+	end
+end
+
+function onGroupChanged()
+	for _,win in ipairs(actions.getWindows()) do
+		win.onDataChanged();
 	end
 end
 
@@ -84,6 +98,7 @@ end
 
 function toggleDetail()
 	local status = (activatedetail.getValue() == 1);
+	effectivegroup.setVisible(status and not bReadOnly);
 	actions.setVisible(status);
 end
 
@@ -91,12 +106,15 @@ function update(bNewReadOnly, bNewHideCast)
 	bReadOnly = bNewReadOnly;
 	bHideCast = bNewHideCast;
 	name.setReadOnly(bReadOnly);
+	effectivegroup.subwindow.group.setReadOnly(bReadOnly);
 
 	if bReadOnly then
 		name.setFrame(nil);
+		effectivegroup.subwindow.group.setFrame(nil);
 		resetMenuItems();
 	else
 		name.setFrame("fieldlight", 7, 5, 7, 5);
+		effectivegroup.subwindow.group.setFrame("fieldlight", 7, 5, 7, 5);
 		
 		registerMenuItem(Interface.getString("power_menu_addaction"), "pointer", 3);
 		registerMenuItem(Interface.getString("power_menu_addcast"), "radial_sword", 3, 2);

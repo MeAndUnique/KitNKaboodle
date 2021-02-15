@@ -5,9 +5,6 @@
 
 -- Initialization
 function onInit()
-	registerMenuItem(Interface.getString("power_menu_actiondelete"), "deletepointer", 4);
-	registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
-
 	getDatabaseNode().onChildUpdate = onDataChanged;
 	onDataChanged();
 end
@@ -17,6 +14,13 @@ function onClose()
 end
 
 function update(bReadOnly, bHideCast)
+	if bReadOnly then
+		resetMenuItems();
+	else
+		registerMenuItem(Interface.getString("power_menu_actiondelete"), "deletepointer", 4);
+		registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
+	end
+
 	details.setVisible(not bReadOnly);
 	castbutton.setVisible(not bHideCast);
 

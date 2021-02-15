@@ -23,7 +23,7 @@
 					function onFilter(instance)
 						local nodeInstance = instance.getDatabaseNode();
 						return DB.getValue(nodeInstance, "carried", 0) == 2 and
-							DB.getValue(nodeInstance, "isidentified", 0) == 1 and
+							DB.getValue(nodeInstance, "isidentified", 1) == 1 and
 							DB.getChildCount(nodeInstance, "powers") ~= 0;
 					end
 				</script>
@@ -102,37 +102,6 @@
 				<noscroll />
 				<invisible />
 			</windowlist>
-		</sheetdata>
-	</windowclass>
-
-	<windowclass name="char_item_power">
-		<margins control="0,0,0,5" />
-		<sheetdata>
-			<genericcontrol name="leftanchor">
-				<anchored height="0" width="0">
-					<top offset="2" />
-					<left />
-				</anchored>
-			</genericcontrol>
-			<counter_power name="counter">
-				<anchored>
-					<top offset="2" />
-					<left parent="leftanchor" anchor="right" relation="relative" offset="" />
-				</anchored>
-				<invisible />
-			</counter_power>
-			<simplestring name="name">
-				<anchored>
-					<top offset="2" />
-					<left parent="leftanchor" anchor="right" relation="relative" offset="10" />
-					<right offset="-10" />
-				</anchored>
-				<frame name="fieldlight" offset="7,5,7,5" />
-				<multilinespacing>20</multilinespacing>
-				<nodrag />
-				<empty textres="library_recordtype_empty_spell" />
-				<readonly />
-			</simplestring>
 		</sheetdata>
 	</windowclass>
 </root>

@@ -84,6 +84,17 @@
 				<delaykeyupdate />
 			</simplestring>
 
+			<subwindow name="effectivegroup">
+				<anchored>
+					<top parent="name" anchor="bottom" relation="relative" offset="5" />
+					<left offset="10" />
+					<right offset="-10" />
+				</anchored>
+				<invisible />
+				<fastinit />
+				<class>item_power_effective_group</class>
+			</subwindow>
+
 			<windowlist name="actions">
 				<anchored>
 					<top parent="name" anchor="bottom" relation="relative" offset="5" />
@@ -96,6 +107,35 @@
 				<invisible />
 				<footer>footer_wide</footer>
 			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_power_effective_group">
+		<margins control="0,0,0,5" />
+		<sheetdata>
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
+			<label name="effectivegrouplabel">
+				<anchored to="leftanchor" width="105">
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
+				<static textres="power_label_effective_group" />
+			</label>
+			<simplestring name="group">
+				<anchored>
+					<top offset="2" />
+					<right offset="-10" />
+					<left parent="leftanchor" anchor="right" relation="relative" offset="10" />
+				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<delaykeyupdate />
+			</simplestring>
 		</sheetdata>
 	</windowclass>
 
