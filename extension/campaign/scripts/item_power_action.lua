@@ -86,7 +86,7 @@ function onCastChanged(nodeAction)
 	local sSave = "";
 
 	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
-	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
 	if rAction then
 		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
 		
@@ -115,7 +115,7 @@ end
 function onDamageChanged(nodeAction)
 	local aOutput = {};
 	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
-	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
 	if rAction then
 		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
 		
@@ -137,7 +137,7 @@ function onHealChanged(nodeAction)
 	local sHeal = "";
 	
 	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
-	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
 	if rAction then
 		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
 		
