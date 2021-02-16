@@ -339,7 +339,7 @@
 				function action(draginfo)
 					local nodeAction = window.getDatabaseNode();
 					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, subroll and subroll[1]);
-					rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+					rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
 					PowerManager.performAction(draginfo, rActor, rAction, nodeAction.getChild("..."));
 				end
 
@@ -368,7 +368,7 @@
 				function action(draginfo)
 					local nodeAction = window.getDatabaseNode();
 					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, subroll and subroll[1]);
-					rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+					rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
 					PowerManager.performAction(draginfo, rActor, rAction, nodeAction.getChild("..."));
 				end
 
