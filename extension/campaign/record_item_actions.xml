@@ -149,13 +149,15 @@
 					<left />
 				</anchored>
 			</genericcontrol>
-			<button_itemaction name="castbutton">
+
+			<button_itemaction name="attackbutton">
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="2" />
 				</anchored>
+				<icon normal="button_action_attack" pressed="button_action_attack_down" />
+				<subroll>atk</subroll>
 			</button_itemaction>
-
 			<label name="attackviewlabel">
 				<anchored to="leftanchor" width="35">
 					<top />
@@ -163,10 +165,18 @@
 				</anchored>
 				<static textres="power_label_atk" />
 			</label>
-			<label name="saveviewlabel">
+
+			<button_itemaction name="savebutton">
+				<anchored>
+					<top />
+					<left parent="" anchor="center" offset="-5" />
+				</anchored>
+				<subroll>save</subroll>
+			</button_itemaction>
+			<label name="saveviewlabel" width="30">
 				<anchored to="leftanchor">
 					<top />
-					<left parent="" anchor="center" />
+					<left parent="savebutton" anchor="right" relation="relative" offset="5" />
 				</anchored>
 				<static textres="power_label_save" />
 			</label>
@@ -175,7 +185,7 @@
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
-					<right parent="saveviewlabel" anchor="left" offset="-15" />
+					<right parent="savebutton" anchor="left" offset="-15" />
 				</anchored>
 				<frame name="fieldlight" offset="7,5,7,5" />
 				<multilinespacing>20</multilinespacing>
@@ -183,13 +193,14 @@
 				<center />
 				<nodrag />
 				<readonly />
+				<subroll>atk</subroll>
 			</string_item_poweractionview>
 
 			<string_item_poweractionview name="saveview">
 				<anchored to="leftanchor">
 					<top />
 					<left parent="saveviewlabel" anchor="right" relation="relative" offset="10" />
-					<right parent="" offset="-35" />
+					<right parent="" offset="-30" />
 				</anchored>
 				<frame name="fieldlight" offset="7,5,7,5" />
 				<multilinespacing>20</multilinespacing>
@@ -197,6 +208,7 @@
 				<center />
 				<nodrag />
 				<readonly />
+				<subroll>save</subroll>
 			</string_item_poweractionview>
 
 			<button_poweractioneditor name="details">
@@ -233,7 +245,7 @@
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
-					<right parent="" offset="-35" />
+					<right parent="" offset="-30" />
 				</anchored>
 			</string_item_poweractionview>
 			<button_poweractioneditor name="details">
@@ -270,7 +282,7 @@
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
-					<right parent="" offset="-95" />
+					<right parent="" offset="-90" />
 				</anchored>
 			</string_item_poweractionview>
 			<string_item_poweractionview name="durationview">
@@ -310,7 +322,7 @@
 				<anchored to="leftanchor">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
-					<right parent="" offset="-35" />
+					<right parent="" offset="-30" />
 				</anchored>
 			</string_item_poweractionview>
 			<button_poweractioneditor name="details">
@@ -326,7 +338,7 @@
 			<script>
 				function action(draginfo)
 					local nodeAction = window.getDatabaseNode();
-					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, sSubRoll);
+					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, subroll and subroll[1]);
 					rActor = ActorManager.getActor("", nodeAction.getChild("......."));
 					PowerManager.performAction(draginfo, rActor, rAction, nodeAction.getChild("..."));
 				end
@@ -355,7 +367,7 @@
 			<script>
 				function action(draginfo)
 					local nodeAction = window.getDatabaseNode();
-					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, sSubRoll);
+					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, subroll and subroll[1]);
 					rActor = ActorManager.getActor("", nodeAction.getChild("......."));
 					PowerManager.performAction(draginfo, rActor, rAction, nodeAction.getChild("..."));
 				end
