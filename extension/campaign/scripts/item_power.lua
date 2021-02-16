@@ -106,6 +106,7 @@ function update(bNewReadOnly, bNewHideCast)
 	bReadOnly = bNewReadOnly;
 	bHideCast = bNewHideCast;
 	name.setReadOnly(bReadOnly);
+	effectivegroup.subwindow.group.setVisible((bHideCast ~= nil) and bHideCast or true);
 	effectivegroup.subwindow.group.setReadOnly(bReadOnly);
 
 	if bReadOnly then
@@ -154,5 +155,5 @@ end
 
 function usePower(bShowFull)
 	local node = getDatabaseNode();
-	ChatManager.Message(getDescription(bShowFull), true, ActorManager.getActor("pc", node.getChild("...")));
+	ChatManager.Message(getDescription(bShowFull), true, ActorManager.resolveActor(node.getChild("...")));
 end

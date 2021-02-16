@@ -22,20 +22,39 @@ function update(bReadOnly, bHideCast)
 	end
 
 	details.setVisible(not bReadOnly);
-	castbutton.setVisible(not bHideCast);
+	if castbutton then
+		castbutton.setVisible(not bHideCast);
+	end
 
+	-- Cast fields
+	if castlabel then
+		castlabel.setVisible(not bHideCast);
+	end
+	if attackbutton then
+		attackbutton.setVisible(not bHideCast);
+	end
 	if attackview then
 		attackview.setEnabled(not bHideCast);
+	end
+	if savebutton then
+		savebutton.setVisible(not bHideCast);
+		-- savebutton.setAnchor("left", "", "center", bHideCast and 0 or 20);
 	end
 	if saveview then
 		saveview.setEnabled(not bHideCast);
 	end
+
+	-- Damage fields
 	if damageview then
 		damageview.setEnabled(not bHideCast);
 	end
+
+	-- Heal fields
 	if healview then
 		healview.setEnabled(not bHideCast);
 	end
+
+	-- Effect fields
 	if effectview then
 		effectview.setEnabled(not bHideCast);
 	end
@@ -67,7 +86,7 @@ function onCastChanged(nodeAction)
 	local sSave = "";
 
 	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
-	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
 	if rAction then
 		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
 		
@@ -96,7 +115,7 @@ end
 function onDamageChanged(nodeAction)
 	local aOutput = {};
 	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
-	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
 	if rAction then
 		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
 		
@@ -118,7 +137,7 @@ function onHealChanged(nodeAction)
 	local sHeal = "";
 	
 	local rAction, rActor = PowerManager.getPCPowerAction(nodeAction);
-	rActor = ActorManager.getActor("", nodeAction.getChild("......."));
+	rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
 	if rAction then
 		PowerManager.evalAction(rActor, nodeAction.getChild("..."), rAction);
 		
