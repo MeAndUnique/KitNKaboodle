@@ -13,8 +13,8 @@ function onInit()
 end
 
 function onClose()
-	local node = getDatabaseNode()
-	DB.removeHandler(node.getPath("locked"), "onUpdate", onLockChanged);
+	local nodeRecord = getDatabaseNode()
+	DB.removeHandler(nodeRecord.getPath("locked"), "onUpdate", onLockChanged);
 end
 
 function onLockChanged(nodeLocked)
