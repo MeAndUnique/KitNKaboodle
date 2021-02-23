@@ -2,107 +2,60 @@
 <root>
 	<windowclass name="npc" merge="join">
 		<sheetdata>
-			<subwindow_record name="inventory">
+			<subwindow_record name="npc_inventory" merge="replace">
+				<script>
+					function onInit()
+						local bHasInventory = false;
+						for index=0,window.tabs.getTabCount() do
+							local _,sDisplay = window.tabs.getTab(index);
+							if sDisplay and sDisplay == "tab_inventory" then
+								bHasInventory = true;
+								break;
+							end
+						end
+						if not bHasInventory then
+							window.tabs.addTab("npc_inventory", "tab_inventory", false);
+						end
+					end
+				</script>
 				<class>npc_inventory</class>
 				<invisible />
 			</subwindow_record>
 
 			<scrollbar_record>
-				<target>inventory</target>
+				<target>npc_inventory</target>
 			</scrollbar_record>
-
-			<tabs_recordsheet name="tabs" merge="replace">
-				<tab>
-					<icon>tab_main</icon>
-					<subwindow>main_creature</subwindow>
-				</tab>
-				<tab>
-					<icon>tab_other</icon>
-					<subwindow>text</subwindow>
-				</tab>
-				<tab>
-					<icon>tab_inventory</icon>
-					<subwindow>inventory</subwindow>
-				</tab>
-			</tabs_recordsheet>
 		</sheetdata>
 	</windowclass>
 
 	<windowclass name="npc_inventory">
 		<margins>0,3,0,0</margins>
-		<script file="campaign/scripts/npc_inventory.lua" />
 		<sheetdata>
-			<label_charframetop name="invtitle">
-				<anchored height="20">
-					<top offset="2" />
-					<left offset="9" />
-					<right offset="-13" />
-				</anchored>
-				<icons>char_inventory</icons>
-				<static textres="char_label_inventory" />
-			</label_charframetop>
-
-			<button_iedit name="inventorylist_iedit">
-				<anchored to="invtitle" position="insidetopright" />
-				<target>inventorylist</target>
-			</button_iedit>
-			<button_iadd name="inventorylist_iadd">
-				<anchored to="inventorylist_iedit" position="lefthigh" offset="5,0" />
-				<target>inventorylist</target>
-			</button_iadd>
-
-			<label name="count_label">
-				<anchored to="invtitle" width="20">
-					<top anchor="bottom" relation="relative" offset="5" />
-					<left offset="-3" />
-				</anchored>
-				<center />
-				<static>#</static>
-			</label>
-			<label name="name_label">
-				<anchored>
-					<top parent="invtitle" anchor="bottom" offset="5"/>
-					<left offset="5" />
-					<right  offset="-5" />
-				</anchored>
-				<static textres="char_label_itemname" />
-				<center />
-			</label>
-
-			<windowlist name="inventorylist">
+			<genericcontrol name="inventory_iedit">
 				<script>
-					function update()
-						local bEditMode = (window.inventorylist_iedit.getValue() == 1);
-						for _,win in pairs(getWindows()) do
-							win.idelete.setVisibility(bEditMode);
-						end
-					end
-					function addEntry(bFocus)
-						local win = createWindow();
-						if bFocus and win then
-							win.name.setFocus();
-						end
-						return win;
+					function getValue()
+						return false;
 					end
 				</script>
-				<anchored to="invtitle">
-					<top anchor="bottom" relation="relative" offset="2" />
-					<right offset="5" />
-					<left offset="-5" />
+				<anchored width="0" height="0" position="insidetopleft" />
+			</genericcontrol>
+
+			<subwindow name="contents">
+				<anchored>
+					<top offset="0" />
+					<left offset="0" />
+					<right offset="-15" />
 				</anchored>
-				<datasource>.inventorylist</datasource>
-				<class>npc_item</class>
-				<noscroll />
-				<skipempty />
-				<allowcreate />
-				<allowdelete />
-			</windowlist>
+				<class>charsheet_inventory_contents</class>
+				<activate />
+				<fastinit />
+			</subwindow>
 
 			<label_charframetop name="powerstitle">
 				<anchored height="20">
-					<top parent="inventorylist" anchor="bottom" offset="5" />
-					<left offset="9" />
-					<right offset="-13" />
+					<top parent="contents" anchor="bottom" offset="10" />
+					<left offset="15" />
+					<right offset="-25" />
 				</anchored>
 				<static textres="char_label_powers" />
 				<icons>char_powers</icons>
@@ -113,16 +66,17 @@
 				<script>
 					function onFilter(instance)
 						local nodeInstance = instance.getDatabaseNode();
-						return DB.getChildCount(nodeInstance, "powers") ~= 0;
+						return ItemPowerManager.shouldShowItemPowers(nodeInstance);
 					end
 				</script>
 				<anchored>
 					<top parent="powerstitle" anchor="bottom" offset="5" />
 					<left parent="" />
-					<right parent="" offset="-5" />
+					<right parent="" offset="-15" />
 				</anchored>
 				<datasource>.inventorylist</datasource>
 				<class>npc_item_power_group</class>
+				<sortby><field>name</field></sortby>
 				<skipempty />
 				<noscroll />
 				<readonly />
@@ -131,70 +85,14 @@
 		</sheetdata>
 	</windowclass>
 
-	<windowclass name="npc_item">
-		<margins control="0,0,0,2" />
-		<script>
-			function update(bLocked)
-				count.setReadOnly(bLocked);
-				if bLocked then
-					count.setFrame(nil);
-				else
-					count.setFrame("fielddark", 7, 5, 7, 5);
-				end
-
-				name.setReadOnly(bLocked);
-			end
-		</script>
-		<sheetdata>
-			<number_charinv name="count">
-				<bounds>5,2,20,20</bounds>
-				<tabtarget next="name" />
-				<default>1</default>
-			</number_charinv>
-			<genericcontrol name="rightanchor">
-				<anchored width="0" height="0">
-					<top />
-					<right />
-				</anchored>
-				<invisible />
-			</genericcontrol>
-			<button_idelete name="idelete">
-				<anchored width="20" height="20">
-					<top offset="2" />
-					<right parent="rightanchor" anchor="left" relation="relative" offset="-5" />
-				</anchored>
-			</button_idelete>
-			<linkcontrol_id name="shortcut">
-				<anchored width="20" height="20">
-					<top offset="2" />
-					<right parent="rightanchor" anchor="left" relation="relative" offset="-2" />
-				</anchored>
-				<class>item</class>
-				<readonly />
-			</linkcontrol_id>
-			<string_textlistitem name="name">
-				<anchored position="insidetopleft" offset="35,2" height="20">
-					<right parent="rightanchor" anchor="left" relation="relative" offset="-5" />
-				</anchored>
-				<nodrop />
-				<tabtarget next="nonid_name" prev="count" />
-			</string_textlistitem>
-		</sheetdata>
-	</windowclass>
-
 	<windowclass name="npc_item_power_group">
 		<margins control="0,0,0,5" />
-		<script>
-			function onToggle()
-				powerlist.setVisible(not powerlist.isVisible());
-			end
-		</script>
 		<sheetdata>
 			<stringfield name="name">
 				<anchored height="20">
 					<top offset="10" />
 					<left offset="15" />
-					<right offset="-10" />
+					<right offset="-15" />
 				</anchored>
 				<frame name="headersimple" offset="10,3,10,3" />
 				<font>sheetlabel</font>
@@ -218,6 +116,7 @@
 
 	<windowclass name="npc_item_power">
 		<margins control="0,0,0,2" />
+		<script file="campaign/scripts/npc_item_power.lua" />
 		<sheetdata>
 			<linkcontrol name="shortcut">
 				<anchored width="20" height="20">

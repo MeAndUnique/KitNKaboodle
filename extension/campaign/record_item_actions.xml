@@ -16,12 +16,6 @@
 					<right />
 				</anchored>
 			</genericcontrol>
-			<button_idelete name="idelete">
-				<anchored to="rightanchor">
-					<top />
-					<right anchor="left" relation="relative" offset="-5" />
-				</anchored>
-			</button_idelete>
 			<linkcontrol name="shortcut">
 				<anchored to="rightanchor" width="20" height="20">
 					<top />
@@ -30,6 +24,12 @@
 				<class>power</class>
 				<readonly />
 			</linkcontrol>
+			<button_idelete name="idelete">
+				<anchored to="rightanchor">
+					<top />
+					<right anchor="left" offset="-5" />
+				</anchored>
+			</button_idelete>
 			<button_toggledetail name="activatedetail">
 				<anchored to="rightanchor">
 					<top />
@@ -67,7 +67,7 @@
 			<counter_power name="counter">
 				<anchored>
 					<top offset="2" />
-					<left parent="leftanchor" anchor="right" relation="relative" offset="" />
+					<left parent="leftanchor" anchor="right" relation="relative" offset="5" />
 				</anchored>
 				<invisible />
 			</counter_power>
@@ -87,8 +87,8 @@
 			<subwindow name="effectivegroup">
 				<anchored>
 					<top parent="name" anchor="bottom" relation="relative" offset="5" />
-					<left offset="10" />
-					<right offset="-10" />
+					<left offset="5" />
+					<right offset="-5" />
 				</anchored>
 				<invisible />
 				<fastinit />
@@ -98,8 +98,8 @@
 			<windowlist name="actions">
 				<anchored>
 					<top parent="name" anchor="bottom" relation="relative" offset="5" />
-					<left offset="10" />
-					<right offset="-10" />
+					<left offset="5" />
+					<right offset="-5" />
 				</anchored>
 				<class>empty</class>
 				<skipempty />
@@ -307,7 +307,7 @@
 			<button_itemaction name="castbutton">
 				<anchored to="leftanchor">
 					<top />
-					<left anchor="right" relation="relative" />
+					<left anchor="right" relation="relative" offset="2" />
 				</anchored>
 				<icon normal="button_action_heal" pressed="button_action_heal_down" />
 			</button_itemaction>

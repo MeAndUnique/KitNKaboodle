@@ -38,7 +38,6 @@ function update(bReadOnly, bHideCast)
 	end
 	if savebutton then
 		savebutton.setVisible(not bHideCast);
-		-- savebutton.setAnchor("left", "", "center", bHideCast and 0 or 20);
 	end
 	if saveview then
 		saveview.setEnabled(not bHideCast);

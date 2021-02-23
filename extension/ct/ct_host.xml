@@ -13,7 +13,7 @@
 				<script>
 					function onFilter(instance)
 						local nodeInstance = instance.getDatabaseNode();
-						return DB.getChildCount(nodeInstance, "powers") ~= 0;
+						return ItemPowerManager.shouldShowItemPowers(nodeInstance);
 					end
 				</script>
 				<anchored>

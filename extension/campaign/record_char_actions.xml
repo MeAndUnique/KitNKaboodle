@@ -22,9 +22,7 @@
 				<script>
 					function onFilter(instance)
 						local nodeInstance = instance.getDatabaseNode();
-						return DB.getValue(nodeInstance, "carried", 0) == 2 and
-							DB.getValue(nodeInstance, "isidentified", 1) == 1 and
-							DB.getChildCount(nodeInstance, "powers") ~= 0;
+						return ItemPowerManager.shouldShowItemPowers(nodeInstance);
 					end
 				</script>
 				<anchored>
@@ -53,7 +51,7 @@
 			<linkcontrol name="shortcut">
 				<anchored width="20" height="20">
 					<top offset="10" />
-					<right />
+					<right offset="-5" />
 				</anchored>
 				<class>item</class>
 				<readonly />
@@ -92,8 +90,8 @@
 			<windowlist name="powerlist">
 				<anchored>
 					<top parent="name" anchor="bottom" offset="5" />
-					<left offset="10" />
-					<right offset="-10" />
+					<left offset="5" />
+					<right />
 				</anchored>
 				<datasource>.powers</datasource>
 				<class>item_power</class>

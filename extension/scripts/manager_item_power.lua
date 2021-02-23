@@ -35,3 +35,9 @@ function getItemSourceType(vNode)
 	end
 	return sResult;
 end
+
+function shouldShowItemPowers(itemNode)
+	return DB.getValue(itemNode, "carried", 0) == 2 and
+		DB.getValue(itemNode, "isidentified", 1) == 1 and
+		DB.getChildCount(itemNode, "powers") ~= 0;
+end
