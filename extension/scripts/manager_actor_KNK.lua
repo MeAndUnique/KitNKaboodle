@@ -5,11 +5,15 @@
 
 local vToResolve;
 local resolveActorOriginal;
+local getActorRecordTypeFromPathOriginal;
 
 -- Initialization
 function onInit()
 	resolveActorOriginal = ActorManager.resolveActor;
 	ActorManager.resolveActor = resolveActor;
+
+	getActorRecordTypeFromPathOriginal = ActorManager.getActorRecordTypeFromPath;
+	ActorManager.getActorRecordTypeFromPath = getActorRecordTypeFromPath;
 end
 
 function onClose()
@@ -30,4 +34,14 @@ function resolveActor(v)
 		rActor = resolveActorOriginal(vToResolve) or {};
 	end
 	return rActor;
+end
+
+-- Internal use only
+function getActorRecordTypeFromPath(sActorNodePath)
+	local delimiterCount = select(2, string.gsub(sActorNodePath, "%.", ""));
+	if(delimiterCount > 2) then
+		return nil;
+	else
+		return getActorRecordTypeFromPathOriginal(sActorNodePath);
+	end
 end

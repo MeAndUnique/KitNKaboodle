@@ -82,18 +82,18 @@ function onDataChanged()
 end
 
 function onCastChanged(nodeAction)
-	local sAttack, sSave = PowerManager.getPCPowerCastActionText(getDatabaseNode());
+	local sAttack, sSave = PowerManager.getPCPowerCastActionText(nodeAction);
 	attackview.setValue(sAttack);
 	saveview.setValue(sSave);
 end
 
 function onDamageChanged(nodeAction)
-	local sDamage = PowerManager.getPCPowerDamageActionText(getDatabaseNode());
+	local sDamage = PowerManager.getPCPowerDamageActionText(nodeAction);
 	damageview.setValue(sDamage);
 end
 
 function onHealChanged(nodeAction)
-	local sHeal = PowerManager.getPCPowerHealActionText(getDatabaseNode());
+	local sHeal = PowerManager.getPCPowerHealActionText(nodeAction);
 	healview.setValue(sHeal);
 end
 
