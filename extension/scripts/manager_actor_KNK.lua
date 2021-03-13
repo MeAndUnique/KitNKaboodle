@@ -30,7 +30,7 @@ end
 
 function resolveActor(v)
 	local rActor = resolveActorOriginal(v);
-	if not rActor then
+	if not rActor and vToResolve then
 		rActor = resolveActorOriginal(vToResolve) or {sName = ""};
 	end
 	return rActor;
