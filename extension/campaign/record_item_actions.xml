@@ -367,9 +367,8 @@
 			<script>
 				function action(draginfo)
 					local nodeAction = window.getDatabaseNode();
-					local rAction, rActor = PowerManager.getPCPowerAction(nodeAction, subroll and subroll[1]);
-					rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
-					PowerManager.performAction(draginfo, rActor, rAction, nodeAction.getChild("..."));
+					ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
+					PowerManager.performPCPowerAction(draginfo, nodeAction, subroll and subroll[1])
 				end
 
 				function onDoubleClick(x, y)
