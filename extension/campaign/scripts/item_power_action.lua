@@ -33,29 +33,8 @@ function update(bReadOnly, bHideCast)
 	if attackbutton then
 		attackbutton.setVisible(not bHideCast);
 	end
-	if attackview then
-		attackview.setEnabled(not bHideCast);
-	end
 	if savebutton then
 		savebutton.setVisible(not bHideCast);
-	end
-	if saveview then
-		saveview.setEnabled(not bHideCast);
-	end
-
-	-- Damage fields
-	if damageview then
-		damageview.setEnabled(not bHideCast);
-	end
-
-	-- Heal fields
-	if healview then
-		healview.setEnabled(not bHideCast);
-	end
-
-	-- Effect fields
-	if effectview then
-		effectview.setEnabled(not bHideCast);
 	end
 end
 
@@ -68,7 +47,7 @@ end
 function onDataChanged()
 	local nodeAction = getDatabaseNode();
 	local sType = DB.getValue(getDatabaseNode(), "type", "");
-	ActorManagerKNK.beginResolvingItem(nodeAction.getChild("......."));
+	ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
 	if sType == "cast" then
 		onCastChanged(nodeAction);
 	elseif sType == "damage" then
