@@ -41,11 +41,6 @@
 
 	<windowclass name="char_item_group">
 		<margins control="0,0,0,5" />
-		<script>
-			function onToggle()
-				powerlist.setVisible(not powerlist.isVisible());
-			end
-		</script>
 		<sheetdata>
 			<item_charge_tracker />
 			<linkcontrol name="shortcut">
@@ -66,13 +61,18 @@
 						local widget = addBitmapWidget("char_inventory");
 						widget.setPosition("topleft", 2, 8);
 					end
-
 					function onClickDown()
 						return true;
 					end
-
 					function onClickRelease()
-						window.onToggle();
+						local bVisible = window.powerlist.isVisible ();
+						if bVisible then
+							setFont("subwindowsmalltitle_disabled");
+							window.powerlist.setVisible(false);
+						else
+							setFont("subwindowsmalltitle");
+							window.powerlist.setVisible(true);
+						end
 						return true;
 					end
 				</script>
@@ -82,7 +82,7 @@
 					<right parent="shortcut" anchor="left" offset="-10" />
 				</anchored>
 				<frame name="metalplate" offset="10,2,10,2"/>
-				<font>subwindowsmalltitle</font>
+				<font>subwindowsmalltitle_disabled</font>
 				<center />
 				<nodrag />
 				<readonly />

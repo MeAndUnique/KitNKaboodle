@@ -2,6 +2,8 @@
 <root>
 	<string name="power_label_effective_group">Effective Group</string>
 
+	<string name="item_label_charges">CHARGES</string>
+
 	<string name="item_use_atwill">At Will</string>
 	<string name="item_use_charges">Charges</string>
 	<string name="item_use_atwill">Consumable</string>
@@ -9,7 +11,10 @@
 	<string name="item_recharge_never">Never</string>
 	<string name="item_recharge_daily">Daily</string>
 	<string name="item_recharge_rest">Rest</string>
+	
+	<string name="label_item_recharge">Recharge</string>
 
+	<string name="label_item_discharge">On Last</string>
 	<string name="item_discharge_nothing">Nothing</string>
 	<string name="item_discharge_nothing">Destroy</string>
 	<string name="item_discharge_nothing">Roll</string>
