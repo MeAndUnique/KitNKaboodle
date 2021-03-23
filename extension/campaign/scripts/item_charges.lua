@@ -31,7 +31,6 @@ function update(bLocked)
 		prepared.setFrame("fielddark", 7, 5, 7, 5);
 		rechargedice.onValueChanged(); -- basicdice sets the frame when the value changes.
 		label_plus.setVisible((prepared.getValue() > 0) and ((rechargeperiod.getStringValue() or "") ~= ""));
-		Debug.chat(prepared.getValue(), rechargeperiod.getStringValue());
 		rechargebonus.setFrame("fielddark", 7, 5, 7, 5);
 	end
 end
