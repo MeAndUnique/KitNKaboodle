@@ -73,7 +73,6 @@ function rechargeItemPowers(nodeItem, sPeriod)
 	end
 
 	local nRechargeAmount = getRechargeAmount(nodeItem, sPeriod);
-	Debug.chat(nRechargeAmount);
 	if nRechargeAmount == RECHARGE_NONE then
 		return;
 	end
@@ -100,14 +99,11 @@ function canRecharge(nodeItem)
 	local isIdentified = DB.getValue(nodeItem, "isidentified", 1) == 1;
 	local hasCharges = DB.getValue(nodeItem, "prepared", 0) > 0;
 	local bFinitePeriod = DB.getValue(nodeItem, "rechargeperiod", "") ~= "";
-	Debug.chat(bItemExists, isIdentified, hasCharges, bFinitePeriod);
 	return bItemExists and isIdentified and hasCharges and bFinitePeriod;
 end
 
 function getRechargeAmount(nodeItem, sPeriod)
-	Debug.chat(sPeriod, DB.getValue(nodeItem, "rechargeperiod", ""));
 	if (sPeriod == DB.getValue(nodeItem, "rechargeperiod", "")) then
-		Debug.chat("nani", RECHARGE_NORMAL);
 		return RECHARGE_NORMAL;
 	elseif sPeriod == "extended" then
 		return RECHARGE_FULL;
@@ -118,12 +114,11 @@ end
 function handleItemRecharge(msgOOB)
 	local nodeItem = DB.findNode(msgOOB.sItem);
 	if nodeItem then
-		Debug.chat("about to iter", msgOOB);
 		for index=1,DB.getValue(nodeItem, "count", 0) do
 			local aDice = {};
 			local nMod = 0;
 			if msgOOB.nRechargeAmount == RECHARGE_NORMAL then
-				aDice = DB.getValue(nodeItem, "rechargedice");
+				aDice = DB.getValue(nodeItem, "rechargedice", {});
 				nMod = DB.getValue(nodeItem, "rechargebonus");
 			elseif msgOOB.nRechargeAmount == RECHARGE_FULL then
 				nMod = DB.getValue(nodeItem, "prepared");
@@ -139,10 +134,8 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
 	local nodeItem = DB.findNode(rRoll.sItem);
-	Debug.chat(rRoll.sItem, nodeItem);
 	if nodeItem then
 		local nResult = ActionsManager.total(rRoll);
-		Debug.chat(rRoll, nResult);
 		for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
 			if nResult == 0 then
 				break;

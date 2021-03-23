@@ -101,7 +101,7 @@
 	<windowclass name="item_actions">
 		<script file="campaign/scripts/item_actions.lua" />
 		<sheetdata>
-			<item_charge_tracker />
+			<item_charge_tracker name="chargetracker" />
 			<label_charframetop name="chargestitle">
 				<script>
 					function onClickDown()
@@ -191,6 +191,12 @@
 							win.name.setFocus();
 						end
 						return win;
+					end
+					function onListChanged()
+						if super and super.onListChanged then
+							super.onListChanged();
+						end
+						window.chargetracker.onChargesChanged();
 					end
 				</script>
 				<anchored>
