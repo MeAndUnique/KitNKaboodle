@@ -84,7 +84,7 @@
 						setValue(string.format("(x%i)", node.getValue()));
 					end
 				</script>
-				<anchored width="25" height="20">
+				<anchored width="40" height="20">
 					<top offset="5" />
 					<right parent="rightanchor" anchor="left" relation="relative" offset="-5" />
 				</anchored>
@@ -101,18 +101,65 @@
 	<windowclass name="item_actions">
 		<script file="campaign/scripts/item_actions.lua" />
 		<sheetdata>
-			<item_charge_tracker />
-			<label name="chargesLabel">
-				<anchored position="insidetopleft" offset="5,2" />
-				<static textres="item_use_charges" />
-			</label>
-			<basicnumber name="prepared">
-				<anchored to="chargesLabel" position="right" offset="5" width="30" />
-			</basicnumber>
+			<item_charge_tracker name="chargetracker" />
+			<label_charframetop name="chargestitle">
+				<script>
+					function onClickDown()
+						return true;
+					end
+					
+					function onClickRelease()
+						local bVisible = window.charges.isVisible();
+						if bVisible then
+							setFont("subwindowsmalltitle_disabled");
+							window.charges.setVisible(false);
+						else
+							setFont("subwindowsmalltitle");
+							window.charges.setVisible(true);
+						end
+						return true;
+					end
+				</script>
+				<anchored height="20">
+					<top offset="10" />
+					<left offset="15" />
+					<right offset="-10" />
+				</anchored>
+				<static textres="item_label_charges" />
+				<icons>char_powers</icons>
+			</label_charframetop>
+
+			<subwindow name="charges">
+				<class>item_charges</class>
+				<anchored>
+					<top parent="chargestitle" anchor="bottom" offset="5" />
+					<left offset="5" />
+					<right offset="-5" />
+				</anchored>
+				<activate />
+				<fastinit />
+			</subwindow>
 
 			<label_charframetop name="powerstitle">
+				<script>
+					function onClickDown()
+						return true;
+					end
+					
+					function onClickRelease()
+						local bVisible = window.powerlist.isVisible();
+						if bVisible then
+							setFont("subwindowsmalltitle_disabled");
+							window.powerlist.setVisible(false);
+						else
+							setFont("subwindowsmalltitle");
+							window.powerlist.setVisible(true);
+						end
+						return true;
+					end
+				</script>
 				<anchored height="20">
-					<top parent="prepared" anchor="bottom" offset="10" />
+					<top parent="charges" anchor="bottom" offset="10" />
 					<left offset="15" />
 					<right offset="-10" />
 				</anchored>
@@ -145,6 +192,12 @@
 						end
 						return win;
 					end
+					function onListChanged()
+						if super and super.onListChanged then
+							super.onListChanged();
+						end
+						window.chargetracker.onChargesChanged();
+					end
 				</script>
 				<anchored>
 					<top parent="powerstitle" anchor="bottom" offset="5" />
@@ -159,6 +212,77 @@
 				<allowdelete />
 				<footer>footer_wide</footer>
 			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_charges">
+		<script file="campaign/scripts/item_charges.lua" />
+		<margins control="0,0,0,5" />
+		<sheetdata>
+			<!-- <item_charge_tracker /> -->
+			<label name="chargesLabel">
+				<anchored position="insidetopleft" width="60" offset="5,2" />
+				<static textres="item_use_charges" />
+			</label>
+			<basicnumber name="prepared">
+				<anchored to="chargesLabel" position="right" offset="5" width="30" />
+			</basicnumber>
+			<button_stringcycler name="rechargeperiod">
+				<script>
+					local initialize2Original;
+					function onInit()
+						if super then
+							initialize2Original = super.initialize2;
+							super.initialize2 = initialize2;
+							if super.onInit then
+								super.onInit();
+							end
+						end
+					end
+					function initialize2(sLabels, sValues, sDefaultLabel, sInitialValue)
+						if ExtendedRest then
+							sLabels = sLabels .. "|extended_rest_label";
+							sValues = sValues .. "|extended";
+						end
+						initialize2Original(sLabels, sValues, sDefaultLabel, sInitialValue);
+					end
+				</script>
+				<anchored to="prepared" width="60" height="20">
+					<top />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<parameters>
+					<defaultlabelres>item_recharge_never</defaultlabelres>
+					<labelsres>power_label_useperiod_daily</labelsres>
+					<values>daily</values>
+				</parameters>
+			</button_stringcycler>
+			<!-- <counter_power name="counter">
+				<anchored to="rechargeperiod" width="60" height="20">
+					<top />
+					<left anchor="right" offset="20" />
+				</anchored>
+				<invisible />
+			</counter_power> -->
+			
+			<label name="rechargeLabel">
+				<anchored to="chargesLabel" width="60" offset="5,2">
+					<top anchor="bottom" offset="10" />
+					<left anchor="left" />
+				</anchored>
+				<static textres="label_item_recharge" />
+			</label>
+			<basicdice name="rechargedice">
+				<anchored to="rechargeLabel" position="righthigh" offset="5,0" width="60" height="20" />
+			</basicdice>
+			<label name="label_plus">
+				<anchored to="rechargedice" position="righthigh" offset="3,0" width="10" />
+				<static>+</static>
+			</label>
+			<basicnumber name="rechargebonus">
+				<anchored to="label_plus" position="righthigh" offset="2,0" width="35" height="20" />
+				<hideonvalue>0</hideonvalue>
+			</basicnumber>
 		</sheetdata>
 	</windowclass>
 </root>

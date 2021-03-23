@@ -23,12 +23,7 @@ function onLockChanged(nodeLocked)
 end
 
 function update(bLocked)
-	prepared.setReadOnly(bLocked);
-	if bLocked then
-		prepared.setFrame(nil);
-	else
-		prepared.setFrame("fielddark", 7, 5, 7, 5);
-	end
+	charges.subwindow.update(bLocked);
 
 	if bLocked then
 		powerlist_iedit.setValue(0);
