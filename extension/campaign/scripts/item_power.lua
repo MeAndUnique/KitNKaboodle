@@ -11,6 +11,13 @@ local bAdding = false;
 local bReadOnly;
 local bHideCast;
 
+local rKnownActions = {
+	["cast"] = true,
+	["damage"] = true,
+	["effect"] = true,
+	["heal"] = true,
+};
+
 -- Initialization
 function onInit()
 	parentcontrol = self;
@@ -89,7 +96,7 @@ function showAction(nodeAction, sType)
 		sType = DB.getValue(nodeAction, "type");
 	end
 
-	if (sType or "") ~= "" then
+	if ((sType or "") ~= "") and (rKnownActions[sType] ~= nil) then
 		local win = actions.createWindowWithClass("item_action_" .. sType, nodeAction);
 		win.update(bReadOnly, bHideCast);
 	end

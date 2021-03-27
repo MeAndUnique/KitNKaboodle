@@ -15,7 +15,7 @@ local resetPowersOriginal;
 -- Initialization
 function onInit()
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
-	ActionsManager.registerResultHandler("recharge", onRechargeRoll);
+	ActionsManager.registerResultHandler("rechargeitem", onRechargeRoll);
 
 	getItemSourceTypeOriginal = ItemManager.getItemSourceType;
 	ItemManager.getItemSourceType = getItemSourceType;
@@ -124,7 +124,7 @@ function handleItemRecharge(msgOOB)
 				nMod = DB.getValue(nodeItem, "prepared");
 			end
 			local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
-			local rechargeRoll = {sType="recharge", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
+			local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
 			ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
 		end
 	end
