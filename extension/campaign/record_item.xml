@@ -257,13 +257,6 @@
 					<values>daily</values>
 				</parameters>
 			</button_stringcycler>
-			<!-- <counter_power name="counter">
-				<anchored to="rechargeperiod" width="60" height="20">
-					<top />
-					<left anchor="right" offset="20" />
-				</anchored>
-				<invisible />
-			</counter_power> -->
 			
 			<label name="rechargeLabel">
 				<anchored to="chargesLabel" width="60" offset="5,2">

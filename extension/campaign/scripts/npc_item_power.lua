@@ -35,8 +35,7 @@ end
 
 function processPower()
 	local nodeNPC = nodePower.getChild(".....");
-	local sValue = DB.getValue(nodePower, "name", "");
-
+	ActorManagerKNK.beginResolvingItem(nodePower.getChild("....."));
 	local aActions = {}
 	for _,nodeAction in pairs(DB.getChildren(nodePower, "actions")) do
 		local rAction = PowerManager.getPCPowerAction(nodeAction);
@@ -51,7 +50,9 @@ function processPower()
 			table.insert(aActions, getEffectValue(rAction));
 		end
 	end
+	ActorManagerKNK.endResolvingItem();
 
+	local sValue = DB.getValue(nodePower, "name", "");
 	if #aActions > 0 then
 		sValue = sValue .. table.concat(aActions, " ");
 	end
