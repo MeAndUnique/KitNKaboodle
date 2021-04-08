@@ -5,6 +5,7 @@
 
 function onInit()
 	local nodeItem = getDatabaseNode();
+	migrateRecharge(nodeItem);
 	onChargesChanged(nodeItem.getChild("prepared")); -- Calls onRechargePeriodChanged()
 	DB.addHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("rechargeperiod"), "onUpdate", onRechargePeriodChanged);
@@ -14,6 +15,12 @@ function onClose()
 	local nodeItem = getDatabaseNode();
 	DB.removeHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.removeHandler(nodeItem.getPath("rechargeperiod"), "onUpdate", onRechargePeriodChanged);
+end
+
+function migrateRecharge(nodeItem)
+	if DB.getValue(nodeItem, "rechargeperiod", "") == "daily" then
+		DB.setValue(nodeItem, "rechargeperiod", "string", "long");
+	end
 end
 
 function update(bLocked)

@@ -60,8 +60,13 @@ function resetPowers(nodeCaster, bLong)
 
 	-- Match the rest values from the recharge cycler
 	-- TODO Consider time of day handling.
-	local sPeriod = ((ExtendedRest and ExtendedRest.isExtended()) and "extended") or
-		(bLong and "daily");
+	local sPeriod = "short";
+	if ExtendedRest and ExtendedRest.isExtended() then
+		sPeriod = "extended";
+	elseif bLong then
+		sPeriod = "long";
+	end
+
 	for _,nodeItem in pairs(DB.getChildren(nodeCaster.getPath("inventorylist"))) do
 		rechargeItemPowers(nodeItem, sPeriod);
 	end
@@ -103,10 +108,13 @@ function canRecharge(nodeItem)
 end
 
 function getRechargeAmount(nodeItem, sPeriod)
-	if (sPeriod == DB.getValue(nodeItem, "rechargeperiod", "")) then
+	local sItemPeriod = DB.getValue(nodeItem, "rechargeperiod", "");
+	if (sPeriod == sItemPeriod) then
 		return RECHARGE_NORMAL;
 	elseif sPeriod == "extended" then
 		return RECHARGE_FULL;
+	elseif (sPeriod == "long") and (sItemPeriod == "short") then
+		return RECHARGE_NORMAL;
 	end
 	return RECHARGE_NONE;
 end

@@ -340,6 +340,7 @@
 					local nodeAction = window.getDatabaseNode();
 					ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
 					PowerManager.performPCPowerAction(draginfo, nodeAction, subroll and subroll[1])
+					ActorManagerKNK.endResolvingItem();
 				end
 
 				function onButtonPress(x, y)
@@ -368,6 +369,7 @@
 					local nodeAction = window.getDatabaseNode();
 					ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
 					PowerManager.performPCPowerAction(draginfo, nodeAction, subroll and subroll[1])
+					ActorManagerKNK.endResolvingItem();
 				end
 
 				function onDoubleClick(x, y)
