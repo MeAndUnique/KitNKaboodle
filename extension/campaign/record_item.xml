@@ -244,6 +244,10 @@
 							sLabels = sLabels .. "|extended_rest_label";
 							sValues = sValues .. "|extended";
 						end
+						if LongTermEffects then
+							sLabels = sLabels .. "|item_recharge_daily";
+							sValues = sValues .. "|daily";
+						end
 						initialize2Original(sLabels, sValues, sDefaultLabel, sInitialValue);
 					end
 				</script>
@@ -255,6 +259,17 @@
 					<defaultlabelres>item_recharge_never</defaultlabelres>
 					<labelsres>item_recharge_long|item_recharge_short</labelsres>
 					<values>long|short</values>
+				</parameters>
+			</button_stringcycler>
+			<button_stringcycler name="rechargetime">
+				<anchored to="rechargeperiod" width="60" height="20">
+					<top />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<parameters>
+					<defaultlabelres>item_recharge_dawn</defaultlabelres>
+					<labelsres>item_recharge_noon|item_recharge_dusk|item_recharge_midnight</labelsres>
+					<values>noon|dusk|midnight</values>
 				</parameters>
 			</button_stringcycler>
 			

@@ -12,7 +12,10 @@
 	<string name="item_recharge_long">Long</string>
 	<string name="item_recharge_short">Short</string>
 	<string name="item_recharge_daily">Daily</string>
-	<string name="item_recharge_rest">Rest</string>
+	<string name="item_recharge_dawn">Dawn</string>
+	<string name="item_recharge_noon">Noon</string>
+	<string name="item_recharge_dusk">Dusk</string>
+	<string name="item_recharge_midnight">Midnight</string>
 	
 	<string name="label_item_recharge">Recharge</string>
 

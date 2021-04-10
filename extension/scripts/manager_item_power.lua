@@ -9,8 +9,16 @@ RECHARGE_NONE = 0;
 RECHARGE_NORMAL = 1;
 RECHARGE_FULL = 2;
 
+DAWN_TIME_OF_DAY = 0.25;
+NOON_TIME_OF_DAY = 0.5;
+DUSK_TIME_OF_DAY = 0.75;
+MIDNIGHT_TIME_OF_DAY = 0;
+
+FULL_RECHARGE_DAY_THRESHOLD = 5; -- Only a few items could potentially be missing charges after 5 days, and even for those it would be extremely unlikely.
+
 local getItemSourceTypeOriginal;
 local resetPowersOriginal;
+local resetHealthOriginal;
 
 -- Initialization
 function onInit()
@@ -22,6 +30,13 @@ function onInit()
 	
 	resetPowersOriginal = PowerManager.resetPowers;
 	PowerManager.resetPowers = resetPowers;
+
+	resetHealthOriginal = CombatManager2.resetHealth;
+	CombatManager2.resetHealth = resetHealth;
+
+	if LongTermEffects then
+		DB.addHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
+	end
 end
 
 function onClose()
@@ -57,9 +72,15 @@ end
 -- Recharging
 function resetPowers(nodeCaster, bLong)
 	resetPowersOriginal(nodeCaster, bLong);
+	beginRecharging(nodeCaster, bLong);
+end
 
-	-- Match the rest values from the recharge cycler
-	-- TODO Consider time of day handling.
+function resetHealth(nodeCT, bLong)
+	resetHealthOriginal(nodeCT, bLong);
+	beginRecharging(nodeCT, bLong);
+end
+
+function beginRecharging(nodeActor, bLong)
 	local sPeriod = "short";
 	if ExtendedRest and ExtendedRest.isExtended() then
 		sPeriod = "extended";
@@ -67,22 +88,46 @@ function resetPowers(nodeCaster, bLong)
 		sPeriod = "long";
 	end
 
-	for _,nodeItem in pairs(DB.getChildren(nodeCaster.getPath("inventorylist"))) do
+	for _,nodeItem in pairs(DB.getChildren(nodeActor.getPath("inventorylist"))) do
 		rechargeItemPowers(nodeItem, sPeriod);
 	end
 end
 
-function rechargeItemPowers(nodeItem, sPeriod)
+function onTimeChanged(nodeDateInMinutes)
+	local nNewDateInMinutes = nodeDateInMinutes.getValue();
+	local nPreviousDateInMinutes = tonumber(DB.getValue("calendar.dateinminutesstring", ""));
+
+	if nNewDateInMinutes <= nPreviousDateInMinutes then
+		return;
+	end
+	local nElapsedDays = TimeManager.convertMinutestoDays(nNewDateInMinutes - nPreviousDateInMinutes);
+	local _,nCurrentTimeOfDay = math.modf(TimeManager.convertMinutestoDays(nNewDateInMinutes));
+
+	for _,nodeCombatant in pairs(CombatManager.getCombatantNodes()) do
+		local sClass, sRecord = DB.getValue(nodeCombatant, "link", "", "");
+		if sClass == "charsheet" and sRecord ~= "" then
+			local nodePC = DB.findNode(sRecord);
+			if nodePC then
+				nodeCombatant = nodePC;
+			end
+		end
+		for _,nodeItem in pairs(DB.getChildren(nodeCombatant.getPath("inventorylist"))) do
+			rechargeItemPowers(nodeItem, "daily", nCurrentTimeOfDay, nElapsedDays);
+		end
+	end
+end
+
+function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 	if not canRecharge(nodeItem) then
 		return;
 	end
 
-	local nRechargeAmount = getRechargeAmount(nodeItem, sPeriod);
+	local nRechargeAmount, nRechargeCount = getRechargeAmount(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays);
 	if nRechargeAmount == RECHARGE_NONE then
 		return;
 	end
 
-	local messageOOB = {type=OOB_MSGTYPE_RECHARGE_ITEM, sItem=nodeItem.getPath(), nRechargeAmount=nRechargeAmount};
+	local messageOOB = {type=OOB_MSGTYPE_RECHARGE_ITEM, sItem=nodeItem.getPath(), nRechargeAmount=nRechargeAmount, nRechargeCount=nRechargeCount};
 
 	if Session.IsHost then
 		local sOwner = DB.getOwner(nodeItem);
@@ -107,9 +152,12 @@ function canRecharge(nodeItem)
 	return bItemExists and isIdentified and hasCharges and bFinitePeriod;
 end
 
-function getRechargeAmount(nodeItem, sPeriod)
+function getRechargeAmount(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 	local sItemPeriod = DB.getValue(nodeItem, "rechargeperiod", "");
-	if (sPeriod == sItemPeriod) then
+	if sPeriod == sItemPeriod then
+		if sPeriod == "daily" then
+			return calculateDailyRecharge(nodeItem, nCurrentTimeOfDay, nElapsedDays);
+		end
 		return RECHARGE_NORMAL;
 	elseif sPeriod == "extended" then
 		return RECHARGE_FULL;
@@ -119,21 +167,66 @@ function getRechargeAmount(nodeItem, sPeriod)
 	return RECHARGE_NONE;
 end
 
+function calculateDailyRecharge(nodeItem, nCurrentTimeOfDay, nElapsedDays)
+	if nElapsedDays >= FULL_RECHARGE_DAY_THRESHOLD then
+		return RECHARGE_FULL;
+	end
+
+	local sRechargeTime = DB.getValue(nodeItem, "rechargetime", "");
+	local nRechargeTimeOfDay = DAWN_TIME_OF_DAY;
+	if sRechargeTime == "noon" then
+		local nRechargeTimeOfDay = NOON_TIME_OF_DAY;
+	elseif sRechargeTime == "dusk" then
+		local nRechargeTimeOfDay = DUSK_TIME_OF_DAY;
+	elseif sRechargeTime == "midnight" then
+		local nRechargeTimeOfDay = MIDNIGHT_TIME_OF_DAY;
+	end
+
+	local nTolerance = 1e-15; -- Less than a tenth of a billionth of a seccond by Earth measure
+	local nCount, nElapsedRemainder = math.modf(nElapsedDays); -- Recharge at least once for each full day that has past
+	nElapsedRemainder = nElapsedRemainder - nTolerance; -- Account for the previous time being the recharge time.
+	if math.abs(nCurrentTimeOfDay - nRechargeTimeOfDay) < nTolerance then
+		-- Advancing 1 minute to the recharge time should trigger a single recharge.
+		-- Advancing 1 day and 1 minute to the recharge time should trigger two recharges
+		-- Advancing exactly 1 day to the recharge time should trigger a single recharge.
+		if (nElapsedRemainder > 0) then
+			nCount = nCount + 1;
+		end
+	else
+		if nRechargeTimeOfDay > nCurrentTimeOfDay then
+			-- Handle wrapping around midnight into a new day.
+			nCurrentTimeOfDay = nCurrentTimeOfDay + 1;
+		end
+		if nRechargeTimeOfDay > (nCurrentTimeOfDay - nElapsedRemainder) then
+			-- Increment the number of recharges if the previous time was before the recharge time and the current time is after.
+			nCount = nCount + 1;
+		end
+	end
+
+	if nCount > 0 then
+		return RECHARGE_NORMAL, nCount;
+	else
+		return RECHARGE_NONE;
+	end
+end
+
 function handleItemRecharge(msgOOB)
 	local nodeItem = DB.findNode(msgOOB.sItem);
 	if nodeItem then
+		local aDice = {};
+		local nMod = 0;
+		if msgOOB.nRechargeAmount == RECHARGE_NORMAL then
+			aDice = DB.getValue(nodeItem, "rechargedice", {});
+			nMod = DB.getValue(nodeItem, "rechargebonus");
+		elseif msgOOB.nRechargeAmount == RECHARGE_FULL then
+			nMod = DB.getValue(nodeItem, "prepared");
+		end
+		local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
+		local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
 		for index=1,DB.getValue(nodeItem, "count", 0) do
-			local aDice = {};
-			local nMod = 0;
-			if msgOOB.nRechargeAmount == RECHARGE_NORMAL then
-				aDice = DB.getValue(nodeItem, "rechargedice", {});
-				nMod = DB.getValue(nodeItem, "rechargebonus");
-			elseif msgOOB.nRechargeAmount == RECHARGE_FULL then
-				nMod = DB.getValue(nodeItem, "prepared");
+			for count=1,(msgOOB.nRechargeCount or 1) do
+				ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
 			end
-			local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
-			local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
-			ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
 		end
 	end
 end
