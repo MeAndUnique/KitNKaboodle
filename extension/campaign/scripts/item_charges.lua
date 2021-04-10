@@ -5,7 +5,6 @@
 
 function onInit()
 	local nodeItem = getDatabaseNode();
-	migrateRecharge(nodeItem);
 	onChargesChanged(nodeItem.getChild("prepared")); -- Calls onRechargePeriodChanged()
 	DB.addHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("rechargeperiod"), "onUpdate", onRechargePeriodChanged);
@@ -15,12 +14,6 @@ function onClose()
 	local nodeItem = getDatabaseNode();
 	DB.removeHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.removeHandler(nodeItem.getPath("rechargeperiod"), "onUpdate", onRechargePeriodChanged);
-end
-
-function migrateRecharge(nodeItem)
-	if DB.getValue(nodeItem, "rechargeperiod", "") == "daily" then
-		DB.setValue(nodeItem, "rechargeperiod", "string", "long");
-	end
 end
 
 function update(bLocked)
@@ -52,7 +45,9 @@ function onRechargePeriodChanged(nodeRechargePeriod, hasCharges)
 	if hasCharges == nil then
 		hasCharges = DB.getValue(nodeRechargePeriod, "..prepared", 0) > 0;
 	end
-	local canRecharge = (nodeRechargePeriod.getValue() or "") ~= "";
+	local sRechargePeriod = nodeRechargePeriod.getValue() or "";
+	rechargetime.setVisible((sRechargePeriod == "daily") and hasCharges);
+	local canRecharge = sRechargePeriod ~= "";
 	rechargeLabel.setVisible(canRecharge and hasCharges);
 	rechargedice.setVisible(canRecharge and hasCharges);
 	label_plus.setVisible(canRecharge and hasCharges);
