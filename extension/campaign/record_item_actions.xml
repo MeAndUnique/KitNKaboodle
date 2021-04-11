@@ -132,6 +132,7 @@
 					<right offset="-10" />
 					<left parent="leftanchor" anchor="right" relation="relative" offset="10" />
 				</anchored>
+				<default>Spells</default>
 				<multilinespacing>20</multilinespacing>
 				<nodrag />
 				<delaykeyupdate />
