@@ -20,6 +20,8 @@ local getItemSourceTypeOriginal;
 local resetPowersOriginal;
 local resetHealthOriginal;
 
+local addEquippedSpellPCOriginal;
+
 -- Initialization
 function onInit()
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
@@ -37,11 +39,25 @@ function onInit()
 	if LongTermEffects then
 		DB.addHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
 	end
+
+	if EquippedEffectsManager then
+		addEquippedSpellPCOriginal = EquippedEffectsManager.addEquippedSpellPC;
+		EquippedEffectsManager.addEquippedSpellPC = addEquippedSpellPC;
+	end
 end
 
 function onClose()
 	ItemManager.getItemSourceType = getItemSourceTypeOriginal;
 	PowerManager.resetPowers = resetPowersOriginal
+	CombatManager2.resetHealth = resetHealthOriginal;
+
+	if LongTermEffects then
+		DB.removeHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
+	end
+
+	if EquippedEffectsManager then
+		addEquippedSpellPCOriginal = EquippedEffectsManager.addEquippedSpellPC;
+	end
 end
 
 -- Overrides
@@ -67,6 +83,21 @@ function getItemSourceType(vNode)
 		end
 	end
 	return sResult;
+end
+
+function addEquippedSpellPC(nodeActor, nodeCarriedItem, nodeSpell, sName)
+	-- Add the new power if the item has not already been configured.
+	if DB.getChildCount(nodeCarriedItem, "powers") == 0 then
+		-- Grab charge info
+		DB.setValue(nodeCarriedItem, "prepared", "number", DB.getValue(nodeSpell, "prepared", 0));
+		DB.setValue(nodeCarriedItem, "rechargeperiod", "string", DB.getValue(nodeSpell, "rechargeperiod", ""));
+		DB.setValue(nodeCarriedItem, "rechargetime", "string", DB.getValue(nodeSpell, "rechargetime", ""));
+		DB.setValue(nodeCarriedItem, "rechargedice", "dice", DB.getValue(nodeSpell, "rechargedice", {}));
+		DB.setValue(nodeCarriedItem, "rechargebonus", "number", DB.getValue(nodeSpell, "rechargebonus", 0));
+
+		-- Add the power
+		PowerManager.addPower("power", nodeSpell, nodeCarriedItem);
+	end
 end
 
 -- Recharging
@@ -258,7 +289,7 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 	Comm.deliverChatMessage(rMessage);
 end
 
---Utility functions
+-- Utility functions
 function shouldShowItemPowers(itemNode)
 	return DB.getValue(itemNode, "carried", 0) == 2 and
 		DB.getValue(itemNode, "isidentified", 1) == 1 and
