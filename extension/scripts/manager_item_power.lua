@@ -27,22 +27,24 @@ function onInit()
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
 	ActionsManager.registerResultHandler("rechargeitem", onRechargeRoll);
 
-	getItemSourceTypeOriginal = ItemManager.getItemSourceType;
-	ItemManager.getItemSourceType = getItemSourceType;
-	
-	resetPowersOriginal = PowerManager.resetPowers;
-	PowerManager.resetPowers = resetPowers;
+	if Session.IsHost then
+		getItemSourceTypeOriginal = ItemManager.getItemSourceType;
+		ItemManager.getItemSourceType = getItemSourceType;
+		
+		resetPowersOriginal = PowerManager.resetPowers;
+		PowerManager.resetPowers = resetPowers;
 
-	resetHealthOriginal = CombatManager2.resetHealth;
-	CombatManager2.resetHealth = resetHealth;
+		resetHealthOriginal = CombatManager2.resetHealth;
+		CombatManager2.resetHealth = resetHealth;
 
-	if LongTermEffects then
-		DB.addHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
-	end
+		if LongTermEffects then
+			DB.addHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
+		end
 
-	if EquippedEffectsManager then
-		addEquippedSpellPCOriginal = EquippedEffectsManager.addEquippedSpellPC;
-		EquippedEffectsManager.addEquippedSpellPC = addEquippedSpellPC;
+		if EquippedEffectsManager then
+			addEquippedSpellPCOriginal = EquippedEffectsManager.addEquippedSpellPC;
+			EquippedEffectsManager.addEquippedSpellPC = addEquippedSpellPC;
+		end
 	end
 end
 
@@ -158,7 +160,7 @@ function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 		return;
 	end
 
-	local messageOOB = {type=OOB_MSGTYPE_RECHARGE_ITEM, sItem=nodeItem.getPath(), nRechargeAmount=nRechargeAmount, nRechargeCount=nRechargeCount};
+	local messageOOB = {type=OOB_MSGTYPE_RECHARGE_ITEM, sItem=nodeItem.getPath(), sRechargeAmount=tostring(nRechargeAmount), sRechargeCount=tostring(nRechargeCount)};
 
 	if Session.IsHost then
 		local sOwner = DB.getOwner(nodeItem);
@@ -246,16 +248,17 @@ function handleItemRecharge(msgOOB)
 	if nodeItem then
 		local aDice = {};
 		local nMod = 0;
-		if msgOOB.nRechargeAmount == RECHARGE_NORMAL then
+		local nRechargeAmount = tonumber(msgOOB.sRechargeAmount);
+		if nRechargeAmount == RECHARGE_NORMAL then
 			aDice = DB.getValue(nodeItem, "rechargedice", {});
 			nMod = DB.getValue(nodeItem, "rechargebonus");
-		elseif msgOOB.nRechargeAmount == RECHARGE_FULL then
+		elseif nRechargeAmount == RECHARGE_FULL then
 			nMod = DB.getValue(nodeItem, "prepared");
 		end
 		local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
 		local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
 		for index=1,DB.getValue(nodeItem, "count", 0) do
-			for count=1,(msgOOB.nRechargeCount or 1) do
+			for count=1,(tonumber(msgOOB.sRechargeCount) or 1) do
 				ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
 			end
 		end
