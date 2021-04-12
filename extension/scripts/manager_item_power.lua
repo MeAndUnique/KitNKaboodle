@@ -178,11 +178,18 @@ function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 end
 
 function canRecharge(nodeItem)
-	local bItemExists = DB.getValue(nodeItem, "count", 0) > 0;
-	local isIdentified = DB.getValue(nodeItem, "isidentified", 1) == 1;
-	local hasCharges = DB.getValue(nodeItem, "prepared", 0) > 0;
-	local bFinitePeriod = DB.getValue(nodeItem, "rechargeperiod", "") ~= "";
-	return bItemExists and isIdentified and hasCharges and bFinitePeriod;
+	if (DB.getValue(nodeItem, "prepared", 0) > 0)
+	and (DB.getValue(nodeItem, "rechargeperiod", "") ~= "")
+	and (DB.getValue(nodeItem, "isidentified", 1) == 1)
+	and (DB.getValue(nodeItem, "count", 0) > 0) then
+		for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
+			if DB.getValue(nodePower, "cast", 0) > 0 then
+				return true;
+			end
+		end
+	end
+
+	return false;
 end
 
 function getRechargeAmount(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
@@ -215,7 +222,7 @@ function calculateDailyRecharge(nodeItem, nCurrentTimeOfDay, nElapsedDays)
 		local nRechargeTimeOfDay = MIDNIGHT_TIME_OF_DAY;
 	end
 
-	local nTolerance = 1e-15; -- Less than a tenth of a billionth of a seccond by Earth measure
+	local nTolerance = 1e-10; -- Less than a thousandth of a seccond by Earth measure
 	local nCount, nElapsedRemainder = math.modf(nElapsedDays); -- Recharge at least once for each full day that has past
 	nElapsedRemainder = nElapsedRemainder - nTolerance; -- Account for the previous time being the recharge time.
 	if math.abs(nCurrentTimeOfDay - nRechargeTimeOfDay) < nTolerance then
