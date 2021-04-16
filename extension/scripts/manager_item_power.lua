@@ -130,7 +130,7 @@ function onTimeChanged(nodeDateInMinutes)
 	local nNewDateInMinutes = nodeDateInMinutes.getValue();
 	local nPreviousDateInMinutes = tonumber(DB.getValue("calendar.dateinminutesstring", ""));
 
-	if nNewDateInMinutes <= nPreviousDateInMinutes then
+	if not nNewDateInMinutes or not nPreviousDateInMinutes or nNewDateInMinutes <= nPreviousDateInMinutes then
 		return;
 	end
 	local nElapsedDays = TimeManager.convertMinutestoDays(nNewDateInMinutes - nPreviousDateInMinutes);
