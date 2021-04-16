@@ -229,26 +229,26 @@
 			</basicnumber>
 			<button_stringcycler name="rechargeperiod">
 				<script>
-					local initialize2Original;
+					local initializeOriginal;
 					function onInit()
 						if super then
-							initialize2Original = super.initialize2;
-							super.initialize2 = initialize2;
+							initializeOriginal = super.initialize;
+							super.initialize = initialize;
 							if super.onInit then
 								super.onInit();
 							end
 						end
 					end
-					function initialize2(sLabels, sValues, sDefaultLabel, sInitialValue)
+					function initialize(sLabels, sValues, sDefaultLabel, sInitialValue)
 						if ExtendedRest then
-							sLabels = sLabels .. "|extended_rest_label";
+							sLabels = sLabels .. "|" .. Interface.getString("extended_rest_label");
 							sValues = sValues .. "|extended";
 						end
 						if LongTermEffects then
-							sLabels = sLabels .. "|item_recharge_daily";
+							sLabels = sLabels .. "|" .. Interface.getString("item_recharge_daily");
 							sValues = sValues .. "|daily";
 						end
-						initialize2Original(sLabels, sValues, sDefaultLabel, sInitialValue);
+						initializeOriginal(sLabels, sValues, sDefaultLabel, sInitialValue);
 					end
 				</script>
 				<anchored to="prepared" width="60" height="20">

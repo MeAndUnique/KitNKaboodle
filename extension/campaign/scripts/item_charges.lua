@@ -19,6 +19,7 @@ end
 function update(bLocked)
 	prepared.setReadOnly(bLocked);
 	rechargeperiod.setReadOnly(bLocked);
+	rechargetime.setReadOnly(bLocked);
 	rechargedice.setReadOnly(bLocked);
 	rechargebonus.setReadOnly(bLocked);
 
