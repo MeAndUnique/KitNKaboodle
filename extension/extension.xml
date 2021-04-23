@@ -22,6 +22,7 @@
 		<includefile source="campaign/record_item.xml" />
 		<includefile source="campaign/record_item_actions.xml" />
 		<includefile source="campaign/record_npc.xml" />
+		<includefile source="campaign/template_item.xml" />
 		<includefile source="ct/ct_host.xml" />
 		
 		<icon name="KNK_icon" file="icons/KitNKaboodle.png" />

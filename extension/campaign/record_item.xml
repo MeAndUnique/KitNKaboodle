@@ -102,24 +102,7 @@
 		<script file="campaign/scripts/item_actions.lua" />
 		<sheetdata>
 			<item_charge_tracker name="chargetracker" />
-			<label_charframetop name="chargestitle">
-				<script>
-					function onClickDown()
-						return true;
-					end
-					
-					function onClickRelease()
-						local bVisible = window.charges.isVisible();
-						if bVisible then
-							setFont("subwindowsmalltitle_disabled");
-							window.charges.setVisible(false);
-						else
-							setFont("subwindowsmalltitle");
-							window.charges.setVisible(true);
-						end
-						return true;
-					end
-				</script>
+			<label_itemframetop name="chargestitle">
 				<anchored height="20">
 					<top offset="10" />
 					<left offset="15" />
@@ -127,7 +110,8 @@
 				</anchored>
 				<static textres="item_label_charges" />
 				<icons>char_powers</icons>
-			</label_charframetop>
+				<target>charges</target>
+			</label_itemframetop>
 
 			<subwindow name="charges">
 				<class>item_charges</class>
@@ -140,24 +124,7 @@
 				<fastinit />
 			</subwindow>
 
-			<label_charframetop name="powerstitle">
-				<script>
-					function onClickDown()
-						return true;
-					end
-					
-					function onClickRelease()
-						local bVisible = window.powerlist.isVisible();
-						if bVisible then
-							setFont("subwindowsmalltitle_disabled");
-							window.powerlist.setVisible(false);
-						else
-							setFont("subwindowsmalltitle");
-							window.powerlist.setVisible(true);
-						end
-						return true;
-					end
-				</script>
+			<label_itemframetop name="powerstitle">
 				<anchored height="20">
 					<top parent="charges" anchor="bottom" offset="10" />
 					<left offset="15" />
@@ -166,7 +133,7 @@
 				<static textres="char_label_powers" />
 				<icons>char_powers</icons>
 				<target>powerlist</target>
-			</label_charframetop>
+			</label_itemframetop>
 
 			<button_iedit name="powerlist_iedit">
 				<anchored to="powerstitle" position="insidetopright" offset="0,0" />
@@ -212,6 +179,16 @@
 				<allowdelete />
 				<footer>footer_wide</footer>
 			</windowlist>
+
+			<label_itemframetop name="miscstitle">
+				<anchored height="20">
+					<top parent="charges" anchor="bottom" offset="10" />
+					<left offset="15" />
+					<right offset="-10" />
+				</anchored>
+				<static textres="char_label_powers" />
+				<icons>char_notes</icons>
+			</label_itemframetop>
 		</sheetdata>
 	</windowclass>
 
@@ -291,6 +268,19 @@
 				<anchored to="label_plus" position="righthigh" offset="2,0" width="35" height="20" />
 				<hideonvalue>0</hideonvalue>
 			</basicnumber>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_misc">
+		<margins control="0,0,0,5" />
+		<sheetdata>
+			<label name="groupingLabel">
+				<anchored position="insidetopleft" width="60" offset="5,2" />
+				<static textres="item_use_charges" />
+			</label>
+			<button_checkbox name="usegroup">
+				<anchored to="groupinglabel" position="right" offset="5" width="30" />
+			</button_checkbox>
 		</sheetdata>
 	</windowclass>
 </root>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<template name="label_itemframetop">	
+		<label_charframetop>
+			<script>
+				local targetControl;
+				function onInit()
+					if target then
+						targetControl = window[target[1]];
+					end
+				end
+				function onClickDown()
+					return true;
+				end
+				function onClickRelease()
+					if not targetControl then
+						return true;
+					end
+					local bVisible = targetControl.isVisible();
+					if bVisible then
+						setFont("subwindowsmalltitle_disabled");
+						targetControl.setVisible(false);
+					else
+						setFont("subwindowsmalltitle");
+						targetControl.setVisible(true);
+					end
+					return true;
+				end
+			</script>
+		</label_charframetop>
+	</template>
+</root>
