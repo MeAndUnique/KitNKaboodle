@@ -16,7 +16,6 @@ function onInit()
 end
 
 function onClose()
-	local nodePower = getDatabaseNode();
 	DB.removeHandler(nodePower.getPath("name"), "onUpdate", onPowerUpdate);
 	DB.removeHandler(nodePower.getPath("group"), "onUpdate", onPowerUpdate);
 	DB.removeHandler(nodePower.getPath("actions"), "onChildUpdate", onActionUpdate);

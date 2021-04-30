@@ -4,6 +4,7 @@
 --
 
 OOB_MSGTYPE_RECHARGE_ITEM = "rechargeitem";
+OOB_MSGTYPE_CREATE_ITEM_GROUP = "createitemgroup";
 
 RECHARGE_NONE = 0;
 RECHARGE_NORMAL = 1;
@@ -25,6 +26,7 @@ local addEquippedSpellPCOriginal;
 -- Initialization
 function onInit()
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
+	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_CREATE_ITEM_GROUP, handleItemGroupCreation);
 	ActionsManager.registerResultHandler("rechargeitem", onRechargeRoll);
 
 	if Session.IsHost then
@@ -172,9 +174,8 @@ function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 				end
 			end
 		end
+		handleItemRecharge(messageOOB);
 	end
-	
-	handleItemRecharge(messageOOB);
 end
 
 function canRecharge(nodeItem)
@@ -304,4 +305,42 @@ function shouldShowItemPowers(itemNode)
 	return DB.getValue(itemNode, "carried", 0) == 2 and
 		DB.getValue(itemNode, "isidentified", 1) == 1 and
 		DB.getChildCount(itemNode, "powers") ~= 0;
+end
+
+function beginCreatingItemGroup(sCharPath, sGroup)
+	local msgOOB = {type=OOB_MSGTYPE_CREATE_ITEM_GROUP, sChar=sCharPath, sGroup=sGroup};
+	if not Session.IsHost then
+		Comm.deliverOOBMessage(messageOOB, sOwner);
+	else
+		handleItemGroupCreation(msgOOB)
+	end
+end
+
+function handleItemGroupCreation(msgOOB)
+	Debug.chat(msgOOB);
+	local nodeChar = DB.findNode(msgOOB.sChar);
+	Debug.chat(nodeChar);
+	if not nodeChar then
+		return;
+	end
+
+	local nodeGroups = nodeChar.getChild("itemgroups");
+	Debug.chat(nodeGroups);
+	if nodeGroups then
+		for _,nodeGroup in pairs(nodeGroups.getChildren()) do
+			if DB.getValue(nodeGroup, "name", "") == msgOOB.sGroup then
+				Debug.chat("nani");
+				return;
+			end
+		end
+	else
+		nodeGroups = nodeChar.createChild("itemgroups");
+	end
+	Debug.chat(nodeGroups);
+
+	local nodeGroup = nodeGroups.createChild();
+	Debug.chat(nodeGroup);
+	if nodeGroup then
+		DB.setValue(nodeGroup, "name", "string", msgOOB.sGroup);
+	end
 end

@@ -182,13 +182,24 @@
 
 			<label_itemframetop name="miscstitle">
 				<anchored height="20">
-					<top parent="charges" anchor="bottom" offset="10" />
+					<top parent="powerlist" anchor="bottom" offset="10" />
 					<left offset="15" />
 					<right offset="-10" />
 				</anchored>
-				<static textres="char_label_powers" />
+				<static textres="item_label_miscellaneous" />
 				<icons>char_notes</icons>
+				<target>misc</target>
 			</label_itemframetop>
+			<subwindow name="misc">
+				<class>item_general</class>
+				<anchored>
+					<top parent="miscstitle" anchor="bottom" offset="5" />
+					<left offset="5" />
+					<right offset="-5" />
+				</anchored>
+				<activate />
+				<fastinit />
+			</subwindow>
 		</sheetdata>
 	</windowclass>
 
@@ -271,16 +282,19 @@
 		</sheetdata>
 	</windowclass>
 
-	<windowclass name="item_misc">
+	<windowclass name="item_general">
 		<margins control="0,0,0,5" />
 		<sheetdata>
-			<label name="groupingLabel">
-				<anchored position="insidetopleft" width="60" offset="5,2" />
-				<static textres="item_use_charges" />
+			<label name="label_displaygroup">
+				<anchored position="insidetopleft" width="90" offset="5,2" />
+				<static textres="item_label_display_group" />
 			</label>
-			<button_checkbox name="usegroup">
-				<anchored to="groupinglabel" position="right" offset="5" width="30" />
-			</button_checkbox>
+			<simplestring name="displaygroup">
+				<anchored to="label_displaygroup" position="right" offset="5" width="120" />
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<delaykeyupdate />
+			</simplestring>
 		</sheetdata>
 	</windowclass>
 </root>

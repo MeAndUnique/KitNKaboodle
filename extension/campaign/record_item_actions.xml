@@ -124,7 +124,7 @@
 					<top />
 					<left anchor="right" relation="relative" offset="5" />
 				</anchored>
-				<static textres="power_label_effective_group" />
+				<static textres="item_label_effective_group" />
 			</label>
 			<simplestring name="group">
 				<anchored>
@@ -333,93 +333,4 @@
 	</windowclass>
 
 	<windowclass name="empty" />
-
-	<template name="button_itemaction">
-		<button_roll>
-			<script>
-				function action(draginfo)
-					local nodeAction = window.getDatabaseNode();
-					ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
-					PowerManager.performPCPowerAction(draginfo, nodeAction, subroll and subroll[1])
-					ActorManagerKNK.endResolvingItem();
-				end
-
-				function onButtonPress(x, y)
-					action();
-				end
-				
-				function onDragStart(button, x, y, draginfo)
-					action(draginfo);
-					return true;
-				end
-			</script>
-		</button_roll>
-	</template>
-
-	<template name="string_item_poweractionview">
-		<stringcontrol>
-			<frame name="fieldlight" offset="7,5,7,5" />
-			<multilinespacing>20</multilinespacing>
-			<font>sheettext</font>
-			<center />
-			<nodrag />
-			<readonly />
-			<cursor hover="hand" />
-			<script>
-				function action(draginfo)
-					local nodeAction = window.getDatabaseNode();
-					ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
-					PowerManager.performPCPowerAction(draginfo, nodeAction, subroll and subroll[1])
-					ActorManagerKNK.endResolvingItem();
-				end
-
-				function onDoubleClick(x, y)
-					action();
-					return true;
-				end
-				
-				function onDragStart(button, x, y, draginfo)
-					action(draginfo);
-					return true;
-				end
-			</script>
-		</stringcontrol>
-	</template>
-
-	<template name="item_charge_tracker">
-		<genericcontrol>
-			<anchored position="insidetopleft" width="0" height="0" />
-			<script>
-				function onInit()
-					local node = window.getDatabaseNode();
-					onChargesChanged();
-					DB.addHandler(node.getPath("count"), "onUpdate", onChargesChanged);
-					DB.addHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
-					DB.addHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-				end
-				function onClose()
-					local node = window.getDatabaseNode();
-					DB.removeHandler(node.getPath("count"), "onUpdate", onChargesChanged);
-					DB.removeHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
-					DB.removeHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-				end
-				function onChargesChanged()
-					local node = window.getDatabaseNode();
-					local nTotal = DB.getValue(node, "prepared", 0) * DB.getValue(node, "count", 1);
-					local nUsed = countCharges();
-					for _, win in ipairs(window.powerlist.getWindows()) do
-						win.updateUses(nTotal, nUsed);
-					end
-				end
-				function countCharges()
-					local node = window.getDatabaseNode();
-					local nCount = 0;
-					for _,powerNode in pairs(DB.getChildren(node.getPath("powers"))) do
-						nCount = nCount + DB.getValue(powerNode, "cast", 0);
-					end
-					return nCount;
-				end
-			</script>
-		</genericcontrol>
-	</template>
 </root>
