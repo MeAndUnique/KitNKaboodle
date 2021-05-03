@@ -49,11 +49,6 @@
 				end
 				function countCharges()
 					local node = window.getDatabaseNode();
-					if not node then
-						Debug.chat(window);
-						Debug.printstack();
-					end
-					Debug.chat(node);
 					local nCount = 0;
 					for _,powerNode in pairs(DB.getChildren(node.getPath("powers"))) do
 						nCount = nCount + DB.getValue(powerNode, "cast", 0);

@@ -27,7 +27,7 @@
 				</anchored>
 				<isdefault />
 				<skipempty />
-				<datasource>.itemgroups</datasource>
+				<!-- <datasource>.itemgroups</datasource> -->
 				<!-- <datasource>.inventorylist</datasource> -->
 				<class>char_grouped_item_group</class>
 				<!-- <class>char_direct_item_group</class> -->

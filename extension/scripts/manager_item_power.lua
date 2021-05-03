@@ -317,29 +317,23 @@ function beginCreatingItemGroup(sCharPath, sGroup)
 end
 
 function handleItemGroupCreation(msgOOB)
-	Debug.chat(msgOOB);
 	local nodeChar = DB.findNode(msgOOB.sChar);
-	Debug.chat(nodeChar);
 	if not nodeChar then
 		return;
 	end
 
 	local nodeGroups = nodeChar.getChild("itemgroups");
-	Debug.chat(nodeGroups);
 	if nodeGroups then
 		for _,nodeGroup in pairs(nodeGroups.getChildren()) do
 			if DB.getValue(nodeGroup, "name", "") == msgOOB.sGroup then
-				Debug.chat("nani");
 				return;
 			end
 		end
 	else
 		nodeGroups = nodeChar.createChild("itemgroups");
 	end
-	Debug.chat(nodeGroups);
 
 	local nodeGroup = nodeGroups.createChild();
-	Debug.chat(nodeGroup);
 	if nodeGroup then
 		DB.setValue(nodeGroup, "name", "string", msgOOB.sGroup);
 	end

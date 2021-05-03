@@ -7,7 +7,8 @@ local nodeChar;
 local bIsDefault = false;
 local loadedItems = {};
 local groupsForItems = {};
-local pendingItemGroups = {};
+local pendingItemsByGroupName = {};
+local pendingItemsByItemNode = {};
 
 -- Initialization
 function onInit()
@@ -16,12 +17,14 @@ function onInit()
 	end
 
 	nodeChar = window.getDatabaseNode();
-	-- Debug.chat(nodeChar)
 	DB.addHandler(nodeChar.getPath("inventorylist.*"), "onAdd", onItemAdded);
 	DB.addHandler(nodeChar.getPath("inventorylist.*"), "onDelete", onItemDeleted);
 
 	DB.addHandler(nodeChar.getPath("inventorylist.*.name"), "onUpdate", onNameChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.displayGroup"), "onUpdate", onDisplayGroupChanged);
+	
+	-- DB.addHandler(nodeChar.getPath("itemgroups.*.name"), "onAdd", onGroupNamed);
+	DB.addHandler(nodeChar.getPath("itemgroups.*.name"), "onUpdate", onGroupNamed);
 
 	-- DB.addHandler(nodeChar.getPath("inventorylist.*.carried"), "onUpdate", onFilteredValueChanged);
 	-- DB.addHandler(nodeChar.getPath("inventorylist.*.isIdentified"), "onUpdate", onFilteredValueChanged);
@@ -34,17 +37,36 @@ function onInit()
 	-- DB.addHandler(nodePower.getPath("actions"), "onChildDeleted", onActionUpdate);
 	-- processPower();
 
+	for _,nodeGroup in pairs(DB.getChildren(nodeChar, "itemgroups")) do
+		local sName = DB.getValue(nodeGroup, "name", "");
+		if sName ~= "" then
+			local windowGroup = createWindow(nodeGroup);
+			initializeItemGroup(windowGroup, sName);
+		end
+	end
+
 	for _,nodeItem in pairs(DB.getChildren(nodeChar, "inventorylist")) do
 		onItemAdded(nodeItem);
 	end
 end
 
+function onClose()
+	DB.removeHandler(nodeChar.getPath("inventorylist.*"), "onAdd", onItemAdded);
+	DB.removeHandler(nodeChar.getPath("inventorylist.*"), "onDelete", onItemDeleted);
+
+	DB.removeHandler(nodeChar.getPath("inventorylist.*.name"), "onUpdate", onNameChanged);
+	DB.removeHandler(nodeChar.getPath("inventorylist.*.displaygroup"), "onUpdate", onDisplayGroupChanged);
+	
+	DB.removeHandler(nodeChar.getPath("itemgroups.*.name"), "onAdd", onGroupNamed);
+end
+
 function onFilter(instance)
 	local sClass = instance.getClass();
+	Debug.chat("filtering group", sClass);
 	if "char_direct_item_group" == sClass then
-		filterDirectItem(instance);
+		return filterDirectItem(instance);
 	elseif "char_grouped_item_group" == sClass then
-		filterItemGroup(instance);
+		return filterItemGroup(instance);
 	end
 end
 
@@ -57,19 +79,27 @@ function filterItemGroup(instance)
 	return instance.shouldBeShown();
 end
 
+function onGroupNamed(nodeName)
+	local nodeGroup = nodeName.getChild("..");
+	local windowGroup = createWindow(nodeGroup);
+	Debug.chat("group named", nodeGroup, nodeName.getValue());
+	initializeItemGroup(windowGroup, nodeName.getValue());
+end
+
 function onItemAdded(nodeItem)
-	Debug.chat("added", nodeItem);
 	local sGroup = getItemGroupName(nodeItem);
 	setItemGroup(nodeItem, sGroup);
 	-- loadedItems[nodeItem] = createWindow(nodeItem);
 end
 
 function onItemDeleted(nodeItem)
+	Debug.chat("deleting item", nodeItem);
 	local windowGroup = groupsForItems[nodeItem];
-	Debug.chat("deleted", windowGroup);
 	if windowGroup then
 		windowGroup.removeItem(nodeItem);
 		groupsForItems[nodeItem] = nil;
+	else
+		Debug.chat("crap");
 	end
 	-- if loadedItems[nodeItem] then
 	-- 	loadedItems[nodeItem] = nil;
@@ -81,14 +111,12 @@ function onFilteredValueChanged(node)
 end
 
 function onNameChanged(nodeName)
-	Debug.chat("name", nodeName);
 	local nodeItem = nodeName.getChild("..");
 	local sGroup = getItemGroupName(nodeItem);
 	setItemGroup(nodeItem, sGroup);
 end
 
 function onDisplayGroupChanged(nodeDisplayGroup)
-	Debug.chat("display", nodeDisplayGroup);
 	local nodeItem = nodeDisplayGroup.getChild("..");
 	local sGroup = getItemGroupName(nodeItem);
 	setItemGroup(nodeItem, sGroup);
@@ -110,8 +138,13 @@ function getItemGroupName(nodeItem)
 end
 
 function setItemGroup(nodeItem, sGroup)
-	local windowGroup = groupsForItems[sGroup];
-	if windowGroup then
+	if sGroup == "" then
+		sGroup = "<< Unnamed Items >>";
+	end
+
+	local windowGroup = groupsForItems[nodeItem];
+	if windowGroup and type(windowgroup) == "windowinstance" then
+		Debug.chat("type check", type(windowGroup));
 		if windowGroup.name.getValue() == sGroup then
 			return; -- Already in the correct group
 		else
@@ -120,33 +153,45 @@ function setItemGroup(nodeItem, sGroup)
 	end
 
 	windowGroup = getLoadedGroups()[sGroup];
-	if windowGroup then
-		windowGroup.addItem(nodeItem);
+	Debug.chat("found window", sGroup, windowGroup);
+	if windowGroup and type(windowgroup) == "windowinstance" then
+		Debug.chat("sanity");
 		groupsForItems[nodeItem] = windowGroup;
+		windowGroup.addItem(nodeItem);
 	else
-		Debug.chat("pending", nodeItem);
+		local rPreviouslyPending = pendingItemsByItemNode[nodeItem];
+		if rPreviouslyPending then
+			Debug.chat("previously pending", rPreviouslyPending);
+			table.remove(pendingItemsByGroupName[rPreviouslyPending.sGroup], rPreviouslyPending.nIndex);
+		end
+
 		-- TODO top vs bottom
-		local pendingItems = pendingItemGroups[sGroup];
+		local pendingItems = pendingItemsByGroupName[sGroup];
 		if not pendingItems then
 			pendingItems = {};
-			pendingItemGroups[sGroup] = pendingItems;
+			pendingItemsByGroupName[sGroup] = pendingItems;
 		end
 		table.insert(pendingItems, nodeItem);
+		pendingItemsByItemNode[nodeItem] = {sGroup = sGroup, nIndex = #pendingItems};
 		ItemPowerManager.beginCreatingItemGroup(nodeItem.getChild("...").getPath(), sGroup);
 	end
 end
 
-function initializeItemGroup(windowGroup)
-	local sGroup = DB.getValue(getDatabaseNode(), "name", "");
-	pendingItemGroups[sGroup] = nil;
-	local pendingItems = pendingItemGroups[sGroup];
+function initializeItemGroup(windowGroup, sGroup)
+	Debug.chat("looking", sGroup);
+	local pendingItems = pendingItemsByGroupName[sGroup];
+	pendingItemsByGroupName[sGroup] = nil;
 
-	Debug.chat(pendingItems);
+	Debug.chat("pending", pendingItems);
 	if pendingItems then
-		for _,itemNode in ipairs(pendingItems) do
+		for _,nodeItem in ipairs(pendingItems) do
+			Debug.chat("addressing", nodeItem);
 			windowGroup.addItem(nodeItem);
+			pendingItemsByItemNode[nodeItem] = nil;
+			groupsForItems[nodeItem] = windowGroup;
 		end
 	end
 
 	getLoadedGroups()[sGroup] = windowGroup;
+	Debug.chat("loaded groups", getLoadedGroups());
 end
