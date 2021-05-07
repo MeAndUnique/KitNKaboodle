@@ -48,6 +48,15 @@ function onInit()
 			EquippedEffectsManager.addEquippedSpellPC = addEquippedSpellPC;
 		end
 	end
+
+	-- TODO remove
+    Comm.registerSlashHandler("cg", clearGroups);
+end
+
+function clearGroups()
+	for _,nodeChar in pairs(DB.getChildren("charsheet")) do
+		DB.deleteChild(nodeChar, "itemgroups");
+	end
 end
 
 function onClose()

@@ -48,7 +48,11 @@ function removeItem(nodeItem)
 		removeHandlers(nodeItem);
 		itemPowers[nodeItem] = nil;
 
-		if (#itemPowers == 0) and (name.getValue() ~= "<< Unnamed Items >>") then
+		local nCount = 0;
+		for _,_ in pairs(itemPowers) do
+			nCount = nCount + 1;
+		end
+		if (nCount == 0) and (name.getValue() ~= "<< Unnamed Items >>") then
 			getDatabaseNode().delete();
 		else
 			updateLink();
@@ -133,10 +137,12 @@ function addHandlers(nodeItem)
 end
 
 function removeHandlers(nodeItem)
-	DB.removeHandler(nodeItem.getPath("carried"), "onUpdate", onFilteredValueChanged);
-	DB.removeHandler(nodeItem.getPath("isidentified"), "onUpdate", onFilteredValueChanged);
-	DB.removeHandler(nodeItem.getPath("powers.*.name"), "onAdd", onPowerListChanged);
-	DB.removeHandler(nodeItem.getPath("powers.*.name"), "onDelete", onPowerListChanged);
+	if type(nodeItem) == "databasenode" then
+		DB.removeHandler(nodeItem.getPath("carried"), "onUpdate", onFilteredValueChanged);
+		DB.removeHandler(nodeItem.getPath("isidentified"), "onUpdate", onFilteredValueChanged);
+		DB.removeHandler(nodeItem.getPath("powers.*.name"), "onAdd", onPowerListChanged);
+		DB.removeHandler(nodeItem.getPath("powers.*.name"), "onDelete", onPowerListChanged);
+	end
 end
 
 function onFilteredValueChanged(node)

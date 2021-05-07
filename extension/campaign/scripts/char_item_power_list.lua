@@ -5,7 +5,6 @@
 
 local nodeChar;
 local bIsDefault = false;
-local loadedItems = {};
 local groupsForItems = {};
 local pendingItemsByGroupName = {};
 local pendingItemsByItemNode = {};
@@ -21,7 +20,7 @@ function onInit()
 	DB.addHandler(nodeChar.getPath("inventorylist.*"), "onDelete", onItemDeleted);
 
 	DB.addHandler(nodeChar.getPath("inventorylist.*.name"), "onUpdate", onNameChanged);
-	DB.addHandler(nodeChar.getPath("inventorylist.*.displayGroup"), "onUpdate", onDisplayGroupChanged);
+	DB.addHandler(nodeChar.getPath("inventorylist.*.displaygroup"), "onUpdate", onDisplayGroupChanged);
 	
 	-- DB.addHandler(nodeChar.getPath("itemgroups.*.name"), "onAdd", onGroupNamed);
 	DB.addHandler(nodeChar.getPath("itemgroups.*.name"), "onUpdate", onGroupNamed);
@@ -89,21 +88,15 @@ end
 function onItemAdded(nodeItem)
 	local sGroup = getItemGroupName(nodeItem);
 	setItemGroup(nodeItem, sGroup);
-	-- loadedItems[nodeItem] = createWindow(nodeItem);
 end
 
 function onItemDeleted(nodeItem)
 	Debug.chat("deleting item", nodeItem);
 	local windowGroup = groupsForItems[nodeItem];
-	if windowGroup then
+	if type(windowGroup) == "windowinstance" then
 		windowGroup.removeItem(nodeItem);
-		groupsForItems[nodeItem] = nil;
-	else
-		Debug.chat("crap");
 	end
-	-- if loadedItems[nodeItem] then
-	-- 	loadedItems[nodeItem] = nil;
-	-- end
+	groupsForItems[nodeItem] = nil;
 end
 
 function onFilteredValueChanged(node)
@@ -143,7 +136,8 @@ function setItemGroup(nodeItem, sGroup)
 	end
 
 	local windowGroup = groupsForItems[nodeItem];
-	if windowGroup and type(windowgroup) == "windowinstance" then
+	Debug.chat("setting item", nodeItem, windowGroup);
+	if type(windowGroup) == "windowinstance" then
 		Debug.chat("type check", type(windowGroup));
 		if windowGroup.name.getValue() == sGroup then
 			return; -- Already in the correct group
@@ -152,19 +146,19 @@ function setItemGroup(nodeItem, sGroup)
 		end
 	end
 
+	local rPreviouslyPending = pendingItemsByItemNode[nodeItem];
+	if rPreviouslyPending then
+		Debug.chat("previously pending", rPreviouslyPending);
+		table.remove(pendingItemsByGroupName[rPreviouslyPending.sGroup], rPreviouslyPending.nIndex);
+	end
+
 	windowGroup = getLoadedGroups()[sGroup];
 	Debug.chat("found window", sGroup, windowGroup);
-	if windowGroup and type(windowgroup) == "windowinstance" then
+	if type(windowGroup) == "windowinstance" then
 		Debug.chat("sanity");
 		groupsForItems[nodeItem] = windowGroup;
 		windowGroup.addItem(nodeItem);
 	else
-		local rPreviouslyPending = pendingItemsByItemNode[nodeItem];
-		if rPreviouslyPending then
-			Debug.chat("previously pending", rPreviouslyPending);
-			table.remove(pendingItemsByGroupName[rPreviouslyPending.sGroup], rPreviouslyPending.nIndex);
-		end
-
 		-- TODO top vs bottom
 		local pendingItems = pendingItemsByGroupName[sGroup];
 		if not pendingItems then
