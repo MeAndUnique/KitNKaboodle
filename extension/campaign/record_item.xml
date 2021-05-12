@@ -101,25 +101,7 @@
 	<windowclass name="item_actions">
 		<script file="campaign/scripts/item_actions.lua" />
 		<sheetdata>
-			<item_charge_tracker name="chargetracker" />
-			<label_charframetop name="chargestitle">
-				<script>
-					function onClickDown()
-						return true;
-					end
-					
-					function onClickRelease()
-						local bVisible = window.charges.isVisible();
-						if bVisible then
-							setFont("subwindowsmalltitle_disabled");
-							window.charges.setVisible(false);
-						else
-							setFont("subwindowsmalltitle");
-							window.charges.setVisible(true);
-						end
-						return true;
-					end
-				</script>
+			<label_itemframetop name="chargestitle">
 				<anchored height="20">
 					<top offset="10" />
 					<left offset="15" />
@@ -127,7 +109,8 @@
 				</anchored>
 				<static textres="item_label_charges" />
 				<icons>char_powers</icons>
-			</label_charframetop>
+				<target>charges</target>
+			</label_itemframetop>
 
 			<subwindow name="charges">
 				<class>item_charges</class>
@@ -140,24 +123,7 @@
 				<fastinit />
 			</subwindow>
 
-			<label_charframetop name="powerstitle">
-				<script>
-					function onClickDown()
-						return true;
-					end
-					
-					function onClickRelease()
-						local bVisible = window.powerlist.isVisible();
-						if bVisible then
-							setFont("subwindowsmalltitle_disabled");
-							window.powerlist.setVisible(false);
-						else
-							setFont("subwindowsmalltitle");
-							window.powerlist.setVisible(true);
-						end
-						return true;
-					end
-				</script>
+			<label_itemframetop name="powerstitle">
 				<anchored height="20">
 					<top parent="charges" anchor="bottom" offset="10" />
 					<left offset="15" />
@@ -166,7 +132,7 @@
 				<static textres="char_label_powers" />
 				<icons>char_powers</icons>
 				<target>powerlist</target>
-			</label_charframetop>
+			</label_itemframetop>
 
 			<button_iedit name="powerlist_iedit">
 				<anchored to="powerstitle" position="insidetopright" offset="0,0" />
@@ -192,12 +158,6 @@
 						end
 						return win;
 					end
-					function onListChanged()
-						if super and super.onListChanged then
-							super.onListChanged();
-						end
-						window.chargetracker.onChargesChanged();
-					end
 				</script>
 				<anchored>
 					<top parent="powerstitle" anchor="bottom" offset="5" />
@@ -212,6 +172,27 @@
 				<allowdelete />
 				<footer>footer_wide</footer>
 			</windowlist>
+
+			<label_itemframetop name="miscstitle">
+				<anchored height="20">
+					<top parent="powerlist" anchor="bottom" offset="10" />
+					<left offset="15" />
+					<right offset="-10" />
+				</anchored>
+				<static textres="item_label_miscellaneous" />
+				<icons>char_notes</icons>
+				<target>miscellaneous</target>
+			</label_itemframetop>
+			<subwindow name="miscellaneous">
+				<class>item_general</class>
+				<anchored>
+					<top parent="miscstitle" anchor="bottom" offset="5" />
+					<left offset="5" />
+					<right offset="-5" />
+				</anchored>
+				<activate />
+				<fastinit />
+			</subwindow>
 		</sheetdata>
 	</windowclass>
 
@@ -219,7 +200,6 @@
 		<script file="campaign/scripts/item_charges.lua" />
 		<margins control="0,0,0,5" />
 		<sheetdata>
-			<!-- <item_charge_tracker /> -->
 			<label name="chargesLabel">
 				<anchored position="insidetopleft" width="60" offset="5,2" />
 				<static textres="item_use_charges" />
@@ -291,6 +271,37 @@
 				<anchored to="label_plus" position="righthigh" offset="2,0" width="35" height="20" />
 				<hideonvalue>0</hideonvalue>
 			</basicnumber>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_general">
+		<margins control="0,0,0,5" />
+		<script>
+			function update(bLocked)
+				displaygroup.setReadOnly(bLocked);
+
+				if bLocked then
+					displaygroup.setFrame(nil);
+				else
+					displaygroup.setFrame("fielddark", 7, 5, 7, 5);
+				end
+			end
+		</script>
+		<sheetdata>
+			<label name="label_displaygroup">
+				<anchored position="insidetopleft" width="90" offset="5,2" />
+				<static textres="item_label_display_group" />
+			</label>
+			<simplestring name="displaygroup">
+				<anchored to="label_displaygroup" height="20">
+					<left anchor="right" offset="5" />
+					<top />
+					<right parent="" offset="-5" />
+				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<delaykeyupdate />
+			</simplestring>
 		</sheetdata>
 	</windowclass>
 </root>

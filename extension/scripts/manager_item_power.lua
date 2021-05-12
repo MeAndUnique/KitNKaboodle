@@ -4,6 +4,7 @@
 --
 
 OOB_MSGTYPE_RECHARGE_ITEM = "rechargeitem";
+OOB_MSGTYPE_CREATE_ITEM_GROUP = "createitemgroup";
 
 RECHARGE_NONE = 0;
 RECHARGE_NORMAL = 1;
@@ -21,10 +22,12 @@ local resetPowersOriginal;
 local resetHealthOriginal;
 
 local addEquippedSpellPCOriginal;
+local nodeItemBeingEquiped = nil;
 
 -- Initialization
 function onInit()
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
+	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_CREATE_ITEM_GROUP, handleItemGroupCreation);
 	ActionsManager.registerResultHandler("rechargeitem", onRechargeRoll);
 
 	if Session.IsHost then
@@ -90,6 +93,8 @@ end
 function addEquippedSpellPC(nodeActor, nodeCarriedItem, nodeSpell, sName)
 	-- Add the new power if the item has not already been configured.
 	if DB.getChildCount(nodeCarriedItem, "powers") == 0 then
+		nodeItemBeingEquiped = nodeCarriedItem; -- Track that the item is being processed
+
 		-- Grab charge info
 		DB.setValue(nodeCarriedItem, "prepared", "number", DB.getValue(nodeSpell, "prepared", 0));
 		DB.setValue(nodeCarriedItem, "rechargeperiod", "string", DB.getValue(nodeSpell, "rechargeperiod", ""));
@@ -97,8 +102,16 @@ function addEquippedSpellPC(nodeActor, nodeCarriedItem, nodeSpell, sName)
 		DB.setValue(nodeCarriedItem, "rechargedice", "dice", DB.getValue(nodeSpell, "rechargedice", {}));
 		DB.setValue(nodeCarriedItem, "rechargebonus", "number", DB.getValue(nodeSpell, "rechargebonus", 0));
 
+		-- Check to see if it should be grouped.
+		local sSource = DB.getValue(nodeSpell, "source", "");
+		if (sSource == "Potion") or (sSource == "Scroll") or (sSource == "Wand") then
+			DB.setValue(nodeCarriedItem, "displaygroup", "string", sSource .. "s");
+		end
+
 		-- Add the power
 		PowerManager.addPower("power", nodeSpell, nodeCarriedItem);
+		
+		nodeItemBeingEquiped = nil; -- No longer tracking
 	end
 end
 
@@ -172,9 +185,8 @@ function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 				end
 			end
 		end
+		handleItemRecharge(messageOOB);
 	end
-	
-	handleItemRecharge(messageOOB);
 end
 
 function canRecharge(nodeItem)
@@ -300,8 +312,52 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 end
 
 -- Utility functions
-function shouldShowItemPowers(itemNode)
-	return DB.getValue(itemNode, "carried", 0) == 2 and
-		DB.getValue(itemNode, "isidentified", 1) == 1 and
-		DB.getChildCount(itemNode, "powers") ~= 0;
+function shouldShowItemPowers(nodeItem)
+	return DB.getValue(nodeItem, "carried", 0) == 2 and
+		DB.getValue(nodeItem, "isidentified", 1) == 1 and
+		DB.getChildCount(nodeItem, "powers") ~= 0;
+end
+
+function getItemGroupName(nodeItem)
+	local sGroup = DB.getValue(nodeItem, "displaygroup", "");
+	if sGroup == "" then
+		sGroup = DB.getValue(nodeItem, "name", "");
+	end
+	return sGroup;
+end
+
+function isItemBeingEquipped(nodeItem)
+	return nodeItem == nodeItemBeingEquipped;
+end
+
+function beginCreatingItemGroup(sCharPath, sGroup)
+	local messageOOB = {type=OOB_MSGTYPE_CREATE_ITEM_GROUP, sChar=sCharPath, sGroup=sGroup};
+	if not Session.IsHost then
+		Comm.deliverOOBMessage(messageOOB, sOwner);
+	else
+		handleItemGroupCreation(messageOOB)
+	end
+end
+
+function handleItemGroupCreation(msgOOB)
+	local nodeChar = DB.findNode(msgOOB.sChar);
+	if not nodeChar then
+		return;
+	end
+
+	local nodeGroups = nodeChar.getChild("itemgroups");
+	if nodeGroups then
+		for _,nodeGroup in pairs(nodeGroups.getChildren()) do
+			if DB.getValue(nodeGroup, "name", "") == msgOOB.sGroup then
+				return;
+			end
+		end
+	else
+		nodeGroups = nodeChar.createChild("itemgroups");
+	end
+
+	local nodeGroup = nodeGroups.createChild();
+	if nodeGroup then
+		DB.setValue(nodeGroup, "name", "string", msgOOB.sGroup);
+	end
 end

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<template name="button_itemaction">
+		<button_roll>
+			<script>
+				function action(draginfo)
+					local nodeAction = window.getDatabaseNode();
+					ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
+					PowerManager.performPCPowerAction(draginfo, nodeAction, subroll and subroll[1])
+					ActorManagerKNK.endResolvingItem();
+				end
+
+				function onButtonPress(x, y)
+					action();
+				end
+				
+				function onDragStart(button, x, y, draginfo)
+					action(draginfo);
+					return true;
+				end
+			</script>
+		</button_roll>
+	</template>
+
+	<template name="label_itemframetop">	
+		<label_charframetop>
+			<script>
+				local targetControl;
+				function onInit()
+					if super and super.onInit then
+						super.onInit();
+					end
+					if target then
+						targetControl = window[target[1]];
+					end
+				end
+				function onClickDown()
+					return true;
+				end
+				function onClickRelease()
+					if not targetControl then
+						return true;
+					end
+					local bVisible = targetControl.isVisible();
+					if bVisible then
+						setFont("subwindowsmalltitle_disabled");
+						targetControl.setVisible(false);
+					else
+						setFont("subwindowsmalltitle");
+						targetControl.setVisible(true);
+					end
+					return true;
+				end
+			</script>
+		</label_charframetop>
+	</template>
+
+	<template name="string_item_poweractionview">
+		<stringcontrol>
+			<frame name="fieldlight" offset="7,5,7,5" />
+			<multilinespacing>20</multilinespacing>
+			<font>sheettext</font>
+			<center />
+			<nodrag />
+			<readonly />
+			<cursor hover="hand" />
+			<script>
+				function action(draginfo)
+					local nodeAction = window.getDatabaseNode();
+					ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
+					PowerManager.performPCPowerAction(draginfo, nodeAction, subroll and subroll[1])
+					ActorManagerKNK.endResolvingItem();
+				end
+
+				function onDoubleClick(x, y)
+					action();
+					return true;
+				end
+				
+				function onDragStart(button, x, y, draginfo)
+					action(draginfo);
+					return true;
+				end
+			</script>
+		</stringcontrol>
+	</template>
+
+	<template name = "counter_item_power">
+		<counter_power>
+			<script file="campaign/scripts/counter_item_power.lua" />
+		</counter_power>
+	</template>
+</root>

@@ -138,13 +138,6 @@ function update(bNewReadOnly, bNewHideCast)
 	end
 end
 
-function updateUses(nTotal, nUsed)
-	local node = getDatabaseNode();
-	DB.setValue(node, "prepared", "number", nTotal);
-	counter.setVisible(nTotal > 0);
-	counter.update("standard", true, nTotal, nUsed, nTotal);
-end
-
 function getDescription(bShowFull)
 	local node = getDatabaseNode();
 	

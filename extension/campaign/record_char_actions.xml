@@ -19,18 +19,14 @@
 		<sheetdata>
 			<anchor_column name="columnanchor" />
 			<windowlist name="list">
-				<script>
-					function onFilter(instance)
-						local nodeInstance = instance.getDatabaseNode();
-						return ItemPowerManager.shouldShowItemPowers(nodeInstance);
-					end
-				</script>
+				<script file="campaign/scripts/char_item_power_list.lua"/>
 				<anchored>
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="5" />
 					<left />
 					<right />
 				</anchored>
-				<datasource>.inventorylist</datasource>
+				<isdefault />
+				<skipempty />
 				<class>char_item_group</class>
 				<sortby><field>name</field></sortby>
 				<noscroll />
@@ -41,8 +37,8 @@
 
 	<windowclass name="char_item_group">
 		<margins control="0,0,0,5" />
+		<script file="campaign/scripts/char_item_group.lua" />
 		<sheetdata>
-			<item_charge_tracker />
 			<linkcontrol name="shortcut">
 				<anchored width="20" height="20">
 					<top offset="10" />
@@ -93,13 +89,65 @@
 					<left offset="5" />
 					<right />
 				</anchored>
-				<datasource>.powers</datasource>
+				<sortby><field>name</field></sortby>
 				<class>item_power</class>
 				<footer>footer_wide</footer>
 				<readonly />
 				<noscroll />
 				<invisible />
+				<skipempty />
 			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="itemgroup">
+		<frame>charsheethelper</frame>
+		<placement>
+			<size width="300" height="200" />
+		</placement>
+		<nodelete />
+		<playercontrol />
+		<script file="campaign/scripts/itemgroup.lua" />
+		<sheetdata>
+			<windowtitlebar_char name="title" />
+			<anchor_title_charsheethelper name="contentanchor" />
+			<windowlist name="list">
+				<anchored to="contentanchor">
+					<left />
+					<top anchor="bottom" offset="-5" />
+					<right parent="" offset="-25" />
+					<bottom parent="" offset="-25" />
+				</anchored>
+				<sortby><field>name</field></sortby>
+				<skipempty />
+				<class>itemgroup_item</class>
+			</windowlist>
+			<scrollbar_list />
+
+			<resize_charsheethelper />
+			<close_charsheethelper />
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="itemgroup_item">
+		<margins control="0,0,0,5" />
+		<sheetdata>
+			<linkcontrol name="shortcut">
+				<anchored position="insidetopright" offset="-2,0" width="20" height="20" />
+				<class>item</class>
+				<readonly />
+			</linkcontrol>
+			<simplestring name="name">
+				<anchored>
+					<top offset="" />
+					<right parent="shortcut" anchor="left" offset="-10" />
+					<left offset="5" />
+				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<empty textres="library_recordtype_empty_item" />
+				<readonly />
+			</simplestring>
 		</sheetdata>
 	</windowclass>
 </root>
