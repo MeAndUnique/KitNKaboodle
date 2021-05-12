@@ -101,7 +101,6 @@
 	<windowclass name="item_actions">
 		<script file="campaign/scripts/item_actions.lua" />
 		<sheetdata>
-			<item_charge_tracker name="chargetracker" />
 			<label_itemframetop name="chargestitle">
 				<anchored height="20">
 					<top offset="10" />
@@ -159,12 +158,6 @@
 						end
 						return win;
 					end
-					function onListChanged()
-						if super and super.onListChanged then
-							super.onListChanged();
-						end
-						window.chargetracker.onChargesChanged();
-					end
 				</script>
 				<anchored>
 					<top parent="powerstitle" anchor="bottom" offset="5" />
@@ -188,9 +181,9 @@
 				</anchored>
 				<static textres="item_label_miscellaneous" />
 				<icons>char_notes</icons>
-				<target>misc</target>
+				<target>miscellaneous</target>
 			</label_itemframetop>
-			<subwindow name="misc">
+			<subwindow name="miscellaneous">
 				<class>item_general</class>
 				<anchored>
 					<top parent="miscstitle" anchor="bottom" offset="5" />
@@ -207,7 +200,6 @@
 		<script file="campaign/scripts/item_charges.lua" />
 		<margins control="0,0,0,5" />
 		<sheetdata>
-			<!-- <item_charge_tracker /> -->
 			<label name="chargesLabel">
 				<anchored position="insidetopleft" width="60" offset="5,2" />
 				<static textres="item_use_charges" />
@@ -284,13 +276,28 @@
 
 	<windowclass name="item_general">
 		<margins control="0,0,0,5" />
+		<script>
+			function update(bLocked)
+				displaygroup.setReadOnly(bLocked);
+
+				if bLocked then
+					displaygroup.setFrame(nil);
+				else
+					displaygroup.setFrame("fielddark", 7, 5, 7, 5);
+				end
+			end
+		</script>
 		<sheetdata>
 			<label name="label_displaygroup">
 				<anchored position="insidetopleft" width="90" offset="5,2" />
 				<static textres="item_label_display_group" />
 			</label>
 			<simplestring name="displaygroup">
-				<anchored to="label_displaygroup" position="right" offset="5" width="120" />
+				<anchored to="label_displaygroup" height="20">
+					<left anchor="right" offset="5" />
+					<top />
+					<right parent="" offset="-5" />
+				</anchored>
 				<multilinespacing>20</multilinespacing>
 				<nodrag />
 				<delaykeyupdate />

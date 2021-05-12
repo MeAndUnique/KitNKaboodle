@@ -22,43 +22,6 @@
 		</button_roll>
 	</template>
 
-	<template name="item_charge_tracker">
-		<genericcontrol>
-			<anchored position="insidetopleft" width="0" height="0" />
-			<script>
-				function onInit()
-					local node = window.getDatabaseNode();
-					onChargesChanged();
-					DB.addHandler(node.getPath("count"), "onUpdate", onChargesChanged);
-					DB.addHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
-					DB.addHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-				end
-				function onClose()
-					local node = window.getDatabaseNode();
-					DB.removeHandler(node.getPath("count"), "onUpdate", onChargesChanged);
-					DB.removeHandler(node.getPath("prepared"), "onUpdate", onChargesChanged);
-					DB.removeHandler(node.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-				end
-				function onChargesChanged()
-					local node = window.getDatabaseNode();
-					local nTotal = DB.getValue(node, "prepared", 0) * DB.getValue(node, "count", 1);
-					local nUsed = countCharges();
-					for _, win in ipairs(window.powerlist.getWindows()) do
-						win.updateUses(nTotal, nUsed);
-					end
-				end
-				function countCharges()
-					local node = window.getDatabaseNode();
-					local nCount = 0;
-					for _,powerNode in pairs(DB.getChildren(node.getPath("powers"))) do
-						nCount = nCount + DB.getValue(powerNode, "cast", 0);
-					end
-					return nCount;
-				end
-			</script>
-		</genericcontrol>
-	</template>
-
 	<template name="label_itemframetop">	
 		<label_charframetop>
 			<script>
@@ -120,5 +83,11 @@
 				end
 			</script>
 		</stringcontrol>
+	</template>
+
+	<template name = "counter_item_power">
+		<counter_power>
+			<script file="campaign/scripts/counter_item_power.lua" />
+		</counter_power>
 	</template>
 </root>

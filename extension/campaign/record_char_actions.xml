@@ -27,10 +27,7 @@
 				</anchored>
 				<isdefault />
 				<skipempty />
-				<!-- <datasource>.itemgroups</datasource> -->
-				<!-- <datasource>.inventorylist</datasource> -->
-				<class>char_grouped_item_group</class>
-				<!-- <class>char_direct_item_group</class> -->
+				<class>char_item_group</class>
 				<sortby><field>name</field></sortby>
 				<noscroll />
 				<footer>footer_wide</footer>
@@ -38,11 +35,10 @@
 		</sheetdata>
 	</windowclass>
 
-	<windowclass name="char_grouped_item_group">
+	<windowclass name="char_item_group">
 		<margins control="0,0,0,5" />
 		<script file="campaign/scripts/char_item_group.lua" />
 		<sheetdata>
-			<item_charge_tracker />
 			<linkcontrol name="shortcut">
 				<anchored width="20" height="20">
 					<top offset="10" />
@@ -93,7 +89,6 @@
 					<left offset="5" />
 					<right />
 				</anchored>
-				<!-- <datasource>.powers</datasource> -->
 				<sortby><field>name</field></sortby>
 				<class>item_power</class>
 				<footer>footer_wide</footer>
@@ -105,67 +100,54 @@
 		</sheetdata>
 	</windowclass>
 
-	<windowclass name="char_direct_item_group">
+	<windowclass name="itemgroup">
+		<frame>charsheethelper</frame>
+		<placement>
+			<size width="300" height="200" />
+		</placement>
+		<nodelete />
+		<playercontrol />
+		<script file="campaign/scripts/itemgroup.lua" />
+		<sheetdata>
+			<windowtitlebar_char name="title" />
+			<anchor_title_charsheethelper name="contentanchor" />
+			<windowlist name="list">
+				<anchored to="contentanchor">
+					<left />
+					<top anchor="bottom" offset="-5" />
+					<right parent="" offset="-25" />
+					<bottom parent="" offset="-25" />
+				</anchored>
+				<sortby><field>name</field></sortby>
+				<skipempty />
+				<class>itemgroup_item</class>
+			</windowlist>
+			<scrollbar_list />
+
+			<resize_charsheethelper />
+			<close_charsheethelper />
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="itemgroup_item">
 		<margins control="0,0,0,5" />
 		<sheetdata>
-			<item_charge_tracker />
 			<linkcontrol name="shortcut">
-				<anchored width="20" height="20">
-					<top offset="10" />
-					<right offset="-5" />
-				</anchored>
+				<anchored position="insidetopright" offset="-2,0" width="20" height="20" />
 				<class>item</class>
 				<readonly />
 			</linkcontrol>
-			<stringfield name="name">
-				<script>
-					function onInit()
-						if super and super.onInit then
-							super.onInit();
-						end
-
-						local widget = addBitmapWidget("char_inventory");
-						widget.setPosition("topleft", 2, 8);
-					end
-					function onClickDown()
-						return true;
-					end
-					function onClickRelease()
-						local bVisible = window.powerlist.isVisible ();
-						if bVisible then
-							setFont("subwindowsmalltitle_disabled");
-							window.powerlist.setVisible(false);
-						else
-							setFont("subwindowsmalltitle");
-							window.powerlist.setVisible(true);
-						end
-						return true;
-					end
-				</script>
-				<anchored height="20">
-					<top offset="10" />
-					<left offset="15" />
-					<right parent="shortcut" anchor="left" offset="-10" />
-				</anchored>
-				<frame name="metalplate" offset="10,2,10,2"/>
-				<font>subwindowsmalltitle_disabled</font>
-				<center />
-				<nodrag />
-				<readonly />
-			</stringfield>
-			<windowlist name="powerlist">
+			<simplestring name="name">
 				<anchored>
-					<top parent="name" anchor="bottom" offset="5" />
+					<top offset="" />
+					<right parent="shortcut" anchor="left" offset="-10" />
 					<left offset="5" />
-					<right />
 				</anchored>
-				<datasource>.powers</datasource>
-				<class>item_power</class>
-				<footer>footer_wide</footer>
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<empty textres="library_recordtype_empty_item" />
 				<readonly />
-				<noscroll />
-				<invisible />
-			</windowlist>
+			</simplestring>
 		</sheetdata>
 	</windowclass>
 </root>

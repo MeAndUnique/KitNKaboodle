@@ -22,6 +22,7 @@ local resetPowersOriginal;
 local resetHealthOriginal;
 
 local addEquippedSpellPCOriginal;
+local nodeItemBeingEquiped = nil;
 
 -- Initialization
 function onInit()
@@ -47,15 +48,6 @@ function onInit()
 			addEquippedSpellPCOriginal = EquippedEffectsManager.addEquippedSpellPC;
 			EquippedEffectsManager.addEquippedSpellPC = addEquippedSpellPC;
 		end
-	end
-
-	-- TODO remove
-    Comm.registerSlashHandler("cg", clearGroups);
-end
-
-function clearGroups()
-	for _,nodeChar in pairs(DB.getChildren("charsheet")) do
-		DB.deleteChild(nodeChar, "itemgroups");
 	end
 end
 
@@ -101,6 +93,8 @@ end
 function addEquippedSpellPC(nodeActor, nodeCarriedItem, nodeSpell, sName)
 	-- Add the new power if the item has not already been configured.
 	if DB.getChildCount(nodeCarriedItem, "powers") == 0 then
+		nodeItemBeingEquiped = nodeCarriedItem; -- Track that the item is being processed
+
 		-- Grab charge info
 		DB.setValue(nodeCarriedItem, "prepared", "number", DB.getValue(nodeSpell, "prepared", 0));
 		DB.setValue(nodeCarriedItem, "rechargeperiod", "string", DB.getValue(nodeSpell, "rechargeperiod", ""));
@@ -108,8 +102,16 @@ function addEquippedSpellPC(nodeActor, nodeCarriedItem, nodeSpell, sName)
 		DB.setValue(nodeCarriedItem, "rechargedice", "dice", DB.getValue(nodeSpell, "rechargedice", {}));
 		DB.setValue(nodeCarriedItem, "rechargebonus", "number", DB.getValue(nodeSpell, "rechargebonus", 0));
 
+		-- Check to see if it should be grouped.
+		local sSource = DB.getValue(nodeSpell, "source", "");
+		if (sSource == "Potion") or (sSource == "Scroll") or (sSource == "Wand") then
+			DB.setValue(nodeCarriedItem, "displaygroup", "string", sSource .. "s");
+		end
+
 		-- Add the power
 		PowerManager.addPower("power", nodeSpell, nodeCarriedItem);
+		
+		nodeItemBeingEquiped = nil; -- No longer tracking
 	end
 end
 
@@ -310,18 +312,30 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 end
 
 -- Utility functions
-function shouldShowItemPowers(itemNode)
-	return DB.getValue(itemNode, "carried", 0) == 2 and
-		DB.getValue(itemNode, "isidentified", 1) == 1 and
-		DB.getChildCount(itemNode, "powers") ~= 0;
+function shouldShowItemPowers(nodeItem)
+	return DB.getValue(nodeItem, "carried", 0) == 2 and
+		DB.getValue(nodeItem, "isidentified", 1) == 1 and
+		DB.getChildCount(nodeItem, "powers") ~= 0;
+end
+
+function getItemGroupName(nodeItem)
+	local sGroup = DB.getValue(nodeItem, "displaygroup", "");
+	if sGroup == "" then
+		sGroup = DB.getValue(nodeItem, "name", "");
+	end
+	return sGroup;
+end
+
+function isItemBeingEquipped(nodeItem)
+	return nodeItem == nodeItemBeingEquipped;
 end
 
 function beginCreatingItemGroup(sCharPath, sGroup)
-	local msgOOB = {type=OOB_MSGTYPE_CREATE_ITEM_GROUP, sChar=sCharPath, sGroup=sGroup};
+	local messageOOB = {type=OOB_MSGTYPE_CREATE_ITEM_GROUP, sChar=sCharPath, sGroup=sGroup};
 	if not Session.IsHost then
 		Comm.deliverOOBMessage(messageOOB, sOwner);
 	else
-		handleItemGroupCreation(msgOOB)
+		handleItemGroupCreation(messageOOB)
 	end
 end
 

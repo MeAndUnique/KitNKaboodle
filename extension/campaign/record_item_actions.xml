@@ -64,13 +64,13 @@
 				</script>
 			</button_toggledetail>
 
-			<counter_power name="counter">
+			<counter_item_power name="counter">
 				<anchored>
 					<top offset="2" />
 					<left parent="leftanchor" anchor="right" relation="relative" offset="5" />
 				</anchored>
 				<invisible />
-			</counter_power>
+			</counter_item_power>
 
 			<simplestring name="name">
 				<anchored>

@@ -24,6 +24,7 @@ end
 
 function update(bLocked)
 	charges.subwindow.update(bLocked);
+	miscellaneous.subwindow.update(bLocked);
 
 	if bLocked then
 		powerlist_iedit.setValue(0);
