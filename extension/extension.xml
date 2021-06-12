@@ -2,7 +2,7 @@
 <root release="3.0" version="3">
 	<properties>
 		<name>5E - Kit'N'Kaboodle</name>
-		<version>1.3.1</version>
+		<version>1.3.2</version>
 		<loadorder>150</loadorder>
 		<author>MeAndUnique</author>
 		<description>Adds support for adding actions to items and giving items to NPCs.</description>
@@ -24,10 +24,11 @@
 		<includefile source="campaign/record_npc.xml" />
 		<includefile source="campaign/template_item.xml" />
 		<includefile source="ct/ct_host.xml" />
+		<includefile source="graphics/graphics_radial.xml" />
 		
-		<icon name="KNK_icon" file="icons/KitNKaboodle.png" />
+		<icon name="KNK_icon" file="graphics/icons/KitNKaboodle.png" />
 	</base>
 
-	<announcement text="Kit'N'Kaboodle v1.3.1 for 5E by MeAndUnique." icon="KNK_icon" font="emotefont" />
+	<announcement text="Kit'N'Kaboodle v1.3.2 for 5E by MeAndUnique." icon="KNK_icon" font="emotefont" />
 
 </root>

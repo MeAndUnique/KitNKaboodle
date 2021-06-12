@@ -124,13 +124,13 @@ function update(bNewReadOnly, bNewHideCast)
 		name.setFrame("fieldlight", 7, 5, 7, 5);
 		effectivegroup.subwindow.group.setFrame("fieldlight", 7, 5, 7, 5);
 		
-		registerMenuItem(Interface.getString("power_menu_addaction"), "pointer", 3);
+		registerMenuItem(Interface.getString("power_menu_addaction"), "radial_create_action", 3);
 		registerMenuItem(Interface.getString("power_menu_addcast"), "radial_sword", 3, 2);
 		registerMenuItem(Interface.getString("power_menu_adddamage"), "radial_damage", 3, 3);
 		registerMenuItem(Interface.getString("power_menu_addheal"), "radial_heal", 3, 4);
 		registerMenuItem(Interface.getString("power_menu_addeffect"), "radial_effect", 3, 5);
 		
-		registerMenuItem(Interface.getString("power_menu_reparse"), "textlist", 4);
+		registerMenuItem(Interface.getString("power_menu_reparse"), "radial_reparse_spell", 4);
 	end
 
 	for _,win in ipairs(actions.getWindows()) do

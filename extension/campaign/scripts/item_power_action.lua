@@ -17,8 +17,8 @@ function update(bReadOnly, bHideCast)
 	if bReadOnly then
 		resetMenuItems();
 	else
-		registerMenuItem(Interface.getString("power_menu_actiondelete"), "deletepointer", 4);
-		registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
+		registerMenuItem(Interface.getString("power_menu_actiondelete"), "radial_delete_action", 4);
+		registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "radial_delete_action_confirm", 4, 3);
 	end
 
 	details.setVisible(not bReadOnly);
