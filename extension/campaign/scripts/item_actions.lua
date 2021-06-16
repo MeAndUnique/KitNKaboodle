@@ -37,15 +37,6 @@ function update(bLocked)
 	end
 end
 
-function countCharges()
-	local node = getDatabaseNode();
-	local nCount = 0;
-	for _,powerNode in pairs(DB.getChildren(node.getPath("powers"))) do
-		nCount = nCount + DB.getValue(powerNode, "cast", 0);
-	end
-	return nCount;
-end
-
 function onDrop(x, y, draginfo)
 	local node = getDatabaseNode();
 	if draginfo.isType("shortcut") and not WindowManager.getReadOnlyState(node) then

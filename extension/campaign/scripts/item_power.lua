@@ -138,13 +138,11 @@ function update(bNewReadOnly, bNewHideCast)
 	end
 end
 
-function getDescription(bShowFull)
-	local node = getDatabaseNode();
-	
-	local s = DB.getValue(node, "name", "");
+function getDescription(nodePower, bShowFull)
+	local s = DB.getValue(nodePower, "name", "");
 	
 	if bShowFull then
-		local sShort = DB.getValue(node, "shortdescription", "");
+		local sShort = DB.getValue(nodePower, "shortdescription", "");
 		if sShort ~= "" then
 			s = s .. " - " .. sShort;
 		end
@@ -154,6 +152,7 @@ function getDescription(bShowFull)
 end
 
 function usePower(bShowFull)
-	local node = getDatabaseNode();
-	ChatManager.Message(getDescription(bShowFull), true, ActorManager.resolveActor(node.getChild("...")));
+	local nodePower = getDatabaseNode();
+	local nodeItem = nodePower.getChild("...");
+	ChatManager.Message(getDescription(nodePower, bShowFull), true, ActorManager.resolveActor(nodeItem));
 end

@@ -14,6 +14,7 @@ function onInit()
 	local nodeChar = DB.getChild(getDatabaseNode(), "...");
 	DB.addHandler(nodeChar.getPath("inventorylist.*.attune"), "onUpdate", onFilteredValueChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.carried"), "onUpdate", onFilteredValueChanged);
+	DB.addHandler(nodeChar.getPath("inventorylist.*.count"), "onUpdate", onFilteredValueChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.isidentified"), "onUpdate", onFilteredValueChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onAdd", onPowerListChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onDelete", onPowerListChanged);
@@ -23,6 +24,7 @@ function onClose()
 	local nodeChar = DB.getChild(getDatabaseNode(), "...");
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.attune"), "onUpdate", onFilteredValueChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.carried"), "onUpdate", onFilteredValueChanged);
+	DB.removeHandler(nodeChar.getPath("inventorylist.*.count"), "onUpdate", onFilteredValueChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.isidentified"), "onUpdate", onFilteredValueChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onAdd", onPowerListChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onDelete", onPowerListChanged);

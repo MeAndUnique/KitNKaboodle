@@ -4,6 +4,9 @@
 --
 
 local nodeItem;
+local nTotal;
+local nUsed;
+local bWheel = false;
 
 -- Initialization
 function onInit()
@@ -20,6 +23,12 @@ function onInit()
 	DB.addHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
 end
 
+function onWheel(notches)
+	bWheel = true;
+	super.onWheel(notches);
+	bWheel = false;
+end
+
 function onClose()
 	if super and super.onClose then
 		super.onClose()
@@ -31,8 +40,8 @@ function onClose()
 end
 
 function onChargesChanged()
-	local nTotal = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 1);
-	local nUsed = countCharges();
+	calculateTotal();
+	nUsed = ItemPowerManager.countCharges(nodeItem);
 	
 	local nodePower = getDatabaseNode();
 	DB.setValue(nodePower, "prepared", "number", nTotal);
@@ -40,12 +49,24 @@ function onChargesChanged()
 	if super and super.update then
 		super.update("standard", true, nTotal, nUsed, nTotal);
 	end
+
+	ItemPowerManager.handleItemChargesUsed(nodeItem);
 end
 
-function countCharges()
-	local nCount = 0;
-	for _,powerNode in pairs(DB.getChildren(nodeItem.getPath("powers"))) do
-		nCount = nCount + DB.getValue(powerNode, "cast", 0);
+function calculateTotal()
+	nTotal = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 1);
+end
+
+function getTotalCharges()
+	if not nTotal then
+		calculateTotal();
 	end
-	return nCount;
+	return nTotal;
+end
+
+function getChargesUsed()
+	if not nUsed then
+		nUsed = ItemPowerManager.countCharges(nodeItem);
+	end
+	return nUsed;
 end
