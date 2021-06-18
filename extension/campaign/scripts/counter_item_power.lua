@@ -3,10 +3,13 @@
 -- attribution and copyright information.
 --
 
+local nodePower;
 local nodeItem;
 local nTotal;
 local nUsed;
 local bWheel = false;
+
+local adjustCounterOriginal;
 
 -- Initialization
 function onInit()
@@ -14,19 +17,16 @@ function onInit()
 		super.onInit()
 	end
 
-	local nodePower = window.getDatabaseNode();
+	adjustCounterOriginal = super.adjustCounter;
+	super.adjustCounter = adjustCounter;
+
+	nodePower = window.getDatabaseNode();
 	nodeItem = DB.getChild(nodePower, "...");
 	
 	onChargesChanged();
 	DB.addHandler(nodeItem.getPath("count"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-end
-
-function onWheel(notches)
-	bWheel = true;
-	super.onWheel(notches);
-	bWheel = false;
 end
 
 function onClose()
@@ -37,6 +37,23 @@ function onClose()
 	DB.removeHandler(nodeItem.getPath("count"), "onUpdate", onChargesChanged);
 	DB.removeHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.removeHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+end
+
+function onWheel(notches)
+	bWheel = true;
+	super.onWheel(notches);
+	bWheel = false;
+end
+
+function adjustCounter(val_adj)
+	if not bWheel then
+		if val_adj == 1 then
+			val_adj = DB.getValue(nodePower, "charges", 1);
+		elseif val_adj == -1 then
+			val_adj = val_adj * DB.getValue(nodePower, "charges", 1);
+		end
+	end
+	adjustCounterOriginal(val_adj);
 end
 
 function onChargesChanged()

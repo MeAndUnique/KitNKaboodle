@@ -164,7 +164,7 @@
 					function addEntry(bFocus)
 						local win = createWindow();
 						if bFocus and win then
-							win.name.setFocus();
+							win.nameandactions.subwindow.name.setFocus();
 						end
 						return win;
 					end
@@ -286,17 +286,7 @@
 
 	<windowclass name="item_general">
 		<margins control="0,0,0,5" />
-		<script>
-			function update(bLocked)
-				displaygroup.setReadOnly(bLocked);
-
-				if bLocked then
-					displaygroup.setFrame(nil);
-				else
-					displaygroup.setFrame("fielddark", 7, 5, 7, 5);
-				end
-			end
-		</script>
+		<script file="campaign/scripts/item_general.lua"/>
 		<sheetdata>
 			<label name="label_displaygroup">
 				<anchored position="insidetopleft" width="90" offset="5,2" />
@@ -308,6 +298,24 @@
 					<top />
 					<right parent="" offset="-5" />
 				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<delaykeyupdate />
+			</simplestring>
+			<label name="label_powergroup">
+				<anchored to="label_displaygroup" width="105">
+					<top anchor="bottom" offset="5" />
+					<left />
+				</anchored>
+				<static textres="item_label_power_group" />
+			</label>
+			<simplestring name="powergroup">
+				<anchored to="displaygroup" height="20">
+					<left />
+					<top anchor="bottom" offset="5" />
+					<right />
+				</anchored>
+				<default>Spells</default>
 				<multilinespacing>20</multilinespacing>
 				<nodrag />
 				<delaykeyupdate />

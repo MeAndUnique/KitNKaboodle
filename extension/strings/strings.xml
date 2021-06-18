@@ -24,5 +24,7 @@
 
 	<string name="item_label_miscellaneous">MISCELLANEOUS</string>
 	<string name="item_label_display_group">Display Group</string>
-	<string name="item_label_effective_group">Effective Group</string>
+	<string name="item_label_power_group">Power Group</string>
+
+	<string name="item_label_charges_used">Charges Used</string>
 </root>

@@ -22,12 +22,17 @@ local rKnownActions = {
 function onInit()
 	parentcontrol = self;
 	parentcontrol.window = self;
+	bHideCast = windowlist.window.bHideCast;
 	refreshActions();
-	update(windowlist.isReadOnly())
+	update(windowlist.isReadOnly(), bHideCast)
+
+	-- TODO remove if needed
+	-- activatedetail.setVisible(DB.getChildCount(getDatabaseNode(), "actions") > 0);
 
 	local node = getDatabaseNode();
 	DB.addHandler(node.getPath("group"), "onUpdate", onGroupChanged);
 	DB.addHandler(node.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.addHandler(node.getPath("actions"), "onChildDeleted", onActionDeleted);
 	DB.addHandler(node.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 end
 
@@ -35,6 +40,7 @@ function onClose()
 	local node = getDatabaseNode();
 	DB.removeHandler(node.getPath("group"), "onUpdate", onGroupChanged);
 	DB.removeHandler(node.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.removeHandler(node.getPath("actions"), "onChildDeleted", onActionDeleted);
 	DB.removeHandler(node.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 end
 
@@ -74,8 +80,13 @@ function onTypeChanged(nodeType)
 	end
 end
 
-function onActionAdded(nodePower, nodeAction)
+function onActionAdded()
 	bAdding = true;
+	updateToggle();
+end
+
+function onActionDeleted()
+	updateToggle();
 end
 
 function createAction(sType)
@@ -103,26 +114,37 @@ function showAction(nodeAction, sType)
 	bAdding = false;
 end
 
+function updateToggle()
+	if metadata.isVisible() or (DB.getChildCount(getDatabaseNode(), "actions") > 0) then
+		activatedetail.setValue(1);
+		activatedetail.setVisible(true);
+	else
+		activatedetail.setValue(0);
+		activatedetail.setVisible(false);
+	end
+end
+
 function toggleDetail()
 	local status = (activatedetail.getValue() == 1);
-	effectivegroup.setVisible(status and not bReadOnly);
+	metadata.setVisible(status and bHideCast);
 	actions.setVisible(status);
 end
 
 function update(bNewReadOnly, bNewHideCast)
 	bReadOnly = bNewReadOnly;
 	bHideCast = bNewHideCast;
-	name.setReadOnly(bReadOnly);
-	effectivegroup.subwindow.group.setVisible((bHideCast ~= nil) and bHideCast or true);
-	effectivegroup.subwindow.group.setReadOnly(bReadOnly);
+	nameandactions.subwindow.name.setReadOnly(bReadOnly);
+	nameandactions.subwindow.actionsmini.setVisible(not bHideCast);
+	metadata.subwindow.charges.setReadOnly(bReadOnly);
+	activatedetail.setVisible(metadata.isVisible() or (DB.getChildCount(getDatabaseNode(), "actions") > 0));
 
 	if bReadOnly then
-		name.setFrame(nil);
-		effectivegroup.subwindow.group.setFrame(nil);
+		nameandactions.subwindow.name.setFrame(nil);
+		metadata.subwindow.charges.setFrame(nil);
 		resetMenuItems();
 	else
-		name.setFrame("fieldlight", 7, 5, 7, 5);
-		effectivegroup.subwindow.group.setFrame("fieldlight", 7, 5, 7, 5);
+		nameandactions.subwindow.name.setFrame("fieldlight", 7, 5, 9, 5);
+		metadata.subwindow.charges.setFrame("fieldlight", 7, 5, 9, 5);
 		
 		registerMenuItem(Interface.getString("power_menu_addaction"), "radial_create_action", 3);
 		registerMenuItem(Interface.getString("power_menu_addcast"), "radial_sword", 3, 2);

@@ -22,6 +22,12 @@
 		</button_roll>
 	</template>
 
+	<template name="button_itemaction_mini">
+		<button_itemaction>
+			<bounds>1,1,20,20</bounds>
+		</button_itemaction>
+	</template>
+
 	<template name="label_itemframetop">	
 		<label_charframetop>
 			<script>

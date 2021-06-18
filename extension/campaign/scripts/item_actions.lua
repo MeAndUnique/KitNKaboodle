@@ -3,6 +3,8 @@
 -- attribution and copyright information.
 --
 
+bHideCast = true;
+
 -- Initialization
 function onInit()
 	local nodeRecord = getDatabaseNode();
@@ -33,7 +35,7 @@ function update(bLocked)
 
 	powerlist.setReadOnly(bLocked);
 	for _, win in ipairs(powerlist.getWindows()) do
-		win.update(bLocked, true);
+		win.update(bLocked, bHideCast);
 	end
 end
 
