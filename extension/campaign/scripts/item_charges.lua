@@ -22,17 +22,20 @@ function update(bLocked)
 	rechargetime.setReadOnly(bLocked);
 	rechargedice.setReadOnly(bLocked);
 	rechargebonus.setReadOnly(bLocked);
+	dischargeaction.setReadOnly(bLocked);
 
 	if bLocked then
 		prepared.setFrame(nil);
 		rechargedice.setFrame(nil);
 		label_plus.setVisible(not rechargedice.isEmpty() and (rechargebonus.getValue() ~= 0));
 		rechargebonus.setFrame(nil);
+		dischargeaction.setFrame(nil);
 	else
 		prepared.setFrame("fielddark", 7, 5, 7, 5);
 		rechargedice.onValueChanged(); -- basicdice sets the frame when the value changes.
 		label_plus.setVisible((prepared.getValue() > 0) and ((rechargeperiod.getStringValue() or "") ~= ""));
 		rechargebonus.setFrame("fielddark", 7, 5, 7, 5);
+		dischargeaction.setFrame("fielddark", 7, 5, 7, 5);
 	end
 end
 
