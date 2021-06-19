@@ -17,10 +17,10 @@
 	
 	<string name="label_item_recharge">Recharge</string>
 
-	<string name="label_item_discharge">On Last</string>
+	<string name="label_item_discharge">On Last Charge</string>
 	<string name="item_discharge_nothing">Nothing</string>
-	<string name="item_discharge_nothing">Destroy</string>
-	<string name="item_discharge_nothing">Roll</string>
+	<string name="item_discharge_destroy">Destroy</string>
+	<string name="item_discharge_roll">Roll</string>
 
 	<string name="item_label_miscellaneous">MISCELLANEOUS</string>
 	<string name="item_label_display_group">Display Group</string>

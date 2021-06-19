@@ -271,6 +271,25 @@
 				<anchored to="label_plus" position="righthigh" offset="2,0" width="35" height="20" />
 				<hideonvalue>0</hideonvalue>
 			</basicnumber>
+
+			<label name="onLastChargeLabel">
+				<anchored to="rechargeLabel" width="90" offset="5,2">
+					<top anchor="bottom" offset="10" />
+					<left anchor="left" />
+				</anchored>
+				<static textres="label_item_discharge" />
+			</label>
+			<button_stringcycler name="dischargeaction">				
+				<anchored to="onLastChargeLabel" width="60" height="20">
+					<top />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<parameters>
+					<defaultlabelres>item_discharge_nothing</defaultlabelres>
+					<labelsres>item_discharge_destroy|item_discharge_roll</labelsres>
+					<values>nothing|roll|destroy</values>
+				</parameters>
+			</button_stringcycler>
 		</sheetdata>
 	</windowclass>
 
