@@ -66,7 +66,9 @@ function onChargesChanged()
 	if super and super.update then
 		super.update("standard", true, nTotal, nUsed, nTotal);
 	end
+end
 
+function onValueChanged()
 	ItemPowerManager.handleItemChargesUsed(nodeItem);
 end
 

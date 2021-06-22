@@ -5,15 +5,19 @@
 
 function onInit()
 	local nodeItem = getDatabaseNode();
-	onChargesChanged(nodeItem.getChild("prepared")); -- Calls onRechargePeriodChanged()
+	onChargesChanged(nodeItem.getChild("prepared")); -- Calls results in the whole chain being called, no need to call individually.
 	DB.addHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("rechargeperiod"), "onUpdate", onRechargePeriodChanged);
+	DB.addHandler(nodeItem.getPath("dischargeaction"), "onUpdate", onDischargeActionChanged);
+	DB.addHandler(nodeItem.getPath("rechargeon"), "onUpdate", onRechargeOnChanged);
 end
 
 function onClose()
 	local nodeItem = getDatabaseNode();
 	DB.removeHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.removeHandler(nodeItem.getPath("rechargeperiod"), "onUpdate", onRechargePeriodChanged);
+	DB.removeHandler(nodeItem.getPath("dischargeaction"), "onUpdate", onDischargeActionChanged);
+	DB.removeHandler(nodeItem.getPath("rechargeon"), "onUpdate", onRechargeOnChanged);
 end
 
 function update(bLocked)
@@ -27,13 +31,11 @@ function update(bLocked)
 	if bLocked then
 		prepared.setFrame(nil);
 		rechargedice.setFrame(nil);
-		label_plus.setVisible(not rechargedice.isEmpty() and (rechargebonus.getValue() ~= 0));
 		rechargebonus.setFrame(nil);
 		dischargeaction.setFrame(nil);
 	else
 		prepared.setFrame("fielddark", 7, 5, 7, 5);
 		rechargedice.onValueChanged(); -- basicdice sets the frame when the value changes.
-		label_plus.setVisible((prepared.getValue() > 0) and ((rechargeperiod.getStringValue() or "") ~= ""));
 		rechargebonus.setFrame("fielddark", 7, 5, 7, 5);
 		dischargeaction.setFrame("fielddark", 7, 5, 7, 5);
 	end
@@ -49,11 +51,46 @@ function onRechargePeriodChanged(nodeRechargePeriod, hasCharges)
 	if hasCharges == nil then
 		hasCharges = DB.getValue(nodeRechargePeriod, "..prepared", 0) > 0;
 	end
+
 	local sRechargePeriod = nodeRechargePeriod.getValue() or "";
 	rechargetime.setVisible((sRechargePeriod == "daily") and hasCharges);
-	local canRecharge = sRechargePeriod ~= "";
-	rechargeLabel.setVisible(canRecharge and hasCharges);
-	rechargedice.setVisible(canRecharge and hasCharges);
-	label_plus.setVisible(canRecharge and hasCharges);
-	rechargebonus.setVisible(canRecharge and hasCharges);
+
+	local canRecharge = hasCharges and (sRechargePeriod ~= "");
+	rechargeLabel.setVisible(canRecharge);
+	rechargedice.setVisible(canRecharge);
+	label_plus.setVisible(canRecharge);
+	rechargebonus.setVisible(canRecharge);
+
+	dischargelabel.setVisible(hasCharges);
+	dischargeaction.setVisible(hasCharges);
+
+	onDischargeActionChanged(DB.getChild(nodeRechargePeriod, "..dischargeaction"), hasCharges);
+end
+
+function onDischargeActionChanged(nodeDischargeAction, hasCharges)
+	if hasCharges == nil then
+		hasCharges = DB.getValue(nodeDischargeAction, "..prepared", 0) > 0;
+	end
+
+	local bRollOnDischarge = hasCharges and ((nodeDischargeAction.getValue() or "") == "roll");
+	dischargedice.setVisible(bRollOnDischarge);
+	destroyonlabel.setVisible(bRollOnDischarge);
+	destroyon.setVisible(bRollOnDischarge);
+	rechargeonlabel.setVisible(bRollOnDischarge);
+	rechargeon.setVisible(bRollOnDischarge);
+
+	onRechargeOnChanged(DB.getChild(nodeDischargeAction, "..rechargeon"), bRollOnDischarge);
+end
+
+function onRechargeOnChanged(nodeRechargeOn, bRollOnDischarge)
+	if bRollOnDischarge == nil then
+		bRollOnDischarge = (DB.getValue(nodeRechargeOn, "..prepared", 0) > 0) and
+			(DB.getValue(nodeRechargeOn, "..dischargeaction", "") == "roll");
+	end
+
+	local canRecharge = bRollOnDischarge and (nodeRechargeOn.getValue() > 0);
+	label_divider.setVisible(canRecharge);
+	dischargerechargedice.setVisible(canRecharge);
+	label_plus2.setVisible(canRecharge);
+	dischargerechargebonus.setVisible(canRecharge);
 end

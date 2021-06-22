@@ -117,19 +117,6 @@
 
 	<windowclass name="item_power_metadata">
 		<margins control="0,0,0,2" />
-		<script>
-			function onInit()
-				Debug.chat(getDatabaseNode().getChild("...prepared").getPath())
-				DB.addHandler(getDatabaseNode().getChild("...prepared").getPath(), "onUpdate", onPreparedUpdate);
-			end
-			function onClose()
-				DB.removeHandler(getDatabaseNode().getChild("...prepared").getPath(), "onUpdate", onPreparedUpdate);
-			end
-			function onPreparedUpdate(nodePrepared)
-				local nPrepared = DB.getValue(getDatabaseNode().getChild("...prepared"), 0);
-				parentcontrol.setVisible(nPrepared > 0);
-			end
-		</script>
 		<sheetdata>
 			<label name="chargesusedlabel">
 				<anchored width="90">

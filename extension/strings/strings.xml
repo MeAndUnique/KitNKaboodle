@@ -21,6 +21,8 @@
 	<string name="item_discharge_nothing">Nothing</string>
 	<string name="item_discharge_destroy">Destroy</string>
 	<string name="item_discharge_roll">Roll</string>
+	<string name="label_item_destroy_on">Destroy On</string>
+	<string name="label_item_recharge_on">Recharge On</string>
 
 	<string name="item_label_miscellaneous">MISCELLANEOUS</string>
 	<string name="item_label_display_group">Display Group</string>

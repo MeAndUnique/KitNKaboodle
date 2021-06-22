@@ -24,24 +24,23 @@ function onInit()
 	parentcontrol.window = self;
 	bHideCast = windowlist.window.bHideCast;
 	refreshActions();
-	update(windowlist.isReadOnly(), bHideCast)
+	update(windowlist.isReadOnly(), bHideCast);
 
-	-- TODO remove if needed
-	-- activatedetail.setVisible(DB.getChildCount(getDatabaseNode(), "actions") > 0);
-
-	local node = getDatabaseNode();
-	DB.addHandler(node.getPath("group"), "onUpdate", onGroupChanged);
-	DB.addHandler(node.getPath("actions"), "onChildAdded", onActionAdded);
-	DB.addHandler(node.getPath("actions"), "onChildDeleted", onActionDeleted);
-	DB.addHandler(node.getPath("actions.*.type"), "onUpdate", onTypeChanged);
+	local nodePower = getDatabaseNode();
+	DB.addHandler(nodePower.getChild("...prepared").getPath(), "onUpdate", onChargesChanged);
+	DB.addHandler(nodePower.getPath("group"), "onUpdate", onGroupChanged);
+	DB.addHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.addHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
+	DB.addHandler(nodePower.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 end
 
 function onClose()
-	local node = getDatabaseNode();
-	DB.removeHandler(node.getPath("group"), "onUpdate", onGroupChanged);
-	DB.removeHandler(node.getPath("actions"), "onChildAdded", onActionAdded);
-	DB.removeHandler(node.getPath("actions"), "onChildDeleted", onActionDeleted);
-	DB.removeHandler(node.getPath("actions.*.type"), "onUpdate", onTypeChanged);
+	local nodePower = getDatabaseNode();
+	DB.removeHandler(nodePower.getChild("...prepared").getPath(), "onUpdate", onChargesChanged);
+	DB.removeHandler(nodePower.getPath("group"), "onUpdate", onGroupChanged);
+	DB.removeHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.removeHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
+	DB.removeHandler(nodePower.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 end
 
 function refreshActions()
@@ -64,6 +63,10 @@ function onMenuSelection(selection, subselection)
 		end
 		activatedetail.setValue(1);
 	end
+end
+
+function onChargesChanged(nodePrepared)
+	metadata.setVisible(bHideCast and (nodePrepared.getValue() > 0));
 end
 
 function onGroupChanged()
@@ -115,7 +118,8 @@ function showAction(nodeAction, sType)
 end
 
 function updateToggle()
-	if metadata.isVisible() or (DB.getChildCount(getDatabaseNode(), "actions") > 0) then
+	if (DB.getChildCount(getDatabaseNode(), "actions") > 0) or
+		(bHideCast and (DB.getValue(nodePower, "..prepared", 0) > 0)) then
 		activatedetail.setValue(1);
 		activatedetail.setVisible(true);
 	else
@@ -133,10 +137,13 @@ end
 function update(bNewReadOnly, bNewHideCast)
 	bReadOnly = bNewReadOnly;
 	bHideCast = bNewHideCast;
+	local nodePower = getDatabaseNode();
 	nameandactions.subwindow.name.setReadOnly(bReadOnly);
 	nameandactions.subwindow.actionsmini.setVisible(not bHideCast);
 	metadata.subwindow.charges.setReadOnly(bReadOnly);
-	activatedetail.setVisible(metadata.isVisible() or (DB.getChildCount(getDatabaseNode(), "actions") > 0));
+	metadata.setVisible(bHideCast and (DB.getValue(nodePower, "..prepared", 0) > 0));
+	activatedetail.setVisible((DB.getChildCount(nodePower, "actions") > 0) or
+		(bHideCast and (DB.getValue(nodePower, "..prepared", 0) > 0)));
 
 	if bReadOnly then
 		nameandactions.subwindow.name.setFrame(nil);

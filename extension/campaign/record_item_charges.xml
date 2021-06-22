@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<windowclass name="item_charges">
+		<script file="campaign/scripts/item_charges.lua" />
+		<margins control="0,0,0,5" />
+		<sheetdata>
+			<genericcontrol name="topanchor">
+				<anchored position="insidetopleft" width="0" height="0" />
+			</genericcontrol>
+		
+			<label name="chargesLabel">
+				<anchored width="60" >
+					<top parent="topanchor" anchor="bottom" relation="relative" offset="2" />
+					<left offset="5" />
+				</anchored>
+				<static textres="item_use_charges" />
+			</label>
+			<basicnumber name="prepared">
+				<anchored to="chargesLabel" position="right" offset="5" width="30" />
+			</basicnumber>
+			<button_stringcycler name="rechargeperiod">
+				<script>
+					local initializeOriginal;
+					function onInit()
+						if super then
+							initializeOriginal = super.initialize;
+							super.initialize = initialize;
+							if super.onInit then
+								super.onInit();
+							end
+						end
+					end
+					function initialize(sLabels, sValues, sDefaultLabel, sInitialValue)
+						if ExtendedRest then
+							sLabels = sLabels .. "|" .. Interface.getString("extended_rest_label");
+							sValues = sValues .. "|extended";
+						end
+						if LongTermEffects then
+							sLabels = sLabels .. "|" .. Interface.getString("item_recharge_daily");
+							sValues = sValues .. "|daily";
+						end
+						initializeOriginal(sLabels, sValues, sDefaultLabel, sInitialValue);
+					end
+				</script>
+				<anchored to="prepared" width="60" height="20">
+					<top />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<parameters>
+					<defaultlabelres>item_recharge_never</defaultlabelres>
+					<labelsres>item_recharge_long|item_recharge_short</labelsres>
+					<values>long|short</values>
+				</parameters>
+			</button_stringcycler>
+			<button_stringcycler name="rechargetime">
+				<anchored to="rechargeperiod" width="60" height="20">
+					<top />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<parameters>
+					<defaultlabelres>item_recharge_dawn</defaultlabelres>
+					<labelsres>item_recharge_noon|item_recharge_dusk|item_recharge_midnight</labelsres>
+					<values>noon|dusk|midnight</values>
+				</parameters>
+			</button_stringcycler>
+			
+			<label name="rechargeLabel">
+				<anchored width="60" >
+					<top parent="topanchor" anchor="bottom" relation="relative" offset="10" />
+					<left offset="5" />
+				</anchored>
+				<static textres="label_item_recharge" />
+			</label>
+			<basicdice name="rechargedice">
+				<anchored to="rechargeLabel" position="righthigh" offset="5,0" width="60" height="20" />
+			</basicdice>
+			<label name="label_plus">
+				<anchored to="rechargedice" position="righthigh" offset="3,0" width="10" />
+				<static>+</static>
+			</label>
+			<basicnumber name="rechargebonus">
+				<anchored to="label_plus" position="righthigh" offset="2,0" width="35" height="20" />
+			</basicnumber>
+
+			<label name="dischargelabel">
+				<anchored width="90" >
+					<top parent="topanchor" anchor="bottom" relation="relative" offset="10" />
+					<left offset="5" />
+				</anchored>
+				<static textres="label_item_discharge" />
+			</label>
+			<button_stringcycler name="dischargeaction">
+				<anchored to="dischargelabel" width="60" height="20">
+					<top />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<parameters>
+					<defaultlabelres>item_discharge_nothing</defaultlabelres>
+					<labelsres>item_discharge_roll|item_discharge_destroy</labelsres>
+					<values>roll|destroy</values>
+				</parameters>
+			</button_stringcycler>
+			<basicdice name="dischargedice">
+				<script>
+					function onVisibilityChanged()
+						if super and super.onVisibilityChanged then
+							super.onVisibilityChanged();
+						end
+						if isVisible() and isEmpty() then
+							addDie("d20");
+						end
+					end
+				</script>
+				<anchored to="dischargeaction" position="righthigh" offset="10,0" width="60" height="20" />
+			</basicdice>
+
+			<label name="destroyonlabel">
+				<anchored width="80">
+					<left offset="15" />
+					<top parent="topanchor" anchor="bottom" relation="relative" offset="10" />
+				</anchored>
+				<static textres="label_item_destroy_on" />
+			</label>
+			<basicnumber name="destroyon">
+				<anchored to="destroyonlabel" position="righthigh" offset="10,0" width="35" height="20" />
+				<default>1</default>
+			</basicnumber>
+
+			<label name="rechargeonlabel">
+				<anchored width="80">
+					<left offset="15" />
+					<top parent="topanchor" anchor="bottom" relation="relative" offset="10" />
+				</anchored>
+				<static textres="label_item_recharge_on" />
+			</label>
+			<basicnumber name="rechargeon">
+				<anchored to="rechargeonlabel" position="righthigh" offset="10,0" width="35" height="20" />
+			</basicnumber>
+			<label name="label_divider">
+				<anchored to="rechargeon" position="righthigh" offset="5,0" width="10" />
+				<static>:</static>
+			</label>
+			<basicdice name="dischargerechargedice">
+				<anchored to="label_divider" position="righthigh" offset="5,0" width="60" height="20" />
+			</basicdice>
+			<label name="label_plus2">
+				<anchored to="dischargerechargedice" position="righthigh" offset="3,0" width="10" />
+				<static>+</static>
+			</label>
+			<basicnumber name="dischargerechargebonus">
+				<anchored to="label_plus2" position="righthigh" offset="2,0" width="35" height="20" />
+			</basicnumber>
+		</sheetdata>
+	</windowclass>
+</root>

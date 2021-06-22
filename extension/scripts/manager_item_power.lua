@@ -301,6 +301,7 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 end
 
 function distributeCharges(nodeItem, nChargesToAdd)
+	Debug.chat("distribute", nodeItem, nChargesToAdd);
 	for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
 		if nChargesToAdd == 0 then
 			break;
@@ -325,8 +326,8 @@ function handleItemChargesUsed(nodeItem)
 	local nCurrentDischargeCount = DB.getValue(nodeItem, "discharged", 0);
 	local nDischargeCount = math.floor(nChargesUsed / nChargeCount);
 	if nDischargeCount > nCurrentDischargeCount then
-		local sOnDischarge = "roll"; -- TODO get real value
-		if sOnDischarge == "destory" then
+		local sOnDischarge = DB.getValue(nodeItem, "dischargeaction", "");
+		if sOnDischarge == "destroy" then
 			destroyDischargedItem(nodeItem, nChargeCount);
 		elseif sOnDischarge == "roll" then
 			beginRollDischargedItem(nodeItem);
@@ -362,7 +363,7 @@ end
 function handleRollDischargedItem(messageOOB)
 	local nodeItem = DB.findNode(messageOOB.sItem);
 	if nodeItem then
-		local aDice = { "d20" };
+		local aDice = DB.getValue(nodeItem, "dischargedice", {});
 		local nMod = 0;
 		local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [DISCHARGE]";
 		local dischargeRoll = {sType="dischargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
@@ -375,12 +376,12 @@ function onDischargeRoll(rSource, rTarget, rRoll)
 
 	local nodeItem = DB.findNode(rRoll.sItem);
 	if nodeItem then
-		local nDestroyUnder = 1; -- TODO get value
-		local nRechargeOver = 20; -- TODO get value
+		local nDestroyOn = DB.getValue(nodeItem, "destroyon", 0);
+		local nRechargeOn = DB.getValue(nodeItem, "rechargeon", 0);
 		local nResult = ActionsManager.total(rRoll);
-		if nResult <= nDestroyUnder then
+		if nResult <= nDestroyOn then
 			destroyDischargedItem(nodeItem, DB.getValue(nodeItem, "prepared"));
-		elseif nResult >= nRechargeOver then
+		elseif (nResult >= nRechargeOn) and (nRechargeOn > 0) then
 			rechargeDischargedItem(nodeItem);
 		else
 			updateDischargeCount(nodeItem, DB.getValue(nodeItem, "prepared", 1));
@@ -392,8 +393,8 @@ function onDischargeRoll(rSource, rTarget, rRoll)
 end
 
 function rechargeDischargedItem(nodeItem)
-	local aDice = { "d4" }; -- TODO get value
-	local nMod = 1; -- TODO get value
+	local aDice = DB.getValue(nodeItem, "dischargerechargedice", {});
+	local nMod = DB.getValue(nodeItem, "dischargerechargebonus", 0);
 	local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
 	local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
 	ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
