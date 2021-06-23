@@ -66,7 +66,9 @@ function onMenuSelection(selection, subselection)
 end
 
 function onChargesChanged(nodePrepared)
-	metadata.setVisible(bHideCast and (nodePrepared.getValue() > 0));
+	local nodePower = getDatabaseNode();
+	activatedetail.setVisible(shouldShowToggle(nodePower));
+	metadata.setVisible(shouldShowMetaData(nodePower));
 end
 
 function onGroupChanged()
@@ -117,9 +119,17 @@ function showAction(nodeAction, sType)
 	bAdding = false;
 end
 
+function shouldShowToggle(nodePower)
+	return (DB.getChildCount(nodePower, "actions") > 0) or (bHideCast and (DB.getValue(nodePower, "...prepared", 0) > 0));
+end
+
+function shouldShowMetaData(nodePower)
+	return bHideCast and (activatedetail.getValue() == 1) and (DB.getValue(nodePower, "...prepared", 0) > 0);
+end
+
 function updateToggle()
 	if (DB.getChildCount(getDatabaseNode(), "actions") > 0) or
-		(bHideCast and (DB.getValue(nodePower, "..prepared", 0) > 0)) then
+		(bHideCast and (DB.getValue(nodePower, "...prepared", 0) > 0)) then
 		activatedetail.setValue(1);
 		activatedetail.setVisible(true);
 	else
@@ -130,7 +140,7 @@ end
 
 function toggleDetail()
 	local status = (activatedetail.getValue() == 1);
-	metadata.setVisible(status and bHideCast);
+	metadata.setVisible(status and bHideCast and (DB.getValue(getDatabaseNode(), "...prepared", 0) > 0));
 	actions.setVisible(status);
 end
 
@@ -140,10 +150,9 @@ function update(bNewReadOnly, bNewHideCast)
 	local nodePower = getDatabaseNode();
 	nameandactions.subwindow.name.setReadOnly(bReadOnly);
 	nameandactions.subwindow.actionsmini.setVisible(not bHideCast);
+	activatedetail.setVisible(shouldShowToggle(nodePower));
 	metadata.subwindow.charges.setReadOnly(bReadOnly);
-	metadata.setVisible(bHideCast and (DB.getValue(nodePower, "..prepared", 0) > 0));
-	activatedetail.setVisible((DB.getChildCount(nodePower, "actions") > 0) or
-		(bHideCast and (DB.getValue(nodePower, "..prepared", 0) > 0)));
+	metadata.setVisible(shouldShowMetaData(nodePower));
 
 	if bReadOnly then
 		nameandactions.subwindow.name.setFrame(nil);
