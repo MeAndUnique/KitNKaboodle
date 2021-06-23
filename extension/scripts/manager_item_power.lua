@@ -301,7 +301,6 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 end
 
 function distributeCharges(nodeItem, nChargesToAdd)
-	Debug.chat("distribute", nodeItem, nChargesToAdd);
 	for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
 		if nChargesToAdd == 0 then
 			break;

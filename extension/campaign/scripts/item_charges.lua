@@ -33,16 +33,26 @@ function update(bLocked)
 		rechargedice.setFrame(nil);
 		rechargebonus.setFrame(nil);
 		dischargeaction.setFrame(nil);
+		dischargedice.setFrame(nil);
+		destroyon.setFrame(nil);
+		rechargeon.setFrame(nil);
+		dischargerechargedice.setFrame(nil);
+		dischargerechargebonus.setFrame(nil);
 	else
 		prepared.setFrame("fielddark", 7, 5, 7, 5);
 		rechargedice.onValueChanged(); -- basicdice sets the frame when the value changes.
 		rechargebonus.setFrame("fielddark", 7, 5, 7, 5);
 		dischargeaction.setFrame("fielddark", 7, 5, 7, 5);
+		dischargedice.onValueChanged(); -- basicdice sets the frame when the value changes.
+		destroyon.setFrame("fielddark", 7, 5, 7, 5);
+		rechargeon.setFrame("fielddark", 7, 5, 7, 5);
+		dischargerechargedice.onValueChanged(); -- basicdice sets the frame when the value changes.
+		dischargerechargebonus.setFrame("fielddark", 7, 5, 7, 5);
 	end
 end
 
 function onChargesChanged(nodeCharges)
-	local hasCharges = nodeCharges.getValue() > 0;
+	local hasCharges = DB.getValue(nodeCharges, "", 0) > 0;
 	rechargeperiod.setVisible(hasCharges);
 	onRechargePeriodChanged(DB.getChild(nodeCharges, "..rechargeperiod"), hasCharges);
 end
@@ -52,7 +62,7 @@ function onRechargePeriodChanged(nodeRechargePeriod, hasCharges)
 		hasCharges = DB.getValue(nodeRechargePeriod, "..prepared", 0) > 0;
 	end
 
-	local sRechargePeriod = nodeRechargePeriod.getValue() or "";
+	local sRechargePeriod = DB.getValue(nodeRechargePeriod, "", "");
 	rechargetime.setVisible((sRechargePeriod == "daily") and hasCharges);
 
 	local canRecharge = hasCharges and (sRechargePeriod ~= "");
@@ -72,7 +82,7 @@ function onDischargeActionChanged(nodeDischargeAction, hasCharges)
 		hasCharges = DB.getValue(nodeDischargeAction, "..prepared", 0) > 0;
 	end
 
-	local bRollOnDischarge = hasCharges and ((nodeDischargeAction.getValue() or "") == "roll");
+	local bRollOnDischarge = hasCharges and (DB.getValue(nodeDischargeAction, "", "") == "roll");
 	dischargedice.setVisible(bRollOnDischarge);
 	destroyonlabel.setVisible(bRollOnDischarge);
 	destroyon.setVisible(bRollOnDischarge);
@@ -88,7 +98,7 @@ function onRechargeOnChanged(nodeRechargeOn, bRollOnDischarge)
 			(DB.getValue(nodeRechargeOn, "..dischargeaction", "") == "roll");
 	end
 
-	local canRecharge = bRollOnDischarge and (nodeRechargeOn.getValue() > 0);
+	local canRecharge = bRollOnDischarge and (DB.getValue(nodeRechargeOn, "", 0) > 0);
 	label_divider.setVisible(canRecharge);
 	dischargerechargedice.setVisible(canRecharge);
 	label_plus2.setVisible(canRecharge);

@@ -124,6 +124,7 @@
 			<basicnumber name="destroyon">
 				<anchored to="destroyonlabel" position="righthigh" offset="10,0" width="35" height="20" />
 				<default>1</default>
+				<hideonvalue>0</hideonvalue>
 			</basicnumber>
 
 			<label name="rechargeonlabel">
@@ -135,6 +136,7 @@
 			</label>
 			<basicnumber name="rechargeon">
 				<anchored to="rechargeonlabel" position="righthigh" offset="10,0" width="35" height="20" />
+				<hideonvalue>0</hideonvalue>
 			</basicnumber>
 			<label name="label_divider">
 				<anchored to="rechargeon" position="righthigh" offset="5,0" width="10" />
@@ -149,6 +151,7 @@
 			</label>
 			<basicnumber name="dischargerechargebonus">
 				<anchored to="label_plus2" position="righthigh" offset="2,0" width="35" height="20" />
+				<min>0</min>
 			</basicnumber>
 		</sheetdata>
 	</windowclass>

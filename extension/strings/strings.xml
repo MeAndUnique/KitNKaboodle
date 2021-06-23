@@ -29,4 +29,7 @@
 	<string name="item_label_power_group">Power Group</string>
 
 	<string name="item_label_charges_used">Charges Used</string>
+
+	<string name="item_group_send_to_top">Move Under Weapons</string>
+	<string name="item_group_send_to_bottom">Move Under Powers</string>
 </root>

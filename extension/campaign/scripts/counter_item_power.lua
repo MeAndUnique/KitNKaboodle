@@ -41,8 +41,9 @@ end
 
 function onWheel(notches)
 	bWheel = true;
-	super.onWheel(notches);
+	local result = super.onWheel(notches);
 	bWheel = false;
+	return result;
 end
 
 function adjustCounter(val_adj)
