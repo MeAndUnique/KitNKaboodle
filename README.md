@@ -7,4 +7,4 @@
 * Adds inventories to NPCs.
 
 ## Installation
-Download [KitNKaboodle.ext](https://github.com/MeAndUnique/KitNKaboodle/raw/main/KitNKaboodle.ext) and place in the extensions subfolder of the Fantasy Grounds data folder.
+Download [KitNKaboodle.ext](https://github.com/MeAndUnique/KitNKaboodle/releases) and place in the extensions subfolder of the Fantasy Grounds data folder.
