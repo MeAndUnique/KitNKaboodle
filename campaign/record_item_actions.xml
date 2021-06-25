@@ -36,32 +36,6 @@
 					<right anchor="left" relation="relative" offset="0" />
 				</anchored>
 				<invisible />
-				<script>
-					function onInit()
-						local node = window.getDatabaseNode();
-						DB.addHandler(DB.getPath(node, "actions"), "onChildAdded", update);
-						DB.addHandler(DB.getPath(node, "actions"), "onChildDeleted", update);
-						
-						local bShow = (DB.getChildCount(window.getDatabaseNode(), "actions") > 0);
-						setVisible(bShow);
-					end
-					
-					function onClose()
-						local node = window.getDatabaseNode();
-						DB.removeHandler(DB.getPath(node, "actions"), "onChildAdded", update);
-						DB.removeHandler(DB.getPath(node, "actions"), "onChildDeleted", update);
-					end
-					
-					function update()
-						if DB.getChildCount(window.getDatabaseNode(), "actions") > 0 then
-							setValue(1);
-							setVisible(true);
-						else
-							setValue(0);
-							setVisible(false);
-						end
-					end
-				</script>
 			</button_toggledetail>
 
 			<counter_item_power name="counter">
@@ -72,32 +46,31 @@
 				<invisible />
 			</counter_item_power>
 
-			<simplestring name="name">
+			<subwindow name="nameandactions">
 				<anchored>
-					<top offset="2" />
-					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
-					<left parent="leftanchor" anchor="right" relation="relative" offset="10" />
+					<top />
+					<right parent="rightanchor" anchor="left" relation="relative" />
+					<left parent="leftanchor" anchor="right" relation="relative" />
 				</anchored>
-				<multilinespacing>20</multilinespacing>
-				<nodrag />
-				<empty textres="library_recordtype_empty_spell" />
-				<delaykeyupdate />
-			</simplestring>
+				<activate />
+				<fastinit />
+				<class>item_power_name_and_actions</class>
+			</subwindow>
 
-			<subwindow name="effectivegroup">
+			<subwindow name="metadata">
 				<anchored>
-					<top parent="name" anchor="bottom" relation="relative" offset="5" />
-					<left offset="5" />
-					<right offset="-5" />
+					<top parent="nameandactions" anchor="bottom" relation="relative" />
+					<left />
+					<right />
 				</anchored>
 				<invisible />
 				<fastinit />
-				<class>item_power_effective_group</class>
+				<class>item_power_metadata</class>
 			</subwindow>
 
 			<windowlist name="actions">
 				<anchored>
-					<top parent="name" anchor="bottom" relation="relative" offset="5" />
+					<top parent="nameandactions" anchor="bottom" relation="relative" offset="5" />
 					<left offset="5" />
 					<right offset="-5" />
 				</anchored>
@@ -110,33 +83,53 @@
 		</sheetdata>
 	</windowclass>
 
-	<windowclass name="item_power_effective_group">
+	<windowclass name="item_power_name_and_actions">
 		<margins control="0,0,0,5" />
 		<sheetdata>
-			<genericcontrol name="leftanchor">
-				<anchored height="0" width="0">
-					<top offset="2" />
-					<left />
-				</anchored>
-			</genericcontrol>
-			<label name="effectivegrouplabel">
-				<anchored to="leftanchor" width="105">
-					<top />
-					<left anchor="right" relation="relative" offset="5" />
-				</anchored>
-				<static textres="item_label_effective_group" />
-			</label>
-			<simplestring name="group">
+			<simplestring name="name">
 				<anchored>
+					<left offset="10" />
 					<top offset="2" />
-					<right offset="-10" />
-					<left parent="leftanchor" anchor="right" relation="relative" offset="10" />
+					<sizelimits>
+						<minimum width="75" />
+						<maximum width="130" />
+					</sizelimits>
 				</anchored>
-				<default>Spells</default>
 				<multilinespacing>20</multilinespacing>
 				<nodrag />
+				<empty textres="library_recordtype_empty_spell" />
 				<delaykeyupdate />
 			</simplestring>
+			<windowlist name="actionsmini">
+				<anchored>
+					<left parent="name" anchor="right" offset="10" />
+					<top offset="2" />
+					<right offset="-5" />
+				</anchored>
+				<datasource>.actions</datasource>
+				<class>item_action_mini</class>
+				<noscroll />
+				<readonly />
+				<columns width="25" fillwidth="true" />
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_power_metadata">
+		<margins control="0,0,0,2" />
+		<sheetdata>
+			<label name="chargesusedlabel">
+				<anchored width="90">
+					<left offset="10" />
+					<top offset="5"/>
+				</anchored>
+				<static textres="item_label_charges_used" />
+			</label>
+			<basicnumber name="charges">
+				<anchored to="chargesusedlabel" position="right" offset="5" width="30" />
+				<default>1</default>
+				<min>1</min>
+			</basicnumber>
 		</sheetdata>
 	</windowclass>
 
@@ -333,4 +326,27 @@
 	</windowclass>
 
 	<windowclass name="empty" />
+
+	<windowclass name="item_action_mini">
+		<margins control="0,0,2,2" />
+		<minisheet />
+		<script file="campaign/scripts/power_action_mini.lua" />
+		<sheetdata>
+			<hs name="type" />
+			<button_itemaction_mini name="button">
+				<script>
+					local parentUpdateViews;
+					function onInit()
+						parentUpdateViews = window.updateViews;
+						window.updateViews = updateViews;
+					end
+					function updateViews()
+						ActorManagerKNK.beginResolvingItem(window.getDatabaseNode().getChild(".......") or true);
+						parentUpdateViews();
+						ActorManagerKNK.endResolvingItem();
+					end
+				</script>
+			</button_itemaction_mini>
+		</sheetdata>
+	</windowclass>
 </root>

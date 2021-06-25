@@ -101,31 +101,9 @@
 	<windowclass name="item_actions">
 		<script file="campaign/scripts/item_actions.lua" />
 		<sheetdata>
-			<label_itemframetop name="chargestitle">
-				<anchored height="20">
-					<top offset="10" />
-					<left offset="15" />
-					<right offset="-10" />
-				</anchored>
-				<static textres="item_label_charges" />
-				<icons>char_powers</icons>
-				<target>charges</target>
-			</label_itemframetop>
-
-			<subwindow name="charges">
-				<class>item_charges</class>
-				<anchored>
-					<top parent="chargestitle" anchor="bottom" offset="5" />
-					<left offset="5" />
-					<right offset="-5" />
-				</anchored>
-				<activate />
-				<fastinit />
-			</subwindow>
-
 			<label_itemframetop name="powerstitle">
 				<anchored height="20">
-					<top parent="charges" anchor="bottom" offset="10" />
+					<top offset="10" />
 					<left offset="15" />
 					<right offset="-10" />
 				</anchored>
@@ -145,6 +123,16 @@
 
 			<windowlist name="powerlist">
 				<script>
+					function onInit()
+						if not isReadOnly() then
+							registerMenuItem(Interface.getString("list_menu_createitem"), "insert", 5);
+						end
+					end
+					function onMenuSelection(selection)
+						if selection == 5 then
+							addEntry(true);
+						end
+					end
 					function update()
 						local bEditMode = (window.powerlist_iedit.getValue() == 1);
 						for _,win in pairs(getWindows()) do
@@ -154,7 +142,7 @@
 					function addEntry(bFocus)
 						local win = createWindow();
 						if bFocus and win then
-							win.name.setFocus();
+							win.nameandactions.subwindow.name.setFocus();
 						end
 						return win;
 					end
@@ -173,9 +161,31 @@
 				<footer>footer_wide</footer>
 			</windowlist>
 
-			<label_itemframetop name="miscstitle">
+			<label_itemframetop name="chargestitle">
 				<anchored height="20">
 					<top parent="powerlist" anchor="bottom" offset="10" />
+					<left offset="15" />
+					<right offset="-10" />
+				</anchored>
+				<static textres="item_label_charges" />
+				<icons>char_powers</icons>
+				<target>charges</target>
+			</label_itemframetop>
+
+			<subwindow name="charges">
+				<class>item_charges</class>
+				<anchored>
+					<top parent="chargestitle" anchor="bottom" offset="5" />
+					<left offset="5" />
+					<right offset="-5" />
+				</anchored>
+				<activate />
+				<fastinit />
+			</subwindow>
+
+			<label_itemframetop name="miscstitle">
+				<anchored height="20">
+					<top parent="charges" anchor="bottom" offset="10" />
 					<left offset="15" />
 					<right offset="-10" />
 				</anchored>
@@ -196,97 +206,9 @@
 		</sheetdata>
 	</windowclass>
 
-	<windowclass name="item_charges">
-		<script file="campaign/scripts/item_charges.lua" />
-		<margins control="0,0,0,5" />
-		<sheetdata>
-			<label name="chargesLabel">
-				<anchored position="insidetopleft" width="60" offset="5,2" />
-				<static textres="item_use_charges" />
-			</label>
-			<basicnumber name="prepared">
-				<anchored to="chargesLabel" position="right" offset="5" width="30" />
-			</basicnumber>
-			<button_stringcycler name="rechargeperiod">
-				<script>
-					local initializeOriginal;
-					function onInit()
-						if super then
-							initializeOriginal = super.initialize;
-							super.initialize = initialize;
-							if super.onInit then
-								super.onInit();
-							end
-						end
-					end
-					function initialize(sLabels, sValues, sDefaultLabel, sInitialValue)
-						if ExtendedRest then
-							sLabels = sLabels .. "|" .. Interface.getString("extended_rest_label");
-							sValues = sValues .. "|extended";
-						end
-						if LongTermEffects then
-							sLabels = sLabels .. "|" .. Interface.getString("item_recharge_daily");
-							sValues = sValues .. "|daily";
-						end
-						initializeOriginal(sLabels, sValues, sDefaultLabel, sInitialValue);
-					end
-				</script>
-				<anchored to="prepared" width="60" height="20">
-					<top />
-					<left anchor="right" offset="10" />
-				</anchored>
-				<parameters>
-					<defaultlabelres>item_recharge_never</defaultlabelres>
-					<labelsres>item_recharge_long|item_recharge_short</labelsres>
-					<values>long|short</values>
-				</parameters>
-			</button_stringcycler>
-			<button_stringcycler name="rechargetime">
-				<anchored to="rechargeperiod" width="60" height="20">
-					<top />
-					<left anchor="right" offset="10" />
-				</anchored>
-				<parameters>
-					<defaultlabelres>item_recharge_dawn</defaultlabelres>
-					<labelsres>item_recharge_noon|item_recharge_dusk|item_recharge_midnight</labelsres>
-					<values>noon|dusk|midnight</values>
-				</parameters>
-			</button_stringcycler>
-			
-			<label name="rechargeLabel">
-				<anchored to="chargesLabel" width="60" offset="5,2">
-					<top anchor="bottom" offset="10" />
-					<left anchor="left" />
-				</anchored>
-				<static textres="label_item_recharge" />
-			</label>
-			<basicdice name="rechargedice">
-				<anchored to="rechargeLabel" position="righthigh" offset="5,0" width="60" height="20" />
-			</basicdice>
-			<label name="label_plus">
-				<anchored to="rechargedice" position="righthigh" offset="3,0" width="10" />
-				<static>+</static>
-			</label>
-			<basicnumber name="rechargebonus">
-				<anchored to="label_plus" position="righthigh" offset="2,0" width="35" height="20" />
-				<hideonvalue>0</hideonvalue>
-			</basicnumber>
-		</sheetdata>
-	</windowclass>
-
 	<windowclass name="item_general">
 		<margins control="0,0,0,5" />
-		<script>
-			function update(bLocked)
-				displaygroup.setReadOnly(bLocked);
-
-				if bLocked then
-					displaygroup.setFrame(nil);
-				else
-					displaygroup.setFrame("fielddark", 7, 5, 7, 5);
-				end
-			end
-		</script>
+		<script file="campaign/scripts/item_general.lua"/>
 		<sheetdata>
 			<label name="label_displaygroup">
 				<anchored position="insidetopleft" width="90" offset="5,2" />
@@ -298,6 +220,24 @@
 					<top />
 					<right parent="" offset="-5" />
 				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<delaykeyupdate />
+			</simplestring>
+			<label name="label_powergroup">
+				<anchored to="label_displaygroup" width="105">
+					<top anchor="bottom" offset="5" />
+					<left />
+				</anchored>
+				<static textres="item_label_power_group" />
+			</label>
+			<simplestring name="powergroup">
+				<anchored to="displaygroup" height="20">
+					<left />
+					<top anchor="bottom" offset="5" />
+					<right />
+				</anchored>
+				<default>Spells</default>
 				<multilinespacing>20</multilinespacing>
 				<nodrag />
 				<delaykeyupdate />

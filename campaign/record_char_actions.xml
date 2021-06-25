@@ -2,6 +2,18 @@
 <root>
 	<windowclass name="charsheet_actions_contents" merge="join">
 		<sheetdata>
+			<subwindow name="item_actions_top" insertbefore="spellslots_prep">
+				<anchored>
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="0" />
+					<left />
+					<right />
+				</anchored>
+				<activate />
+				<fastinit />
+				<class>char_item_power_list</class>
+				<listid>1</listid>
+			</subwindow>
+
 			<subwindow name="item_actions">
 				<anchored>
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="0" />
@@ -25,7 +37,6 @@
 					<left />
 					<right />
 				</anchored>
-				<isdefault />
 				<skipempty />
 				<class>char_item_group</class>
 				<sortby><field>name</field></sortby>

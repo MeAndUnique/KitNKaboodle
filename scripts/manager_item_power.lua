@@ -5,6 +5,7 @@
 
 OOB_MSGTYPE_RECHARGE_ITEM = "rechargeitem";
 OOB_MSGTYPE_CREATE_ITEM_GROUP = "createitemgroup";
+OOB_MSGTYPE_ROLL_DISCHARGED_ITEM = "rolldischargeditem";
 
 RECHARGE_NONE = 0;
 RECHARGE_NORMAL = 1;
@@ -29,6 +30,7 @@ function onInit()
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_CREATE_ITEM_GROUP, handleItemGroupCreation);
 	ActionsManager.registerResultHandler("rechargeitem", onRechargeRoll);
+	ActionsManager.registerResultHandler("dischargeitem", onDischargeRoll);
 
 	if Session.IsHost then
 		getItemSourceTypeOriginal = ItemManager.getItemSourceType;
@@ -290,20 +292,98 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 	local nodeItem = DB.findNode(rRoll.sItem);
 	if nodeItem then
 		local nResult = ActionsManager.total(rRoll);
-		for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
-			if nResult == 0 then
-				break;
-			end
+		distributeCharges(nodeItem, nResult)
+		updateDischargeCount(nodeItem, DB.getValue(nodeItem, "prepared", 1));
+	end
+	
+	-- Deliver roll message
+	Comm.deliverChatMessage(rMessage);
+end
 
-			local nCast = DB.getValue(nodePower, "cast", 0);
-			if nCast > nResult then
-				nCast = nCast - nResult;
-				nResult = 0;
-				DB.setValue(nodePower, "cast", "number", nCast);
-			elseif nCast > 0 then
-				nResult = nResult - nCast;
-				DB.setValue(nodePower, "cast", "number", 0);
+function distributeCharges(nodeItem, nChargesToAdd)
+	for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
+		if nChargesToAdd == 0 then
+			break;
+		end
+
+		local nCast = DB.getValue(nodePower, "cast", 0);
+		if nCast > nChargesToAdd then
+			nCast = nCast - nChargesToAdd;
+			nChargesToAdd = 0;
+			DB.setValue(nodePower, "cast", "number", nCast);
+		elseif nCast > 0 then
+			nChargesToAdd = nChargesToAdd - nCast;
+			DB.setValue(nodePower, "cast", "number", 0);
+		end
+	end
+end
+
+-- Discharging
+function handleItemChargesUsed(nodeItem)
+	local nChargeCount = DB.getValue(nodeItem, "prepared", 1);
+	local nChargesUsed = countCharges(nodeItem);
+	local nCurrentDischargeCount = DB.getValue(nodeItem, "discharged", 0);
+	local nDischargeCount = math.floor(nChargesUsed / nChargeCount);
+	if nDischargeCount > nCurrentDischargeCount then
+		local sOnDischarge = DB.getValue(nodeItem, "dischargeaction", "");
+		if sOnDischarge == "destroy" then
+			destroyDischargedItem(nodeItem, nChargeCount);
+		elseif sOnDischarge == "roll" then
+			beginRollDischargedItem(nodeItem);
+		end
+	end
+
+	updateDischargeCount(nodeItem, nChargeCount);
+end
+
+function destroyDischargedItem(nodeItem, nChargeCount)
+	distributeCharges(nodeItem, nChargeCount);
+	local nCount = DB.getValue(nodeItem, "count", 1) - 1;
+	DB.setValue(nodeItem, "count", "number", nCount);
+end
+
+function beginRollDischargedItem(nodeItem)
+	local messageOOB = {type=OOB_MSGTYPE_ROLL_DISCHARGED_ITEM, sItem=nodeItem.getPath()};
+
+	if Session.IsHost then
+		local sOwner = DB.getOwner(nodeItem);
+		if sOwner ~= "" then
+			for _,vUser in ipairs(User.getActiveUsers()) do
+				if vUser == sOwner then
+					Comm.deliverOOBMessage(messageOOB, sOwner);
+					return;
+				end
 			end
+		end
+		handleRollDischargedItem(messageOOB);
+	end
+end
+
+function handleRollDischargedItem(messageOOB)
+	local nodeItem = DB.findNode(messageOOB.sItem);
+	if nodeItem then
+		local aDice = DB.getValue(nodeItem, "dischargedice", {});
+		local nMod = 0;
+		local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [DISCHARGE]";
+		local dischargeRoll = {sType="dischargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
+		ActionsManager.roll(nodeItem.getChild("..."), nil, dischargeRoll, false);
+	end
+end
+
+function onDischargeRoll(rSource, rTarget, rRoll)
+	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
+
+	local nodeItem = DB.findNode(rRoll.sItem);
+	if nodeItem then
+		local nDestroyOn = DB.getValue(nodeItem, "destroyon", 0);
+		local nRechargeOn = DB.getValue(nodeItem, "rechargeon", 0);
+		local nResult = ActionsManager.total(rRoll);
+		if nResult <= nDestroyOn then
+			destroyDischargedItem(nodeItem, DB.getValue(nodeItem, "prepared"));
+		elseif (nResult >= nRechargeOn) and (nRechargeOn > 0) then
+			rechargeDischargedItem(nodeItem);
+		else
+			updateDischargeCount(nodeItem, DB.getValue(nodeItem, "prepared", 1));
 		end
 	end
 	
@@ -311,9 +391,22 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 	Comm.deliverChatMessage(rMessage);
 end
 
+function rechargeDischargedItem(nodeItem)
+	local aDice = DB.getValue(nodeItem, "dischargerechargedice", {});
+	local nMod = DB.getValue(nodeItem, "dischargerechargebonus", 0);
+	local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
+	local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
+	ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
+end
+
+function updateDischargeCount(nodeItem, nChargeCount)
+	DB.setValue(nodeItem, "discharged", "number", math.floor(countCharges(nodeItem) / nChargeCount));
+end
+
 -- Utility functions
 function shouldShowItemPowers(nodeItem)
-	return DB.getValue(nodeItem, "carried", 0) == 2 and
+	return DB.getValue(nodeItem, "count", 0) > 0 and
+		DB.getValue(nodeItem, "carried", 0) == 2 and
 		DB.getValue(nodeItem, "isidentified", 1) == 1 and
 		((DB.getValue(nodeItem, "attune", 0) == 1) or not CharAttunementManager.doesItemAllowAttunement(nodeItem)) and
 		DB.getChildCount(nodeItem, "powers") ~= 0;
@@ -361,4 +454,12 @@ function handleItemGroupCreation(msgOOB)
 	if nodeGroup then
 		DB.setValue(nodeGroup, "name", "string", msgOOB.sGroup);
 	end
+end
+
+function countCharges(nodeItem)
+	local nCount = 0;
+	for _,powerNode in pairs(DB.getChildren(nodeItem.getPath("powers"))) do
+		nCount = nCount + DB.getValue(powerNode, "cast", 0);
+	end
+	return nCount;
 end

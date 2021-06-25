@@ -14,6 +14,7 @@ function onInit()
 	local nodeChar = DB.getChild(getDatabaseNode(), "...");
 	DB.addHandler(nodeChar.getPath("inventorylist.*.attune"), "onUpdate", onFilteredValueChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.carried"), "onUpdate", onFilteredValueChanged);
+	DB.addHandler(nodeChar.getPath("inventorylist.*.count"), "onUpdate", onFilteredValueChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.isidentified"), "onUpdate", onFilteredValueChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onAdd", onPowerListChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onDelete", onPowerListChanged);
@@ -23,9 +24,25 @@ function onClose()
 	local nodeChar = DB.getChild(getDatabaseNode(), "...");
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.attune"), "onUpdate", onFilteredValueChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.carried"), "onUpdate", onFilteredValueChanged);
+	DB.removeHandler(nodeChar.getPath("inventorylist.*.count"), "onUpdate", onFilteredValueChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.isidentified"), "onUpdate", onFilteredValueChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onAdd", onPowerListChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onDelete", onPowerListChanged);
+end
+
+function setListId(nListId)
+	if nListId == 1 then
+		registerMenuItem(Interface.getString("item_group_send_to_bottom"), "send", 5);
+	else
+		registerMenuItem(Interface.getString("item_group_send_to_top"), "send", 5);
+	end
+end
+
+function onMenuSelection(selection)
+	if selection == 5 then
+		local nodeGroup = getDatabaseNode();
+		DB.setValue(nodeGroup, "listid", "number", 1 - DB.getValue(nodeGroup, "listid", 0));
+	end
 end
 
 function addItem(nodeItem)
@@ -113,7 +130,11 @@ function updateLink()
 	end
 end
 
-function shouldBeShown()
+function shouldBeShown(nListId)
+	if DB.getValue(getDatabaseNode(), "listid", 0) ~= nListId then
+		return false;
+	end
+
 	for nodeItem,_ in pairs(itemPowers) do
 		if (type(nodeItem) == "databasenode") and ItemPowerManager.shouldShowItemPowers(nodeItem) then
 			return true;

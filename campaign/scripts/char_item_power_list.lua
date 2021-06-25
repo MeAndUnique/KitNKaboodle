@@ -3,16 +3,16 @@
 -- attribution and copyright information.
 --
 
+local nListId = 0;
 local nodeChar;
-local bIsDefault = false;
 local groupsForItems = {};
 local pendingItemsByGroupName = {};
 local pendingItemsByItemNode = {};
 
 -- Initialization
 function onInit()
-	if isdefault then
-		bIsDefault = true;
+	if window.parentcontrol.listid then
+		nListId = tonumber(window.parentcontrol.listid[1]);
 	end
 
 	nodeChar = window.getDatabaseNode();
@@ -23,6 +23,7 @@ function onInit()
 	DB.addHandler(nodeChar.getPath("inventorylist.*.displaygroup"), "onUpdate", onDisplayGroupChanged);
 
 	DB.addHandler(nodeChar.getPath("itemgroups.*.name"), "onUpdate", onGroupNamed);
+	DB.addHandler(nodeChar.getPath("itemgroups.*.listid"), "onUpdate", onFilteredValueChanged);
 
 	for _,nodeGroup in pairs(DB.getChildren(nodeChar, "itemgroups")) do
 		local sName = DB.getValue(nodeGroup, "name", "");
@@ -45,10 +46,11 @@ function onClose()
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.displaygroup"), "onUpdate", onDisplayGroupChanged);
 	
 	DB.removeHandler(nodeChar.getPath("itemgroups.*.name"), "onAdd", onGroupNamed);
+	DB.removeHandler(nodeChar.getPath("itemgroups.*.listid"), "onUpdate", onFilteredValueChanged);
 end
 
 function onFilter(instance)
-	return instance.shouldBeShown();
+	return instance.shouldBeShown(nListId);
 end
 
 function onGroupNamed(nodeName)
@@ -117,7 +119,6 @@ function setItemGroup(nodeItem, sGroup)
 		groupsForItems[nodeItem] = windowGroup;
 		windowGroup.addItem(nodeItem);
 	else
-		-- TODO top vs bottom
 		local pendingItems = pendingItemsByGroupName[sGroup];
 		if not pendingItems then
 			pendingItems = {};
@@ -130,6 +131,8 @@ function setItemGroup(nodeItem, sGroup)
 end
 
 function initializeItemGroup(windowGroup, sGroup)
+	windowGroup.setListId(nListId);
+
 	local pendingItems = pendingItemsByGroupName[sGroup];
 	pendingItemsByGroupName[sGroup] = nil;
 

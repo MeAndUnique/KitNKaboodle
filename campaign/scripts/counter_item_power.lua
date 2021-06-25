@@ -3,7 +3,13 @@
 -- attribution and copyright information.
 --
 
+local nodePower;
 local nodeItem;
+local nTotal;
+local nUsed;
+local bWheel = false;
+
+local adjustCounterOriginal;
 
 -- Initialization
 function onInit()
@@ -11,7 +17,10 @@ function onInit()
 		super.onInit()
 	end
 
-	local nodePower = window.getDatabaseNode();
+	adjustCounterOriginal = super.adjustCounter;
+	super.adjustCounter = adjustCounter;
+
+	nodePower = window.getDatabaseNode();
 	nodeItem = DB.getChild(nodePower, "...");
 	
 	onChargesChanged();
@@ -30,9 +39,27 @@ function onClose()
 	DB.removeHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
 end
 
+function onWheel(notches)
+	bWheel = true;
+	local result = super.onWheel(notches);
+	bWheel = false;
+	return result;
+end
+
+function adjustCounter(val_adj)
+	if not bWheel then
+		if val_adj == 1 then
+			val_adj = DB.getValue(nodePower, "charges", 1);
+		elseif val_adj == -1 then
+			val_adj = val_adj * DB.getValue(nodePower, "charges", 1);
+		end
+	end
+	adjustCounterOriginal(val_adj);
+end
+
 function onChargesChanged()
-	local nTotal = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 1);
-	local nUsed = countCharges();
+	calculateTotal();
+	nUsed = ItemPowerManager.countCharges(nodeItem);
 	
 	local nodePower = getDatabaseNode();
 	DB.setValue(nodePower, "prepared", "number", nTotal);
@@ -42,10 +69,24 @@ function onChargesChanged()
 	end
 end
 
-function countCharges()
-	local nCount = 0;
-	for _,powerNode in pairs(DB.getChildren(nodeItem.getPath("powers"))) do
-		nCount = nCount + DB.getValue(powerNode, "cast", 0);
+function onValueChanged()
+	ItemPowerManager.handleItemChargesUsed(nodeItem);
+end
+
+function calculateTotal()
+	nTotal = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 1);
+end
+
+function getTotalCharges()
+	if not nTotal then
+		calculateTotal();
 	end
-	return nCount;
+	return nTotal;
+end
+
+function getChargesUsed()
+	if not nUsed then
+		nUsed = ItemPowerManager.countCharges(nodeItem);
+	end
+	return nUsed;
 end

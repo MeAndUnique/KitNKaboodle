@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+MIT License
+
+Copyright (c) 2021 MeAndUnique
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.www.flaticon.com
+-->
+
+<root release="3.0" version="3">
+	<properties>
+		<name>5E - Kit'N'Kaboodle</name>
+		<version>2.0</version>
+		<loadorder>150</loadorder>
+		<author>MeAndUnique</author>
+		<description>Adds support for adding actions to items and giving items to NPCs.</description>
+		
+		<ruleset>
+			<name>5E</name>
+		</ruleset>
+	</properties>
+
+	<base>
+		<includefile source="strings/strings.xml" />
+
+		<script name="ItemPowerManager" file="scripts/manager_item_power.lua" />
+		<script name="ActorManagerKNK" file="scripts/manager_actor_KNK.lua" />
+
+		<includefile source="campaign/record_char_actions.xml" />
+		<includefile source="campaign/record_item.xml" />
+		<includefile source="campaign/record_item_actions.xml" />
+		<includefile source="campaign/record_item_charges.xml" />
+		<includefile source="campaign/record_npc.xml" />
+		<includefile source="campaign/template_item.xml" />
+		<includefile source="ct/ct_host.xml" />
+		<includefile source="graphics/graphics_radial.xml" />
+		
+		<icon name="KNK_icon" file="graphics/icons/KitNKaboodle.png" />
+	</base>
+
+	<announcement text="Kit'N'Kaboodle v2.0 for 5E by MeAndUnique." icon="KNK_icon" font="emotefont" />
+
+</root>

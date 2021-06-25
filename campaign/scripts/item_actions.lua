@@ -3,6 +3,8 @@
 -- attribution and copyright information.
 --
 
+bHideCast = true;
+
 -- Initialization
 function onInit()
 	local nodeRecord = getDatabaseNode();
@@ -33,17 +35,8 @@ function update(bLocked)
 
 	powerlist.setReadOnly(bLocked);
 	for _, win in ipairs(powerlist.getWindows()) do
-		win.update(bLocked, true);
+		win.update(bLocked, bHideCast);
 	end
-end
-
-function countCharges()
-	local node = getDatabaseNode();
-	local nCount = 0;
-	for _,powerNode in pairs(DB.getChildren(node.getPath("powers"))) do
-		nCount = nCount + DB.getValue(powerNode, "cast", 0);
-	end
-	return nCount;
 end
 
 function onDrop(x, y, draginfo)

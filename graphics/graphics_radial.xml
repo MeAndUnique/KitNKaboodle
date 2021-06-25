@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 
+  Please see the license.html file included with this distribution for 
+  attribution and copyright information.
+-->
+
+<root>
+	<icon name="radial_reparse_spell" file="graphics/radial/icon_text_list.png" />
+	<icon name="radial_delete_action_confirm" file="graphics/radial/icon_delete.png" />
+	<icon name="radial_create_action" file="graphics/radial/icon_image_layer_pointer_menu.png" />
+	<icon name="radial_delete_action" file="graphics/radial/icon_image_layer_pointer_delete.png" />
+</root>
