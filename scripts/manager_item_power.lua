@@ -328,6 +328,7 @@ function handleItemChargesUsed(nodeItem)
 		local sOnDischarge = DB.getValue(nodeItem, "dischargeaction", "");
 		if sOnDischarge == "destroy" then
 			destroyDischargedItem(nodeItem, nChargeCount);
+			ChatManager.Message(DB.getValue(nodeItem, "name", "Unnamed Item") .. " - Item destroyed on discharge.", true, ActorManager.resolveActor(nodeItem));
 		elseif sOnDischarge == "roll" then
 			beginRollDischargedItem(nodeItem);
 		end
@@ -380,6 +381,7 @@ function onDischargeRoll(rSource, rTarget, rRoll)
 		local nResult = ActionsManager.total(rRoll);
 		if nResult <= nDestroyOn then
 			destroyDischargedItem(nodeItem, DB.getValue(nodeItem, "prepared"));
+			rMessage.text = rMessage.text .. " Item destroyed on discharge."
 		elseif (nResult >= nRechargeOn) and (nRechargeOn > 0) then
 			rechargeDischargedItem(nodeItem);
 		else

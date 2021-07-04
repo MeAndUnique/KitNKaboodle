@@ -27,7 +27,7 @@ function onInit()
 	update(windowlist.isReadOnly(), bHideCast);
 
 	local nodePower = getDatabaseNode();
-	DB.addHandler(nodePower.getChild("...prepared").getPath(), "onUpdate", onChargesChanged);
+	DB.addHandler(nodePower.getChild("...").getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodePower.getPath("group"), "onUpdate", onGroupChanged);
 	DB.addHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
 	DB.addHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
@@ -36,7 +36,7 @@ end
 
 function onClose()
 	local nodePower = getDatabaseNode();
-	DB.removeHandler(nodePower.getChild("...prepared").getPath(), "onUpdate", onChargesChanged);
+	DB.removeHandler(nodePower.getChild("...").getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.removeHandler(nodePower.getPath("group"), "onUpdate", onGroupChanged);
 	DB.removeHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
 	DB.removeHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
