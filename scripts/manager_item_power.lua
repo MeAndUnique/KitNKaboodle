@@ -229,11 +229,11 @@ function calculateDailyRecharge(nodeItem, nCurrentTimeOfDay, nElapsedDays)
 	local sRechargeTime = DB.getValue(nodeItem, "rechargetime", "");
 	local nRechargeTimeOfDay = DAWN_TIME_OF_DAY;
 	if sRechargeTime == "noon" then
-		local nRechargeTimeOfDay = NOON_TIME_OF_DAY;
+		nRechargeTimeOfDay = NOON_TIME_OF_DAY;
 	elseif sRechargeTime == "dusk" then
-		local nRechargeTimeOfDay = DUSK_TIME_OF_DAY;
+		nRechargeTimeOfDay = DUSK_TIME_OF_DAY;
 	elseif sRechargeTime == "midnight" then
-		local nRechargeTimeOfDay = MIDNIGHT_TIME_OF_DAY;
+		nRechargeTimeOfDay = MIDNIGHT_TIME_OF_DAY;
 	end
 
 	local nTolerance = 1e-10; -- Less than a thousandth of a seccond by Earth measure
