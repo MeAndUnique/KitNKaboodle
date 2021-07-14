@@ -149,7 +149,12 @@ function onFilter(instance)
 end
 
 function onFilteredValueChanged(node)
-	-- if type(self) ~= "windowinstance" then
+	if type(self) ~= "windowinstance" then
+		-- Occasionally this function can get called in a scenario where the FG context isn't populated.
+		-- In such a situation pretty much nothing will work as expected anyway, so best to return and try again later.
+		return;
+	end
+
 	if bClosing then
 		return;
 	end
