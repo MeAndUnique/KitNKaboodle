@@ -27,6 +27,7 @@ function onInit()
 	DB.addHandler(nodeItem.getPath("count"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+	DB.addHandler(nodePower.getPath("charges"), "onUpdate", onChargesChanged);
 end
 
 function onClose()
@@ -37,6 +38,7 @@ function onClose()
 	DB.removeHandler(nodeItem.getPath("count"), "onUpdate", onChargesChanged);
 	DB.removeHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
 	DB.removeHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+	DB.removeHandler(nodePower.getPath("charges"), "onUpdate", onChargesChanged);
 end
 
 function onWheel(notches)
@@ -74,7 +76,11 @@ function onValueChanged()
 end
 
 function calculateTotal()
-	nTotal = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 1);
+	if DB.getValue(nodePower, "charges", 0) > 0 then
+		nTotal = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 1);
+	else
+		nTotal = 0;
+	end
 end
 
 function getTotalCharges()

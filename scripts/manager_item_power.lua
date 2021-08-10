@@ -429,6 +429,7 @@ end
 function beginCreatingItemGroup(sCharPath, sGroup)
 	local messageOOB = {type=OOB_MSGTYPE_CREATE_ITEM_GROUP, sChar=sCharPath, sGroup=sGroup};
 	if not Session.IsHost then
+		-- todo... wtf man
 		Comm.deliverOOBMessage(messageOOB, sOwner);
 	else
 		handleItemGroupCreation(messageOOB)
