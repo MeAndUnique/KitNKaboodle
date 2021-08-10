@@ -128,7 +128,7 @@
 			<basicnumber name="charges">
 				<anchored to="chargesusedlabel" position="right" offset="5" width="30" />
 				<default>1</default>
-				<min>1</min>
+				<min>0</min>
 			</basicnumber>
 		</sheetdata>
 	</windowclass>

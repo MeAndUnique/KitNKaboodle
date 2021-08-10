@@ -1,5 +1,5 @@
 -- 
--- Please see the license.html file included with this distribution for 
+-- Please see the license.txt file included with this distribution for 
 -- attribution and copyright information.
 --
 
@@ -28,11 +28,12 @@ local nodeItemBeingEquiped = nil;
 -- Initialization
 function onInit()
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
-	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_CREATE_ITEM_GROUP, handleItemGroupCreation);
 	ActionsManager.registerResultHandler("rechargeitem", onRechargeRoll);
 	ActionsManager.registerResultHandler("dischargeitem", onDischargeRoll);
 
 	if Session.IsHost then
+		OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_CREATE_ITEM_GROUP, handleItemGroupCreation);
+
 		getItemSourceTypeOriginal = ItemManager.getItemSourceType;
 		ItemManager.getItemSourceType = getItemSourceType;
 		
@@ -422,14 +423,10 @@ function getItemGroupName(nodeItem)
 	return sGroup;
 end
 
-function isItemBeingEquipped(nodeItem)
-	return nodeItem == nodeItemBeingEquipped;
-end
-
 function beginCreatingItemGroup(sCharPath, sGroup)
 	local messageOOB = {type=OOB_MSGTYPE_CREATE_ITEM_GROUP, sChar=sCharPath, sGroup=sGroup};
 	if not Session.IsHost then
-		Comm.deliverOOBMessage(messageOOB, sOwner);
+		Comm.deliverOOBMessage(messageOOB);
 	else
 		handleItemGroupCreation(messageOOB)
 	end

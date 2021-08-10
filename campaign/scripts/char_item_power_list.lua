@@ -1,10 +1,11 @@
 -- 
--- Please see the license.html file included with this distribution for 
+-- Please see the license.txt file included with this distribution for 
 -- attribution and copyright information.
 --
 
 local nListId = 0;
 local nodeChar;
+local itemGroups = {};
 local groupsForItems = {};
 local pendingItemsByGroupName = {};
 local pendingItemsByItemNode = {};
@@ -88,13 +89,6 @@ function onDisplayGroupChanged(nodeDisplayGroup)
 	setItemGroup(nodeItem, sGroup);
 end
 
-function getLoadedGroups()
-	if not window.parentcontrol.window.itemGroups then
-		window.parentcontrol.window.itemGroups = {};
-	end
-	return window.parentcontrol.window.itemGroups;
-end
-
 function setItemGroup(nodeItem, sGroup)
 	if sGroup == "" then
 		sGroup = "<< Unnamed Items >>";
@@ -114,7 +108,7 @@ function setItemGroup(nodeItem, sGroup)
 		table.remove(pendingItemsByGroupName[rPreviouslyPending.sGroup], rPreviouslyPending.nIndex);
 	end
 
-	windowGroup = getLoadedGroups()[sGroup];
+	windowGroup = itemGroups[sGroup];
 	if type(windowGroup) == "windowinstance" then
 		groupsForItems[nodeItem] = windowGroup;
 		windowGroup.addItem(nodeItem);
@@ -144,5 +138,5 @@ function initializeItemGroup(windowGroup, sGroup)
 		end
 	end
 
-	getLoadedGroups()[sGroup] = windowGroup;
+	itemGroups[sGroup] = windowGroup;
 end
