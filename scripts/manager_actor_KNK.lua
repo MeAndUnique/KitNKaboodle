@@ -38,8 +38,7 @@ end
 
 -- Internal use only
 function getActorRecordTypeFromPath(sActorNodePath)
-	local delimiterCount = select(2, string.gsub(sActorNodePath, "%.", ""));
-	if(delimiterCount > 2) then
+	if sActorNodePath:match("%.inventorylist%.") then
 		return nil;
 	else
 		return getActorRecordTypeFromPathOriginal(sActorNodePath);
