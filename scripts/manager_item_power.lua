@@ -27,13 +27,13 @@ local nodeItemBeingEquiped = nil;
 
 -- Initialization
 function onInit()
+	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_CREATE_ITEM_GROUP, handleItemGroupCreation);
+
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
 	ActionsManager.registerResultHandler("rechargeitem", onRechargeRoll);
 	ActionsManager.registerResultHandler("dischargeitem", onDischargeRoll);
 
 	if Session.IsHost then
-		OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_CREATE_ITEM_GROUP, handleItemGroupCreation);
-
 		getItemSourceTypeOriginal = ItemManager.getItemSourceType;
 		ItemManager.getItemSourceType = getItemSourceType;
 		
@@ -433,6 +433,10 @@ function beginCreatingItemGroup(sCharPath, sGroup)
 end
 
 function handleItemGroupCreation(msgOOB)
+	if not Session.IsHost then
+		return;
+	end
+
 	local nodeChar = DB.findNode(msgOOB.sChar);
 	if not nodeChar then
 		return;
