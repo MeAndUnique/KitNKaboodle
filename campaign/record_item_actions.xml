@@ -59,7 +59,7 @@
 
 			<subwindow name="metadata">
 				<anchored>
-					<top parent="nameandactions" anchor="bottom" relation="relative" />
+					<top parent="counter" anchor="bottom" relation="relative" />
 					<left />
 					<right />
 				</anchored>
@@ -70,7 +70,7 @@
 
 			<windowlist name="actions">
 				<anchored>
-					<top parent="nameandactions" anchor="bottom" relation="relative" offset="5" />
+					<top parent="counter" anchor="bottom" relation="relative" offset="5" />
 					<left offset="5" />
 					<right offset="-5" />
 				</anchored>
@@ -119,17 +119,40 @@
 		<margins control="0,0,0,2" />
 		<sheetdata>
 			<label name="chargesusedlabel">
-				<anchored width="90">
+				<anchored width="40">
 					<left offset="10" />
 					<top offset="5"/>
 				</anchored>
-				<static textres="item_label_charges_used" />
+				<static textres="power_label_groupuses" />
 			</label>
 			<basicnumber name="charges">
-				<anchored to="chargesusedlabel" position="right" offset="5" width="30" />
+				<anchored to="chargesusedlabel" width="30" height="20" >
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
 				<default>1</default>
 				<min>0</min>
 			</basicnumber>
+			<button_stringcycler name="chargeperiod">
+				<script>
+					function onInit()
+						if KingdomsAndWarfare then
+							parameters[1].labelsres[1] = "item_recharge_long|item_recharge_short|power_label_useperiod_extended|power_label_useperiod_intrigue|item_recharge_never";
+							parameters[1].values[1] = "long|short|extended|intrigue|never";
+						end
+						super.onInit();
+					end
+				</script>
+				<anchored to="chargesusedlabel" width="60" height="20"> 
+					<top />
+					<left anchor="right" relation="relative" offset="10" />
+				</anchored>
+				<parameters>
+					<defaultlabelres>item_use_charges</defaultlabelres>
+					<labelsres>item_recharge_long|item_recharge_short|item_recharge_never</labelsres>
+					<values>long|short|never</values>
+				</parameters>
+			</button_stringcycler>
 		</sheetdata>
 	</windowclass>
 

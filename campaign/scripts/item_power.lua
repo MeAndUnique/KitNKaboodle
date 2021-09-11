@@ -120,16 +120,15 @@ function showAction(nodeAction, sType)
 end
 
 function shouldShowToggle(nodePower)
-	return (DB.getChildCount(nodePower, "actions") > 0) or (bHideCast and (DB.getValue(nodePower, "...prepared", 0) > 0));
+	return bHideCast;
 end
 
 function shouldShowMetaData(nodePower)
-	return bHideCast and (activatedetail.getValue() == 1) and (DB.getValue(nodePower, "...prepared", 0) > 0);
+	return bHideCast and (activatedetail.getValue() == 1);
 end
 
 function updateToggle()
-	if (DB.getChildCount(getDatabaseNode(), "actions") > 0) or
-		(bHideCast and (DB.getValue(nodePower, "...prepared", 0) > 0)) then
+	if bHideCast then
 		activatedetail.setValue(1);
 		activatedetail.setVisible(true);
 	else
@@ -140,7 +139,7 @@ end
 
 function toggleDetail()
 	local status = (activatedetail.getValue() == 1);
-	metadata.setVisible(status and bHideCast and (DB.getValue(getDatabaseNode(), "...prepared", 0) > 0));
+	metadata.setVisible(status and bHideCast);
 	actions.setVisible(status);
 end
 
@@ -152,15 +151,18 @@ function update(bNewReadOnly, bNewHideCast)
 	nameandactions.subwindow.actionsmini.setVisible(not bHideCast);
 	activatedetail.setVisible(shouldShowToggle(nodePower));
 	metadata.subwindow.charges.setReadOnly(bReadOnly);
+	metadata.subwindow.chargeperiod.setReadOnly(bReadOnly);
 	metadata.setVisible(shouldShowMetaData(nodePower));
 
 	if bReadOnly then
 		nameandactions.subwindow.name.setFrame(nil);
 		metadata.subwindow.charges.setFrame(nil);
+		metadata.subwindow.chargeperiod.setFrame(nil);
 		resetMenuItems();
 	else
 		nameandactions.subwindow.name.setFrame("fieldlight", 7, 5, 9, 5);
 		metadata.subwindow.charges.setFrame("fieldlight", 7, 5, 9, 5);
+		metadata.subwindow.chargeperiod.setFrame("fieldlight", 7, 5, 9, 5);
 		
 		registerMenuItem(Interface.getString("power_menu_addaction"), "radial_create_action", 3);
 		registerMenuItem(Interface.getString("power_menu_addcast"), "radial_sword", 3, 2);
