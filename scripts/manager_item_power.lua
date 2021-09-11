@@ -21,6 +21,7 @@ FULL_RECHARGE_DAY_THRESHOLD = 5; -- Only a few items could potentially be missin
 local getItemSourceTypeOriginal;
 local resetPowersOriginal;
 local resetHealthOriginal;
+local resetIntriguePowersOriginal
 
 local addEquippedSpellPCOriginal;
 local nodeItemBeingEquiped = nil;
@@ -45,6 +46,11 @@ function onInit()
 
 		if LongTermEffects then
 			DB.addHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
+		end
+
+		if PowerManagerKw then
+			resetIntriguePowersOriginal = PowerManagerKw.resetIntriguePowers;
+			PowerManagerKw.resetIntriguePowers = resetIntriguePowers;
 		end
 
 		if EquippedEffectsManager then
@@ -129,6 +135,13 @@ function resetHealth(nodeCT, bLong)
 	beginRecharging(nodeCT, bLong);
 end
 
+function resetIntriguePowers(nodeCaster)
+	resetIntriguePowersOriginal(nodeCaster);
+	for _,nodeItem in pairs(DB.getChildren(nodeCaster.getPath("inventorylist"))) do
+		rechargeItemPowers(nodeItem, "intrigue");
+	end
+end
+
 function beginRecharging(nodeActor, bLong)
 	local sPeriod = "short";
 	if ExtendedRest and ExtendedRest.isExtended() then
@@ -172,11 +185,13 @@ function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 	end
 
 	local nRechargeAmount, nRechargeCount = getRechargeAmount(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays);
-	if nRechargeAmount == RECHARGE_NONE then
-		return;
-	end
-
-	local messageOOB = {type=OOB_MSGTYPE_RECHARGE_ITEM, sItem=nodeItem.getPath(), sRechargeAmount=tostring(nRechargeAmount), sRechargeCount=tostring(nRechargeCount)};
+	local messageOOB = {
+		type=OOB_MSGTYPE_RECHARGE_ITEM,
+		sItem=nodeItem.getPath(),
+		sPeriod=sPeriod,
+		sRechargeAmount=tostring(nRechargeAmount),
+		sRechargeCount=tostring(nRechargeCount)
+	};
 
 	if Session.IsHost then
 		local sOwner = DB.getOwner(nodeItem);
@@ -193,10 +208,9 @@ function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 end
 
 function canRecharge(nodeItem)
-	if (DB.getValue(nodeItem, "prepared", 0) > 0)
-	and (DB.getValue(nodeItem, "rechargeperiod", "") ~= "")
-	and (DB.getValue(nodeItem, "isidentified", 1) == 1)
-	and (DB.getValue(nodeItem, "count", 0) > 0) then
+	if (DB.getValue(nodeItem, "isidentified", 1) == 1) and (DB.getValue(nodeItem, "count", 0) > 0) then
+		local bHasCharges = (DB.getValue(nodeItem, "prepared", 0) > 0)
+			and (DB.getValue(nodeItem, "rechargeperiod", "") ~= "");
 		for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
 			if DB.getValue(nodePower, "cast", 0) > 0 then
 				return true;
@@ -271,17 +285,34 @@ function handleItemRecharge(msgOOB)
 		local aDice = {};
 		local nMod = 0;
 		local nRechargeAmount = tonumber(msgOOB.sRechargeAmount);
+		bRoll = false;
 		if nRechargeAmount == RECHARGE_NORMAL then
+			bRoll = true;
 			aDice = DB.getValue(nodeItem, "rechargedice", {});
 			nMod = DB.getValue(nodeItem, "rechargebonus");
 		elseif nRechargeAmount == RECHARGE_FULL then
+			bRoll = true;
 			nMod = DB.getValue(nodeItem, "prepared");
 		end
-		local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
-		local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
-		for index=1,DB.getValue(nodeItem, "count", 0) do
-			for count=1,(tonumber(msgOOB.sRechargeCount) or 1) do
-				ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
+
+		if bRoll then
+			local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
+			local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
+			for index=1,DB.getValue(nodeItem, "count", 0) do
+				for count=1,(tonumber(msgOOB.sRechargeCount) or 1) do
+					ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
+				end
+			end
+		end
+
+		for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
+			local sPowerPeriod = DB.getValue(nodePower, "chargeperiod", "");
+			local bRecharge = (sPowerPeriod == "short" and StringManager.contains({"short", "long", "extended"}, msgOOB.sPeriod)) or
+				(sPowerPeriod == "long" and StringManager.contains({"long", "extended"}, msgOOB.sPeriod)) or
+				(sPowerPeriod == "extended" and msgOOB.sPeriod == "extended") or
+				(sPowerPeriod == "intrigue" and msgOOB.sPeriod == "intrigue");
+			if bRecharge then
+				DB.setValue(nodePower, "cast", "number", 0);
 			end
 		end
 	end
@@ -325,23 +356,33 @@ function handleItemChargesUsed(nodeItem)
 	local nChargesUsed = countCharges(nodeItem);
 	local nCurrentDischargeCount = DB.getValue(nodeItem, "discharged", 0);
 	local nDischargeCount = math.floor(nChargesUsed / nChargeCount);
+	local bDeleted = false;
 	if nDischargeCount > nCurrentDischargeCount then
 		local sOnDischarge = DB.getValue(nodeItem, "dischargeaction", "");
 		if sOnDischarge == "destroy" then
-			destroyDischargedItem(nodeItem, nChargeCount);
 			ChatManager.Message(DB.getValue(nodeItem, "name", "Unnamed Item") .. " - Item destroyed on discharge.", true, ActorManager.resolveActor(nodeItem));
+			bDeleted = destroyDischargedItem(nodeItem, nChargeCount);
 		elseif sOnDischarge == "roll" then
 			beginRollDischargedItem(nodeItem);
 		end
 	end
 
-	updateDischargeCount(nodeItem, nChargeCount);
+	if not bDelete then
+		updateDischargeCount(nodeItem, nChargeCount);
+	end
 end
 
 function destroyDischargedItem(nodeItem, nChargeCount)
 	distributeCharges(nodeItem, nChargeCount);
 	local nCount = DB.getValue(nodeItem, "count", 1) - 1;
-	DB.setValue(nodeItem, "count", "number", nCount);
+	local bDeleted = false;
+	if nCount == 0 and OptionsManager.getOption("IDLU") == "on" then
+		nodeItem.delete();
+		bDeleted = true
+	else
+		DB.setValue(nodeItem, "count", "number", nCount);
+	end
+	return bDeleted;
 end
 
 function beginRollDischargedItem(nodeItem)
@@ -403,7 +444,9 @@ function rechargeDischargedItem(nodeItem)
 end
 
 function updateDischargeCount(nodeItem, nChargeCount)
-	DB.setValue(nodeItem, "discharged", "number", math.floor(countCharges(nodeItem) / nChargeCount));
+	if type(nodeItem) == "databasenode" then
+		DB.setValue(nodeItem, "discharged", "number", math.floor(countCharges(nodeItem) / nChargeCount));
+	end
 end
 
 -- Utility functions
@@ -461,8 +504,10 @@ end
 
 function countCharges(nodeItem)
 	local nCount = 0;
-	for _,powerNode in pairs(DB.getChildren(nodeItem.getPath("powers"))) do
-		nCount = nCount + DB.getValue(powerNode, "cast", 0);
+	for _,nodePower in pairs(DB.getChildren(nodeItem.getPath("powers"))) do
+		if DB.getValue(nodePower, "chargeperiod", "") == "" then
+			nCount = nCount + DB.getValue(nodePower, "cast", 0);
+		end
 	end
 	return nCount;
 end

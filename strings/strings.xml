@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
+	<!-- Options -->
+	<string name="option_header_knk">Kit'N'Kaboodle</string>
+	<string name="option_label_IDLU">Remove destroyed items from inventory</string>
+
 	<string name="item_label_charges">CHARGES</string>
 
 	<string name="item_use_atwill">At Will</string>
@@ -27,8 +31,6 @@
 	<string name="item_label_miscellaneous">MISCELLANEOUS</string>
 	<string name="item_label_display_group">Display Group</string>
 	<string name="item_label_power_group">Power Group</string>
-
-	<string name="item_label_charges_used">Charges Used</string>
 
 	<string name="item_group_send_to_top">Move Under Weapons</string>
 	<string name="item_group_send_to_bottom">Move Under Powers</string>

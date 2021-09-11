@@ -10,6 +10,7 @@ local nUsed;
 local bWheel = false;
 
 local adjustCounterOriginal;
+local getCastValueOriginal;
 
 -- Initialization
 function onInit()
@@ -19,6 +20,8 @@ function onInit()
 
 	adjustCounterOriginal = super.adjustCounter;
 	super.adjustCounter = adjustCounter;
+	getCastValueOriginal = super.getCastValue;
+	super.getCastValue = getCastValue;
 
 	nodePower = window.getDatabaseNode();
 	nodeItem = DB.getChild(nodePower, "...");
@@ -26,19 +29,28 @@ function onInit()
 	onChargesChanged();
 	DB.addHandler(nodeItem.getPath("count"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
-	DB.addHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodePower.getPath("charges"), "onUpdate", onChargesChanged);
+	DB.addHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+	DB.addHandler(nodeItem.getPath("powers.*.chargeperiod"), "onUpdate", onChargesChanged);
 end
 
 function onClose()
+	DB.removeHandler(nodeItem.getPath("count"), "onUpdate", onChargesChanged);
+	DB.removeHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
+	DB.removeHandler(nodePower.getPath("charges"), "onUpdate", onChargesChanged);
+	DB.removeHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
+	DB.removeHandler(nodeItem.getPath("powers.*.chargeperiod"), "onUpdate", onChargesChanged);
+
 	if super and super.onClose then
 		super.onClose()
 	end
+end
 
-	DB.removeHandler(nodeItem.getPath("count"), "onUpdate", onChargesChanged);
-	DB.removeHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
-	DB.removeHandler(nodeItem.getPath("powers.*.cast"), "onUpdate", onChargesChanged);
-	DB.removeHandler(nodePower.getPath("charges"), "onUpdate", onChargesChanged);
+function getCastValue()
+	if type(window) == "windowinstance" then
+		return getCastValueOriginal();
+	end
+	return 0;
 end
 
 function onWheel(notches)
@@ -49,7 +61,7 @@ function onWheel(notches)
 end
 
 function adjustCounter(val_adj)
-	if not bWheel then
+	if not bWheel and DB.getValue(nodePower, "chargeperiod", "") == "" then
 		if val_adj == 1 then
 			val_adj = DB.getValue(nodePower, "charges", 1);
 		elseif val_adj == -1 then
@@ -61,7 +73,7 @@ end
 
 function onChargesChanged()
 	calculateTotal();
-	nUsed = ItemPowerManager.countCharges(nodeItem);
+	calculateUsed();
 	
 	local nodePower = getDatabaseNode();
 	DB.setValue(nodePower, "prepared", "number", nTotal);
@@ -76,10 +88,23 @@ function onValueChanged()
 end
 
 function calculateTotal()
-	if DB.getValue(nodePower, "charges", 0) > 0 then
-		nTotal = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 1);
+	local nCharges = DB.getValue(nodePower, "charges", 0);
+	if nCharges > 0 then
+		if DB.getValue(nodePower, "chargeperiod", "") == "" then
+			nTotal = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 1);
+		else
+			nTotal = nCharges;
+		end
 	else
 		nTotal = 0;
+	end
+end
+
+function calculateUsed()
+	if DB.getValue(nodePower, "chargeperiod", "") == "" then
+		nUsed = ItemPowerManager.countCharges(nodeItem);
+	else
+		nUsed = DB.getValue(nodePower, "cast", 0);
 	end
 end
 
@@ -92,7 +117,7 @@ end
 
 function getChargesUsed()
 	if not nUsed then
-		nUsed = ItemPowerManager.countCharges(nodeItem);
+		calculateUsed();
 	end
 	return nUsed;
 end
