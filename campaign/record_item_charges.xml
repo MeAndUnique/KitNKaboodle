@@ -20,7 +20,6 @@
 			</basicnumber>
 			<button_stringcycler name="rechargeperiod">
 				<script>
-					local initializeOriginal;
 					function onInit()
 						if super then
 							initializeOriginal = super.initialize;
@@ -29,17 +28,19 @@
 								super.onInit();
 							end
 						end
-					end
-					function initialize(sLabels, sValues, sDefaultLabel, sInitialValue)
-						if ExtendedRest then
-							sLabels = sLabels .. "|" .. Interface.getString("extended_rest_label");
-							sValues = sValues .. "|extended";
+						if KingdomsAndWarfare then
+							parameters[1].labelsres[1] =
+								parameters[1].labelsres[1] .. "|" .. Interface.getString("power_label_useperiod_extended") .. "|" Interface.getString("power_label_useperiod_intrigue");
+							parameters[1].values[1] = parameters[1].values[1] .. "|extended|intrigue";
 						end
 						if LongTermEffects then
-							sLabels = sLabels .. "|" .. Interface.getString("item_recharge_daily");
-							sValues = sValues .. "|daily";
+							parameters[1].labelsres[1] = parameters[1].labelsres[1] .. "|" .. Interface.getString("item_recharge_daily");
+							parameters[1].values[1] = parameters[1].values[1] .. "|daily";
 						end
-						initializeOriginal(sLabels, sValues, sDefaultLabel, sInitialValue);
+
+						if super and super.onInit then
+							super.onInit();
+						end
 					end
 				</script>
 				<anchored to="prepared" width="60" height="20">
