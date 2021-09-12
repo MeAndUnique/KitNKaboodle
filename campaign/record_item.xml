@@ -142,7 +142,7 @@
 					function addEntry(bFocus)
 						local win = createWindow();
 						if bFocus and win then
-							win.nameandactions.subwindow.name.setFocus();
+							win.header.subwindow.nameandactions.subwindow.name.setFocus();
 						end
 						return win;
 					end
