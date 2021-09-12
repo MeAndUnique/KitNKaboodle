@@ -4,12 +4,6 @@
 		<margins control="0,0,0,5" />
 		<script file="campaign/scripts/item_power.lua" />
 		<sheetdata>
-			<genericcontrol name="leftanchor">
-				<anchored height="0" width="0">
-					<top offset="2" />
-					<left />
-				</anchored>
-			</genericcontrol>
 			<genericcontrol name="rightanchor">
 				<anchored height="0" width="0">
 					<top offset="2" />
@@ -38,28 +32,20 @@
 				<invisible />
 			</button_toggledetail>
 
-			<counter_item_power name="counter">
-				<anchored>
-					<top offset="2" />
-					<left parent="leftanchor" anchor="right" relation="relative" offset="5" />
-				</anchored>
-				<!-- <invisible /> todo -->
-			</counter_item_power>
-
-			<subwindow name="nameandactions">
+			<subwindow name="header">
 				<anchored>
 					<top />
+					<left />
 					<right parent="rightanchor" anchor="left" relation="relative" />
-					<left parent="leftanchor" anchor="right" relation="relative" />
 				</anchored>
 				<activate />
 				<fastinit />
-				<class>item_power_name_and_actions</class>
+				<class>item_power_header</class>
 			</subwindow>
 
 			<subwindow name="metadata">
 				<anchored>
-					<top parent="counter" anchor="bottom" relation="relative" />
+					<top parent="header" anchor="bottom" relation="relative" />
 					<left />
 					<right />
 				</anchored>
@@ -70,7 +56,7 @@
 
 			<windowlist name="actions">
 				<anchored>
-					<top parent="counter" anchor="bottom" relation="relative" offset="5" />
+					<top parent="header" anchor="bottom" relation="relative" offset="5" />
 					<left offset="5" />
 					<right offset="-5" />
 				</anchored>
@@ -80,6 +66,36 @@
 				<invisible />
 				<footer>footer_wide</footer>
 			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="item_power_header">
+		<sheetdata>
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
+
+			<!-- TODO: Figure out the inital width for a zero-counter -->
+			<counter_item_power name="counter">
+				<anchored>
+					<top offset="2" />
+					<left parent="leftanchor" anchor="right" relation="relative" offset="5" />
+				</anchored>
+			</counter_item_power>
+
+			<subwindow name="nameandactions">
+				<anchored>
+					<top />
+					<right />
+					<left parent="leftanchor" anchor="right" relation="relative" />
+				</anchored>
+				<activate />
+				<fastinit />
+				<class>item_power_name_and_actions</class>
+			</subwindow>
 		</sheetdata>
 	</windowclass>
 

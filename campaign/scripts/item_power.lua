@@ -3,10 +3,6 @@
 -- attribution and copyright information.
 --
 
--- aliases for self, used by counter
-parentcontrol = nil;
-window = nil;
-
 local bAdding = false;
 local bReadOnly;
 local bHideCast;
@@ -20,8 +16,6 @@ local rKnownActions = {
 
 -- Initialization
 function onInit()
-	parentcontrol = self;
-	parentcontrol.window = self;
 	bHideCast = windowlist.window.bHideCast;
 	refreshActions();
 	update(windowlist.isReadOnly(), bHideCast);
@@ -147,20 +141,20 @@ function update(bNewReadOnly, bNewHideCast)
 	bReadOnly = bNewReadOnly;
 	bHideCast = bNewHideCast;
 	local nodePower = getDatabaseNode();
-	nameandactions.subwindow.name.setReadOnly(bReadOnly);
-	nameandactions.subwindow.actionsmini.setVisible(not bHideCast);
+	header.subwindow.nameandactions.subwindow.name.setReadOnly(bReadOnly);
+	header.subwindow.nameandactions.subwindow.actionsmini.setVisible(not bHideCast);
 	activatedetail.setVisible(shouldShowToggle(nodePower));
 	metadata.subwindow.charges.setReadOnly(bReadOnly);
 	metadata.subwindow.chargeperiod.setReadOnly(bReadOnly);
 	metadata.setVisible(shouldShowMetaData(nodePower));
 
 	if bReadOnly then
-		nameandactions.subwindow.name.setFrame(nil);
+		header.subwindow.nameandactions.subwindow.name.setFrame(nil);
 		metadata.subwindow.charges.setFrame(nil);
 		metadata.subwindow.chargeperiod.setFrame(nil);
 		resetMenuItems();
 	else
-		nameandactions.subwindow.name.setFrame("fieldlight", 7, 5, 9, 5);
+		header.subwindow.nameandactions.subwindow.name.setFrame("fieldlight", 7, 5, 9, 5);
 		metadata.subwindow.charges.setFrame("fieldlight", 7, 5, 9, 5);
 		metadata.subwindow.chargeperiod.setFrame("fieldlight", 7, 5, 9, 5);
 		

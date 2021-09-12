@@ -77,7 +77,6 @@ function onChargesChanged()
 	
 	local nodePower = getDatabaseNode();
 	DB.setValue(nodePower, "prepared", "number", nTotal);
-	-- setVisible(nTotal > 0); --todo cleanup
 	if super and super.update then
 		super.update("standard", true, nTotal, nUsed, nTotal);
 	end
