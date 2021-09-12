@@ -21,20 +21,13 @@
 			<button_stringcycler name="rechargeperiod">
 				<script>
 					function onInit()
-						if super then
-							initializeOriginal = super.initialize;
-							super.initialize = initialize;
-							if super.onInit then
-								super.onInit();
-							end
-						end
 						if KingdomsAndWarfare then
 							parameters[1].labelsres[1] =
-								parameters[1].labelsres[1] .. "|" .. Interface.getString("power_label_useperiod_extended") .. "|" Interface.getString("power_label_useperiod_intrigue");
+								parameters[1].labelsres[1] .. "|power_label_useperiod_extended|power_label_useperiod_intrigue";
 							parameters[1].values[1] = parameters[1].values[1] .. "|extended|intrigue";
 						end
 						if LongTermEffects then
-							parameters[1].labelsres[1] = parameters[1].labelsres[1] .. "|" .. Interface.getString("item_recharge_daily");
+							parameters[1].labelsres[1] = parameters[1].labelsres[1] .. "|item_recharge_daily";
 							parameters[1].values[1] = parameters[1].values[1] .. "|daily";
 						end
 
