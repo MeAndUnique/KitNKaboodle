@@ -43,7 +43,7 @@
 					<top offset="2" />
 					<left parent="leftanchor" anchor="right" relation="relative" offset="5" />
 				</anchored>
-				<invisible />
+				<!-- <invisible /> todo -->
 			</counter_item_power>
 
 			<subwindow name="nameandactions">
