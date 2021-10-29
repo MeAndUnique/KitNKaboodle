@@ -364,6 +364,43 @@
 		</sheetdata>
 	</windowclass>
 
+	<windowclass name="item_action_test">
+		<margins control="0,0,0,5" />
+		<script file="campaign/scripts/item_power_action.lua" />
+		<sheetdata>
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
+			<button_itemaction name="castbutton">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" offset="2" />
+				</anchored>
+				<icon normal="button_roll" pressed="button_roll_down" />
+			</button_itemaction>
+			<label name="testlabel">
+				<anchored to="leftanchor" width="35">
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
+				<static textres="power_label_test" />
+			</label>
+			<string_item_poweractionview name="testview">
+				<anchored to="leftanchor">
+					<top />
+					<left anchor="right" relation="relative" offset="10" />
+					<right parent="" offset="-30" />
+				</anchored>
+			</string_item_poweractionview>
+			<button_poweractioneditor name="details">
+				<editor>power_test_editor</editor>
+			</button_poweractioneditor>
+		</sheetdata>
+	</windowclass>
+
 	<windowclass name="empty" />
 
 	<windowclass name="item_action_mini">

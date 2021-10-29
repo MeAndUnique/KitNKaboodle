@@ -16,6 +16,10 @@ local rKnownActions = {
 
 -- Initialization
 function onInit()
+	if KingdomsAndWarfare then
+		rKnownActions["test"] = true;
+	end
+
 	bHideCast = windowlist.window.bHideCast;
 	refreshActions();
 	update(windowlist.isReadOnly(), bHideCast);
@@ -54,6 +58,8 @@ function onMenuSelection(selection, subselection)
 			createAction("heal");
 		elseif subselection == 5 then
 			createAction("effect");
+		elseif subselection == 8 then
+			createAction("test");
 		end
 		activatedetail.setValue(1);
 	end
@@ -114,7 +120,7 @@ function showAction(nodeAction, sType)
 end
 
 function shouldShowToggle(nodePower)
-	return bHideCast;
+	return (DB.getChildCount(nodePower, "actions") > 0) or bHideCast;
 end
 
 function shouldShowMetaData(nodePower)
@@ -163,6 +169,10 @@ function update(bNewReadOnly, bNewHideCast)
 		registerMenuItem(Interface.getString("power_menu_adddamage"), "radial_damage", 3, 3);
 		registerMenuItem(Interface.getString("power_menu_addheal"), "radial_heal", 3, 4);
 		registerMenuItem(Interface.getString("power_menu_addeffect"), "radial_effect", 3, 5);
+
+		if KingdomsAndWarfare then
+			registerMenuItem(Interface.getString("power_menu_addetest"), "radial_sword", 3, 8);
+		end
 		
 		registerMenuItem(Interface.getString("power_menu_reparse"), "radial_reparse_spell", 4);
 	end
