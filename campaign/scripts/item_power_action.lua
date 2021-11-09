@@ -36,6 +36,9 @@ function update(bReadOnly, bHideCast)
 	if savebutton then
 		savebutton.setVisible(not bHideCast);
 	end
+	if testbutton then
+		testbutton.setVisible(not bHideCast);
+	end
 end
 
 function onMenuSelection(selection, subselection)
@@ -56,6 +59,8 @@ function onDataChanged()
 		onHealChanged(nodeAction);
 	elseif sType == "effect" then
 		onEffectChanged(nodeAction);
+	elseif sType == "test" then
+		onTestChanged(nodeAction);
 	end
 	ActorManagerKNK.endResolvingItem();
 end
@@ -110,4 +115,9 @@ function onEffectChanged(nodeAction)
 	
 	effectview.setValue(sLabel);
 	durationview.setValue(sDuration);
+end
+
+function onTestChanged(nodeAction)
+	local sTest = PowerManagerKw.getPCPowerTestActionText(nodeAction);
+	testview.setValue(sTest);
 end
