@@ -123,7 +123,7 @@
 					<right offset="-5" />
 				</anchored>
 				<datasource>.actions</datasource>
-				<class>item_action_mini</class>
+				<class>power_action_mini</class>
 				<noscroll />
 				<readonly />
 				<columns width="25" fillwidth="true" />
@@ -401,28 +401,59 @@
 		</sheetdata>
 	</windowclass>
 
-	<windowclass name="empty" />
-
-	<windowclass name="item_action_mini">
-		<margins control="0,0,2,2" />
-		<minisheet />
-		<script file="campaign/scripts/power_action_mini.lua" />
+	<windowclass name="item_action_resource">
+		<margins control="0,0,0,5" />
+		<script file="campaign/scripts/item_power_action.lua" />
 		<sheetdata>
-			<hs name="type" />
-			<button_itemaction_mini name="button">
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
+
+			<button_itemaction name="castbutton">
+				<anchored position="insidetopleft" offset="2,2" />
+				<icon normal="button_action_modifier" pressed="button_action_modifier_down" />
+			</button_itemaction>
+			<label name="resourcelabel">
+				<anchored to="castbutton" position="righthigh" offset="5,0" width="35" />
+				<static textres="power_label_resource" />
+			</label>
+			<string_item_poweractionview name="resourceview">
+				<anchored to="resourcelabel" position="righthigh" offset="20,0">
+					<right parent="" offset="-55" />
+				</anchored>
 				<script>
-					local parentUpdateViews;
-					function onInit()
-						parentUpdateViews = window.updateViews;
-						window.updateViews = updateViews;
-					end
-					function updateViews()
-						ActorManagerKNK.beginResolvingItem(window.getDatabaseNode().getChild(".......") or true);
-						parentUpdateViews();
-						ActorManagerKNK.endResolvingItem();
+					function onWheel(notches)
+						if Input.isControlPressed() then
+							local node = window.getDatabaseNode();
+							if DB.getValue(node, "variable", 0) == 1 then
+								local nModifier = DB.getValue(node, "modifier", 0);
+								local nMin = DB.getValue(node, "min", 0);
+								local nMax = DB.getValue(node, "max", 0);
+								local nInternval = DB.getValue(node, "interval", 0);
+								nModifier = nModifier + (notches * nInternval);
+								nModifier = math.max(nMin, nModifier);
+								if nMax > nMin then
+									nModifier = math.min(nMax, nModifier);
+								end
+								DB.setValue(node, "modifier", "number", nModifier);
+							end
+						end
+						return true;
 					end
 				</script>
-			</button_itemaction_mini>
+			</string_item_poweractionview>
+			<button_poweractioneditor name="details">
+				<editor>power_resource_editor</editor>
+			</button_poweractioneditor>
 		</sheetdata>
+	</windowclass>
+
+	<windowclass name="empty" />
+
+	<windowclass name="power_action_mini" merge="join">
+		<script file="campaign/scripts/power_action_mini.lua" />
 	</windowclass>
 </root>

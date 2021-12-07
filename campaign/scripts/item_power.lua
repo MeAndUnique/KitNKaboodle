@@ -16,6 +16,9 @@ local rKnownActions = {
 
 -- Initialization
 function onInit()
+	if PowerManagerCg then
+		rKnownActions["resource"] = true;
+	end
 	if KingdomsAndWarfare then
 		rKnownActions["test"] = true;
 	end
@@ -58,6 +61,8 @@ function onMenuSelection(selection, subselection)
 			createAction("heal");
 		elseif subselection == 5 then
 			createAction("effect");
+		elseif subselection == 6 then
+			createAction("resource");
 		elseif subselection == 8 then
 			createAction("test");
 		end
@@ -170,6 +175,9 @@ function update(bNewReadOnly, bNewHideCast)
 		registerMenuItem(Interface.getString("power_menu_addheal"), "radial_heal", 3, 4);
 		registerMenuItem(Interface.getString("power_menu_addeffect"), "radial_effect", 3, 5);
 
+		if PowerManagerCg then
+			registerMenuItem(Interface.getString("power_menu_addresource"), "coins", 3, 6);
+		end
 		if KingdomsAndWarfare then
 			registerMenuItem(Interface.getString("power_menu_addetest"), "radial_sword", 3, 8);
 		end
