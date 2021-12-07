@@ -5,17 +5,25 @@
 
 local updateViewsOriginal;
 
+local bIsItem;
+
 function onInit()
-	if getDatabaseNode().getPath():match("inventorylist") then
-		updateViewsOriginal = super.updateViews;
-		super.updateViews = updateViews;
-	end
+	bIsItem = getDatabaseNode().getPath():match("inventorylist");
+
+	updateViewsOriginal = super.updateViews;
+	super.updateViews = updateViews;
 
 	super.onInit();
 end
 
 function updateViews()
-	ActorManagerKNK.beginResolvingItem(getDatabaseNode().getChild(".......") or true);
+	if bIsItem then
+		ActorManagerKNK.beginResolvingItem(getDatabaseNode().getChild(".......") or true);
+	end
+
 	updateViewsOriginal();
-	ActorManagerKNK.endResolvingItem();
+
+	if bIsItem then
+		ActorManagerKNK.endResolvingItem();
+	end
 end
