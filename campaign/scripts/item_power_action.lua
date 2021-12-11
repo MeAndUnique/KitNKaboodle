@@ -61,6 +61,8 @@ function onDataChanged()
 		onEffectChanged(nodeAction);
 	elseif sType == "test" then
 		onTestChanged(nodeAction);
+	elseif sType == "resource" then
+		onResourceChanged(nodeAction);
 	end
 	ActorManagerKNK.endResolvingItem();
 end
@@ -120,4 +122,9 @@ end
 function onTestChanged(nodeAction)
 	local sTest = PowerManagerKw.getPCPowerTestActionText(nodeAction);
 	testview.setValue(sTest);
+end
+
+function onResourceChanged()
+	local sResource = PowerManagerCg.getPCPowerResourceActionText(getDatabaseNode());
+	resourceview.setValue(sResource);
 end
