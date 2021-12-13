@@ -452,8 +452,4 @@
 	</windowclass>
 
 	<windowclass name="empty" />
-
-	<windowclass name="power_action_mini" merge="join">
-		<script file="campaign/scripts/power_action_mini.lua" />
-	</windowclass>
 </root>

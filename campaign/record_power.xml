@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<windowclass name="power_action_mini" merge="join">
+		<script file="campaign/scripts/power_action_mini.lua" />
+		<sheetdata>
+			<button_poweraction_mini name="button">
+				<script>
+					local actionOriginal;
+					local bIsItem
+					function onInit()
+						bIsItem = window.getDatabaseNode().getPath():match("inventorylist");
+						actionOriginal = super.action;
+						super.action = action;
+						if super.onInit then
+							super.onInit()
+						end
+					end
+					function action()
+						if bIsItem then
+							ActorManagerKNK.beginResolvingItem(window.getDatabaseNode().getChild(".......") or true);
+						end
+						actionOriginal();
+						if bIsItem then
+							ActorManagerKNK.endResolvingItem();
+						end
+					end
+				</script>
+			</button_poweraction_mini>
+		</sheetdata>
+	</windowclass>
+</root>
