@@ -15,11 +15,11 @@
 							super.onInit()
 						end
 					end
-					function action()
+					function action(draginfo)
 						if bIsItem then
 							ActorManagerKNK.beginResolvingItem(window.getDatabaseNode().getChild(".......") or true);
 						end
-						actionOriginal();
+						actionOriginal(draginfo);
 						if bIsItem then
 							ActorManagerKNK.endResolvingItem();
 						end
