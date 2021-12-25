@@ -29,15 +29,16 @@ local nodeItemBeingEquiped = nil;
 -- Initialization
 function onInit()
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_CREATE_ITEM_GROUP, handleItemGroupCreation);
-
 	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_RECHARGE_ITEM, handleItemRecharge);
+	OOBManager.registerOOBMsgHandler(OOB_MSGTYPE_ROLL_DISCHARGED_ITEM, handleRollDischargedItem);
+
 	ActionsManager.registerResultHandler("rechargeitem", onRechargeRoll);
 	ActionsManager.registerResultHandler("dischargeitem", onDischargeRoll);
 
 	if Session.IsHost then
 		getItemSourceTypeOriginal = ItemManager.getItemSourceType;
 		ItemManager.getItemSourceType = getItemSourceType;
-		
+
 		resetPowersOriginal = PowerManager.resetPowers;
 		PowerManager.resetPowers = resetPowers;
 
@@ -367,7 +368,7 @@ function handleItemChargesUsed(nodeItem)
 		end
 	end
 
-	if not bDelete then
+	if not bDeleted then
 		updateDischargeCount(nodeItem, nChargeCount);
 	end
 end
