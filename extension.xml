@@ -48,13 +48,17 @@ Icons made by pongsakornRed from www.flaticon.com
 		<script name="ItemPowerManager" file="scripts/manager_item_power.lua" />
 		<script name="ForgeManagerItemKNK" file="forge/scripts/manager_forge_item_knk.lua" />
 
+		<includefile source="campaign/record_ability.xml" />
 		<includefile source="campaign/record_char_actions.xml" />
+		<includefile source="campaign/record_class.xml" />
+		<includefile source="campaign/record_feat.xml" />
 		<includefile source="campaign/record_item.xml" />
 		<includefile source="campaign/record_item_actions.xml" />
 		<includefile source="campaign/record_item_charges.xml" />
 		<includefile source="campaign/record_itemtemplate.xml" />
 		<includefile source="campaign/record_npc.xml" />
 		<includefile source="campaign/record_power.xml" />
+		<includefile source="campaign/record_race.xml" />
 		<includefile source="campaign/template_item.xml" />
 		<includefile source="ct/ct_host.xml" />
 		<includefile source="graphics/graphics_radial.xml" />

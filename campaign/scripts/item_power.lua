@@ -3,28 +3,12 @@
 -- attribution and copyright information.
 --
 
-local bAdding = false;
 local bReadOnly;
 local bHideCast;
 
-local rKnownActions = {
-	["cast"] = true,
-	["damage"] = true,
-	["effect"] = true,
-	["heal"] = true,
-};
-
 -- Initialization
 function onInit()
-	if PowerManagerCg then
-		rKnownActions["resource"] = true;
-	end
-	if KingdomsAndWarfare then
-		rKnownActions["test"] = true;
-	end
-
 	bHideCast = windowlist.window.bHideCast;
-	refreshActions();
 	update(windowlist.isReadOnly(), bHideCast);
 
 	local nodePower = getDatabaseNode();
@@ -32,7 +16,6 @@ function onInit()
 	DB.addHandler(nodePower.getPath("group"), "onUpdate", onGroupChanged);
 	DB.addHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
 	DB.addHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
-	DB.addHandler(nodePower.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 end
 
 function onClose()
@@ -41,33 +24,6 @@ function onClose()
 	DB.removeHandler(nodePower.getPath("group"), "onUpdate", onGroupChanged);
 	DB.removeHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
 	DB.removeHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
-	DB.removeHandler(nodePower.getPath("actions.*.type"), "onUpdate", onTypeChanged);
-end
-
-function refreshActions()
-	actions.closeAll()
-	for _,nodeAction in pairs(DB.getChildren(getDatabaseNode(), "actions")) do
-		showAction(nodeAction);
-	end
-end
-
-function onMenuSelection(selection, subselection)
-	if selection == 3 then
-		if subselection == 2 then
-			createAction("cast");
-		elseif subselection == 3 then
-			createAction("damage");
-		elseif subselection == 4 then
-			createAction("heal");
-		elseif subselection == 5 then
-			createAction("effect");
-		elseif subselection == 6 then
-			createAction("resource");
-		elseif subselection == 8 then
-			createAction("test");
-		end
-		activatedetail.setValue(1);
-	end
 end
 
 function onChargesChanged(nodePrepared)
@@ -82,46 +38,12 @@ function onGroupChanged()
 	end
 end
 
-function onTypeChanged(nodeType)
-	if bAdding then
-		local sType = nodeType.getValue();
-		local nodeAction = DB.getChild(nodeType, "..");
-		showAction(nodeAction, sType);
-	end
-end
-
 function onActionAdded()
-	bAdding = true;
 	updateToggle();
 end
 
 function onActionDeleted()
 	updateToggle();
-end
-
-function createAction(sType)
-	local nodePower = getDatabaseNode();
-	if nodePower then
-		local nodeActions = nodePower.createChild("actions");
-		if nodeActions then
-			local nodeAction = nodeActions.createChild();
-			if nodeAction then
-				DB.setValue(nodeAction, "type", "string", sType);
-			end
-		end
-	end
-end
-
-function showAction(nodeAction, sType)
-	if (sType or "") == "" then
-		sType = DB.getValue(nodeAction, "type");
-	end
-
-	if ((sType or "") ~= "") and (rKnownActions[sType] ~= nil) then
-		local win = actions.createWindowWithClass("item_action_" .. sType, nodeAction);
-		win.update(bReadOnly, bHideCast);
-	end
-	bAdding = false;
 end
 
 function shouldShowToggle(nodePower)
@@ -163,31 +85,13 @@ function update(bNewReadOnly, bNewHideCast)
 		header.subwindow.nameandactions.subwindow.name.setFrame(nil);
 		metadata.subwindow.charges.setFrame(nil);
 		metadata.subwindow.chargeperiod.setFrame(nil);
-		resetMenuItems();
 	else
 		header.subwindow.nameandactions.subwindow.name.setFrame("fieldlight", 7, 5, 9, 5);
 		metadata.subwindow.charges.setFrame("fieldlight", 7, 5, 9, 5);
 		metadata.subwindow.chargeperiod.setFrame("fieldlight", 7, 5, 9, 5);
-		
-		registerMenuItem(Interface.getString("power_menu_addaction"), "radial_create_action", 3);
-		registerMenuItem(Interface.getString("power_menu_addcast"), "radial_sword", 3, 2);
-		registerMenuItem(Interface.getString("power_menu_adddamage"), "radial_damage", 3, 3);
-		registerMenuItem(Interface.getString("power_menu_addheal"), "radial_heal", 3, 4);
-		registerMenuItem(Interface.getString("power_menu_addeffect"), "radial_effect", 3, 5);
-
-		if PowerManagerCg then
-			registerMenuItem(Interface.getString("power_menu_addresource"), "coins", 3, 6);
-		end
-		if KingdomsAndWarfare then
-			registerMenuItem(Interface.getString("power_menu_addetest"), "radial_sword", 3, 8);
-		end
-		
-		registerMenuItem(Interface.getString("power_menu_reparse"), "radial_reparse_spell", 4);
 	end
 
-	for _,win in ipairs(actions.getWindows()) do
-		win.update(bReadOnly, bHideCast);
-	end
+	actions.update(bReadOnly, bHideCast);
 end
 
 function getDescription(nodePower, bShowFull)
