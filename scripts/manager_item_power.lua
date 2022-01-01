@@ -209,13 +209,23 @@ function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)
 end
 
 function canRecharge(nodeItem)
-	if (DB.getValue(nodeItem, "isidentified", 1) == 1) and (DB.getValue(nodeItem, "count", 0) > 0) then
-		local bHasCharges = (DB.getValue(nodeItem, "prepared", 0) > 0)
-			and (DB.getValue(nodeItem, "rechargeperiod", "") ~= "");
-		for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
-			if DB.getValue(nodePower, "cast", 0) > 0 then
-				return true;
+	local nPrepared = DB.getValue(nodeItem, "prepared", 0);
+	local nCount = DB.getValue(nodeItem, "count", 0);
+	if (DB.getValue(nodeItem, "isidentified", 1) == 1) and
+	(nCount > 0) and
+	(nPrepared > 0) and
+	(DB.getValue(nodeItem, "rechargeperiod", "") ~= "") then
+		local sMode = DB.getValue(nodeItem, "rechargemode", "");
+		if sMode == "" then
+			for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
+				if DB.getValue(nodePower, "cast", 0) > 0 then
+					return true;
+				end
 			end
+		elseif sMode == "lose" then
+			return countCharges(nodeItem) < (nPrepared * nCount);
+		else
+			return true;
 		end
 	end
 
@@ -299,13 +309,18 @@ function handleItemRecharge(msgOOB)
 		if bRoll then
 			local sDescription = DB.getValue(nodeItem, "name", "Unnamed Item") .. " [RECHARGE]";
 			local rechargeRoll = {sType="rechargeitem", sDesc=sDescription, aDice=aDice, nMod=nMod, sItem=nodeItem.getPath()};
-			for index=1,DB.getValue(nodeItem, "count", 0) do
+			local nCount = DB.getValue(nodeItem, "count", 0);
+			if DB.getValue(nodeItem, "rechargesingle") == 1 then
+				nCount = math.min(nCount, 1);
+			end
+			for index=1,nCount do
 				for count=1,(tonumber(msgOOB.sRechargeCount) or 1) do
 					ActionsManager.roll(nodeItem.getChild("..."), nil, rechargeRoll, false);
 				end
 			end
 		end
 
+		-- Handle item powers that aren't dependent on charges.
 		for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
 			local sPowerPeriod = DB.getValue(nodePower, "chargeperiod", "");
 			local bRecharge = (sPowerPeriod == "short" and StringManager.contains({"short", "long", "extended"}, msgOOB.sPeriod)) or
@@ -325,8 +340,16 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 	local nodeItem = DB.findNode(rRoll.sItem);
 	if nodeItem then
 		local nResult = ActionsManager.total(rRoll);
+		local nPrepared = DB.getValue(nodeItem, "prepared", 1);
+		local sMode = DB.getValue(nodeItem, "rechargemode", "");
+		if sMode == "" then
+			nResult = math.max(0, nResult);
+		elseif sMode == "lose" then
+			nResult = math.min(0, -nResult);
+		end
+
 		distributeCharges(nodeItem, nResult)
-		updateDischargeCount(nodeItem, DB.getValue(nodeItem, "prepared", 1));
+		updateDischargeCount(nodeItem, nPrepared);
 	end
 	
 	-- Deliver roll message
@@ -334,6 +357,7 @@ function onRechargeRoll(rSource, rTarget, rRoll)
 end
 
 function distributeCharges(nodeItem, nChargesToAdd)
+	local nMax = DB.getValue(nodeItem, "prepared", 0) * DB.getValue(nodeItem, "count", 0);
 	for _,nodePower in pairs(DB.getChildren(nodeItem, "powers")) do
 		if nChargesToAdd == 0 then
 			break;
@@ -342,13 +366,20 @@ function distributeCharges(nodeItem, nChargesToAdd)
 		local nCast = DB.getValue(nodePower, "cast", 0);
 		if nCast > nChargesToAdd then
 			nCast = nCast - nChargesToAdd;
-			nChargesToAdd = 0;
+			if nCast > nMax then
+				nChargesToAdd = nMax - nCast;
+				nCast = nMax;
+			else
+				nChargesToAdd = 0;
+			end
 			DB.setValue(nodePower, "cast", "number", nCast);
 		elseif nCast > 0 then
 			nChargesToAdd = nChargesToAdd - nCast;
 			DB.setValue(nodePower, "cast", "number", 0);
 		end
 	end
+
+	handleItemChargesUsed(nodeItem)
 end
 
 -- Discharging

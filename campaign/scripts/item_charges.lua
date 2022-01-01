@@ -53,6 +53,7 @@ end
 
 function onChargesChanged(nodeCharges)
 	local hasCharges = DB.getValue(nodeCharges, "", 0) > 0;
+	rechargelabel.setVisible(hasCharges);
 	rechargeperiod.setVisible(hasCharges);
 	onRechargePeriodChanged(DB.getChild(nodeCharges, "..rechargeperiod"), hasCharges);
 end
@@ -66,7 +67,13 @@ function onRechargePeriodChanged(nodeRechargePeriod, hasCharges)
 	rechargetime.setVisible((sRechargePeriod == "daily") and hasCharges);
 
 	local canRecharge = hasCharges and (sRechargePeriod ~= "");
-	rechargeLabel.setVisible(canRecharge);
+
+	modelabel.setVisible(canRecharge);
+	rechargemode.setVisible(canRecharge);
+	singlelabel.setVisible(canRecharge);
+	rechargesingle.setVisible(canRecharge);
+
+	rolllabel.setVisible(canRecharge);
 	rechargedice.setVisible(canRecharge);
 	label_plus.setVisible(canRecharge);
 	rechargebonus.setVisible(canRecharge);

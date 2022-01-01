@@ -16,8 +16,16 @@
 				<static textres="item_use_charges" />
 			</label>
 			<basicnumber name="prepared">
-				<anchored to="chargesLabel" position="right" offset="5" width="30" />
+				<anchored to="chargesLabel" position="right" offset="10" width="30" />
 			</basicnumber>
+
+			<label name="rechargelabel">
+				<anchored width="60" >
+					<top parent="topanchor" anchor="bottom" relation="relative" offset="10" />
+					<left offset="5" />
+				</anchored>
+				<static textres="label_item_recharge" />
+			</label>
 			<button_stringcycler name="rechargeperiod">
 				<script>
 					function onInit()
@@ -36,7 +44,7 @@
 						end
 					end
 				</script>
-				<anchored to="prepared" width="60" height="20">
+				<anchored to="rechargelabel" width="60" height="20">
 					<top />
 					<left anchor="right" offset="10" />
 				</anchored>
@@ -57,19 +65,48 @@
 					<values>noon|dusk|midnight</values>
 				</parameters>
 			</button_stringcycler>
-			
-			<label name="rechargeLabel">
+
+			<label name="modelabel">
 				<anchored width="60" >
 					<top parent="topanchor" anchor="bottom" relation="relative" offset="10" />
 					<left offset="5" />
 				</anchored>
-				<static textres="label_item_recharge" />
+				<static textres="label_item_mode" />
+			</label>
+			<button_stringcycler name="rechargemode">
+				<anchored to="modelabel" width="60" height="20">
+					<top />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<parameters>
+					<defaultlabelres>item_mode_gain</defaultlabelres>
+					<labelsres>item_mode_lose|item_mode_change</labelsres>
+					<values>lose|change</values>
+				</parameters>
+			</button_stringcycler>
+			<label name="singlelabel">
+				<anchored to="rechargemode" width="40">
+					<top />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<static textres="label_item_single" />
+			</label>
+			<button_checkbox name="rechargesingle">
+				<anchored to="singlelabel" position="righthigh" offset="0,0" width="20" height="20" />
+			</button_checkbox>
+			
+			<label name="rolllabel">
+				<anchored width="60" >
+					<top parent="topanchor" anchor="bottom" relation="relative" offset="10" />
+					<left offset="5" />
+				</anchored>
+				<static textres="label_item_roll" />
 			</label>
 			<basicdice name="rechargedice">
-				<anchored to="rechargeLabel" position="righthigh" offset="5,0" width="60" height="20" />
+				<anchored to="rolllabel" position="righthigh" offset="9,0" width="59" height="20" />
 			</basicdice>
 			<label name="label_plus">
-				<anchored to="rechargedice" position="righthigh" offset="3,0" width="10" />
+				<anchored to="rechargedice" position="righthigh" offset="6,0" width="10" />
 				<static>+</static>
 			</label>
 			<basicnumber name="rechargebonus">
@@ -77,7 +114,7 @@
 			</basicnumber>
 
 			<label name="dischargelabel">
-				<anchored width="90" >
+				<anchored width="60" >
 					<top parent="topanchor" anchor="bottom" relation="relative" offset="10" />
 					<left offset="5" />
 				</anchored>
