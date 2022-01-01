@@ -30,7 +30,7 @@ Icons made by pongsakornRed from www.flaticon.com
 <root release="3.0" version="3">
 	<properties>
 		<name>Feature: Kit'N'Kaboodle</name>
-		<version>2.2.2</version>
+		<version>dev_version</version>
 		<loadorder>150</loadorder>
 		<author>MeAndUnique</author>
 		<description>Adds support for adding actions to items and giving items to NPCs.</description>
@@ -48,13 +48,17 @@ Icons made by pongsakornRed from www.flaticon.com
 		<script name="ItemPowerManager" file="scripts/manager_item_power.lua" />
 		<script name="ForgeManagerItemKNK" file="forge/scripts/manager_forge_item_knk.lua" />
 
+		<includefile source="campaign/record_ability.xml" />
 		<includefile source="campaign/record_char_actions.xml" />
+		<includefile source="campaign/record_class.xml" />
+		<includefile source="campaign/record_feat.xml" />
 		<includefile source="campaign/record_item.xml" />
 		<includefile source="campaign/record_item_actions.xml" />
 		<includefile source="campaign/record_item_charges.xml" />
 		<includefile source="campaign/record_itemtemplate.xml" />
 		<includefile source="campaign/record_npc.xml" />
 		<includefile source="campaign/record_power.xml" />
+		<includefile source="campaign/record_race.xml" />
 		<includefile source="campaign/template_item.xml" />
 		<includefile source="ct/ct_host.xml" />
 		<includefile source="graphics/graphics_radial.xml" />
@@ -62,6 +66,6 @@ Icons made by pongsakornRed from www.flaticon.com
 		<icon name="KNK_icon" file="graphics/icons/KitNKaboodle.png" />
 	</base>
 
-	<announcement text="Kit'N'Kaboodle v2.2.2 for 5E by MeAndUnique." icon="KNK_icon" font="emotefont" />
+	<announcement text="Kit'N'Kaboodle dev_version for 5E by MeAndUnique." icon="KNK_icon" font="emotefont" />
 
 </root>

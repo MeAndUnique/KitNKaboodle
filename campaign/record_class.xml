@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<windowclass name="reference_classfeature" merge="join">
+		<sizelimits>
+			<minimum width="350" />
+		</sizelimits>
+		<sheetdata>
+			<frame_record_content name="contentframe" merge="delete" />
+			<frame_record_content_tabbed name="contentframe" insertbefore="content" />
+
+			<subwindow_record name="actions">
+				<class>power_actions</class>
+			</subwindow_record>
+
+			<scrollbar_record>
+				<target>actions</target>
+			</scrollbar_record>
+
+			<tabs_recordsheet name="tabs">
+				<tab>
+					<icon>tab_main</icon>
+					<subwindow>content</subwindow>
+				</tab>
+				<tab>
+					<icon>tab_actions</icon>
+					<subwindow>actions</subwindow>
+				</tab>
+			</tabs_recordsheet>
+
+		</sheetdata>
+	</windowclass>
+</root>

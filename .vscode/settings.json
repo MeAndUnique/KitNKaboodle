@@ -1,0 +1,27 @@
+{
+    "Lua.diagnostics.globals": [
+        "Session",
+        "OptionsManager",
+        "Comm",
+        "User",
+        "DB",
+        "ActionsManager",
+        "CombatManager2",
+        "PowerManager",
+        "ItemManager",
+        "EquippedEffectsManager",
+        "LongTermEffects",
+        "PowerManagerKw",
+        "StringManager",
+        "LibraryData",
+        "OOBManager",
+        "TimeManager",
+        "CombatManager",
+        "ChatManager",
+        "ActorManager",
+        "CharAttunementManager"
+    ],
+    "Lua.diagnostics.disable": [
+        "lowercase-global"
+    ]
+}

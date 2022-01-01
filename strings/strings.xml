@@ -8,7 +8,17 @@
 
 	<string name="item_use_atwill">At Will</string>
 	<string name="item_use_charges">Charges</string>
-	<string name="item_use_atwill">Consumable</string>
+	<string name="item_use_consumable">Consumable</string>
+	
+	<string name="label_item_recharge">Recharge</string>
+	
+	<string name="label_item_mode">Mode</string>
+
+	<string name="item_mode_gain">Gain</string>
+	<string name="item_mode_lose">Lose</string>
+	<string name="item_mode_change">Change</string>
+	
+	<string name="label_item_single">Single</string>
 
 	<string name="item_recharge_never">Never</string>
 	<string name="item_recharge_long">Long</string>
@@ -18,10 +28,10 @@
 	<string name="item_recharge_noon">Noon</string>
 	<string name="item_recharge_dusk">Dusk</string>
 	<string name="item_recharge_midnight">Midnight</string>
-	
-	<string name="label_item_recharge">Recharge</string>
 
-	<string name="label_item_discharge">On Last Charge</string>
+	<string name="label_item_roll">Roll</string>
+
+	<string name="label_item_discharge">On Last</string>
 	<string name="item_discharge_nothing">Nothing</string>
 	<string name="item_discharge_destroy">Destroy</string>
 	<string name="item_discharge_roll">Roll</string>

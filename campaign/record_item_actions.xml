@@ -55,6 +55,7 @@
 			</subwindow>
 
 			<windowlist name="actions">
+				<script file="campaign/scripts/actionlist.lua" />
 				<anchored>
 					<top parent="header" anchor="bottom" relation="relative" offset="5" />
 					<left offset="5" />

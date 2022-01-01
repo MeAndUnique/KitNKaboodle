@@ -1,5 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
+	<windowclass name="power" merge="join">
+		<sizelimits>
+			<minimum width="350" />
+		</sizelimits>
+		<sheetdata>
+			<frame_record_content name="contentframe" merge="delete" />
+			<frame_record_content_tabbed name="contentframe" insertbefore="contents" />
+
+			<subwindow_record name="actions">
+				<class>power_actions</class>
+			</subwindow_record>
+
+			<scrollbar_record>
+				<target>actions</target>
+			</scrollbar_record>
+
+			<tabs_recordsheet name="tabs">
+				<tab>
+					<icon>tab_main</icon>
+					<subwindow>contents</subwindow>
+				</tab>
+				<tab>
+					<icon>tab_actions</icon>
+					<subwindow>actions</subwindow>
+				</tab>
+			</tabs_recordsheet>
+
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="power_actions">
+		<script file="campaign/scripts/power_actions.lua" />
+		<sheetdata>
+			<label name="useslabel">
+				<anchored width="40">
+					<left offset="10" />
+					<top offset="5"/>
+				</anchored>
+				<static textres="power_label_groupuses" />
+			</label>
+			<basicnumber name="prepared">
+				<anchored to="useslabel" width="30" height="20" >
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
+				<min>0</min>
+			</basicnumber>
+			<cycler_power_useperiod name="usesperiod">
+				<anchored to="useslabel" width="60" height="20"> 
+					<top />
+					<left anchor="right" relation="relative" offset="10" />
+				</anchored>
+			</cycler_power_useperiod>
+
+			<label_itemframetop name="actionstitle">
+				<anchored height="20">
+					<top parent="useslabel" anchor="bottom" offset="10" />
+					<left offset="15" />
+					<right offset="-10" />
+				</anchored>
+				<static textres="char_actions_title" />
+				<icons>char_powers</icons>
+			</label_itemframetop>
+			<windowlist name="actions">
+				<script file="campaign/scripts/actionlist.lua" />
+				<anchored>
+					<top parent="actionstitle" anchor="bottom" relation="relative" offset="5" />
+					<left offset="5" />
+					<right offset="-5" />
+				</anchored>
+				<class>empty</class>
+				<skipempty />
+				<noscroll />
+				<footer>footer_wide</footer>
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
 	<windowclass name="power_action_mini" merge="join">
 		<script file="campaign/scripts/power_action_mini.lua" />
 		<sheetdata>
