@@ -3,12 +3,14 @@
 -- attribution and copyright information.
 --
 
+local onDragStartOriginal;
+
 -- Initialization
 function onInit()
 	getDatabaseNode().onChildUpdate = onDataChanged;
 	onDataChanged();
 
-	details.onDragStart = onDetailsDragStart;
+	onDragStartOriginal = details.onDragStart;
 end
 
 function onClose()
@@ -18,9 +20,11 @@ end
 function update(bReadOnly, bHideCast)
 	if bReadOnly then
 		resetMenuItems();
+		details.onDragStart = onDragStartOriginal;
 	else
 		registerMenuItem(Interface.getString("power_menu_actiondelete"), "radial_delete_action", 4);
 		registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "radial_delete_action_confirm", 4, 3);
+		details.onDragStart = onDetailsDragStart;
 	end
 
 	details.setVisible(not bReadOnly);

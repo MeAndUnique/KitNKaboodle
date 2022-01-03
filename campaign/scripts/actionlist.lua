@@ -27,6 +27,7 @@ function onInit()
 
 	local nodePower = window.getDatabaseNode();
 	DB.addHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.addHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
 	DB.addHandler(nodePower.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 
 	window.onMenuSelection = onMenuSelection;
@@ -37,6 +38,7 @@ end
 function onClose()
 	local nodePower = window.getDatabaseNode();
 	DB.removeHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.removeHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
 	DB.removeHandler(nodePower.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 end
 
@@ -88,6 +90,10 @@ function onActionAdded()
 	bAdding = true;
 end
 
+function onActionDeleted()
+	PowerManagerKNK.fillActionOrderGap(window.getDatabaseNode());
+end
+
 function refreshActions()
 	closeAll()
 	for _,nodeAction in pairs(DB.getChildren(window.getDatabaseNode(), "actions")) do
@@ -103,6 +109,10 @@ function showAction(nodeAction, sType)
 	if ((sType or "") ~= "") and (rKnownActions[sType] ~= nil) then
 		local win = createWindowWithClass("item_action_" .. sType, nodeAction);
 		win.update(bReadOnly, bHideCast);
+	end
+
+	if DB.getValue(nodeAction, "order", 0) == 0 then
+		DB.setValue(nodeAction, "order", "number", DB.getChildCount(nodeAction, ".."));
 	end
 	bAdding = false;
 end
@@ -155,80 +165,62 @@ function onHover(bOnControl)
 end
 
 function onHoverUpdate(x, y)
+	if bReadOnly then
+		return;
+	end
+
 	local draginfo = Input.getDragData();
 	if (not draginfo) or (draginfo.getType() ~= "poweraction") then
 		return;
 	end
 	
 	local win = getWindowAt(x, y);
-	if not win then
-		return;
-	end
 
 	if not dropWidget then
 		dropWidget = addBitmapWidget("tool_right_30");
-		-- todo color
 	end
 
-	local windowWidth, windowHeight = win.getSize();
 	local widgetWidth, widgetHeight = dropWidget.getSize();
 
-	local nHoverIndex = 0;
+	local nodeDragged = draginfo.getDatabaseNode();
+	local nodeOriginPower = DB.getChild(nodeDragged, "...");
+	local nOrder = DB.getValue(nodeDragged, "order", 0);
+	local nHeight = 0;
 	for nIndex, winChild in ipairs(getWindows()) do
+		local _,windowHeight = winChild.getSize();
 		if winChild == win then
-			nHoverIndex = nIndex - 1;
+			if (nIndex > nOrder) or (nodeOriginPower ~= window.getDatabaseNode()) then
+				nHeight = nHeight + windowHeight;
+			end
+			break;
 		end
+		nHeight = nHeight + windowHeight;
 	end
 
-	dropWidget.setPosition("topleft", widgetWidth/2, nHoverIndex * windowHeight);
+	dropWidget.setPosition("topleft", widgetWidth/2, nHeight);
 end
 
 function onDrop(x, y, draginfo)
+	if bReadOnly then
+		return;
+	end
+
 	if dropWidget then
 		dropWidget.destroy();
 		dropWidget = nil;
 	end
-
+	
 	if draginfo.getType() ~= "poweraction" then
 		return false;
 	end
 
 	local win = getWindowAt(x, y);
-	if not win then
-		return;
-	end
-
 	local nodeDragged = draginfo.getDatabaseNode();
-	local nodeTarget = win.getDatabaseNode();
-	if nodeDragged == nodeTarget then
-		return;
+	local nodeTarget;
+	if win then
+		nodeTarget = win.getDatabaseNode();
 	end
-
-	-- todo account for cross-power dragging
-	local nodePower = DB.getChild(nodeDragged, "...");
-	local nDragOrder = DB.getValue(nodeDragged, "order");
-	local nTargetOrder = DB.getValue(nodeTarget, "order");
-
-	local nAdjust, nMin, nMax;
-	if nDragOrder > nTargetOrder then
-		nAdjust = 1;
-		nMin = nTargetOrder;
-		nMax = nDragOrder;
-	else
-		nAdjust = -1;
-		nMin = nDragOrder;
-		nMax = nTargetOrder;
-	end
-
-	for _,nodeAction in pairs(DB.getChildren(nodePower, "actions")) do
-		local nOrder = DB.getValue(nodeAction, "order", 0);
-		if (nMin < nOrder) and (nOrder < nMax) then
-			DB.setValue(nodeAction, "order", "number", nOrder + nAdjust);
-		end
-	end
-
-	DB.setValue(nodeTarget, "order", "number", nTargetOrder + nAdjust);
-	DB.setValue(nodeDragged, "order", "number", nTargetOrder);
-
+	PowerManagerKNK.moveAction(window.getDatabaseNode(), nodeDragged, nodeTarget);
 	applySort();
+	return true;
 end
