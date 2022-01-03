@@ -62,6 +62,7 @@
 					<right offset="-5" />
 				</anchored>
 				<class>empty</class>
+				<sortby><field>order</field></sortby>
 				<skipempty />
 				<noscroll />
 				<invisible />

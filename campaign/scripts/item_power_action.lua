@@ -7,6 +7,8 @@
 function onInit()
 	getDatabaseNode().onChildUpdate = onDataChanged;
 	onDataChanged();
+
+	details.onDragStart = onDetailsDragStart;
 end
 
 function onClose()
@@ -127,4 +129,11 @@ end
 function onResourceChanged()
 	local sResource = PowerManagerCg.getPCPowerResourceActionText(getDatabaseNode());
 	resourceview.setValue(sResource);
+end
+
+function onDetailsDragStart(button, x, y, draginfo)
+	draginfo.setType("poweraction");
+	draginfo.setIcon("action_roll");
+	draginfo.setDatabaseNode(getDatabaseNode());
+	return true;
 end
