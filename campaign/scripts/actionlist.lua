@@ -32,7 +32,7 @@ function onInit()
 
 	window.onMenuSelection = onMenuSelection;
 
-	ensureOrdering()
+	ensureOrdering();
 end
 
 function onClose()

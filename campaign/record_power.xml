@@ -79,6 +79,14 @@
 		</sheetdata>
 	</windowclass>
 
+	<windowclass name="power_item" merge="join">
+		<sheetdata>
+			<list_poweraction name="actions">
+				<script file="campaign/scripts/power_item_actionlist.lua" />
+			</list_poweraction>
+		</sheetdata>
+	</windowclass>
+
 	<windowclass name="power_action_mini" merge="join">
 		<script file="campaign/scripts/power_action_mini.lua" />
 		<sheetdata>
@@ -106,5 +114,9 @@
 				</script>
 			</button_poweraction_mini>
 		</sheetdata>
+	</windowclass>
+	
+	<windowclass name="power_action" merge="join">
+		<script file="campaign/scripts/power_action.lua" />
 	</windowclass>
 </root>

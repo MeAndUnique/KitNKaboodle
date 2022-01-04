@@ -2,6 +2,7 @@
 -- Please see the license.txt file included with this distribution for 
 -- attribution and copyright information.
 --
+
 function onInit()
 	local nodeRecord = getDatabaseNode();
 	DB.addHandler(nodeRecord.getPath("locked"), "onUpdate", onLockChanged);

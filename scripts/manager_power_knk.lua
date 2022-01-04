@@ -22,9 +22,16 @@ function fillActionOrderGap(nodePower)
 	end
 	for nOrder=1,nCount do
 		if not tExistingOrders[nOrder] then
-			 -- increment by two in order to account for both inclusivity and the previous count.
-			adjustActionOrder(nodePower, nOrder, nCount + 2, -1);
-			break;
+			adjustActionOrder(nodePower, nOrder, 1000, -1);
+
+			for nInnerOrder=nOrder+1,nCount do
+				if tExistingOrders[nInnerOrder] then
+					tExistingOrders[nInnerOrder-1] = true;
+					tExistingOrders[nInnerOrder] = false;
+				end
+			end
+			nOrder = nOrder - 1; -- repeat since everything just shifted down
+			nCount = nCount - 1;
 		end
 	end
 end
