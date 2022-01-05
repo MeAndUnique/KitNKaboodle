@@ -3,14 +3,22 @@
 -- attribution and copyright information.
 --
 
+local addPowerOriginal;
+
 function onInit()
-	registerOptions();
+	addPowerOriginal = ManagerPower.addPower;
+	ManagerPower.addPower = addPower
 end
 
-function registerOptions()
-	-- Remove item from inventory when destoyed
-	OptionsManager.registerOption2("IDLU", true, "option_header_knk", "option_label_IDLU", "option_entry_cycler", 
-		{ labels = "option_val_on", values = "on", baselabel = "option_val_off", baseval = "off", default = "off" });
+function addPower(sClass, nodeSource, nodeCreature, sGroup)
+	if StringManager.contains({"ref_ability", "reference_classfeature", "reference_feat", "reference_racialtrait"}, sClass) and
+	DB.getValue(nodeSource, "hasmultiplepowers") == 1 then
+		for _,nodePower in pairs(DB.getChildren(nodeSource, "powers")) do
+			addPowerOriginal("power", nodePower, nodeCreature, sGroup);
+		end
+	else
+		addPowerOriginal(sClass, nodeSource, nodeCreature, sGroup)
+	end
 end
 
 function fillActionOrderGap(nodePower)
