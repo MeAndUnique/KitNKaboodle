@@ -4,10 +4,20 @@
 --
 
 local addPowerOriginal;
+local resetPowersOriginal;
+local resetIntriguePowersOriginal;
 
 function onInit()
-	addPowerOriginal = ManagerPower.addPower;
-	ManagerPower.addPower = addPower
+	addPowerOriginal = PowerManager.addPower;
+	PowerManager.addPower = addPower;
+
+	resetPowersOriginal = PowerManager.resetPowers;
+	PowerManager.resetPowers = resetPowers;
+
+	if PowerManagerKw then
+		resetIntriguePowersOriginal = PowerManagerKw.resetIntriguePowers;
+		PowerManagerKw.resetIntriguePowers = resetIntriguePowers;
+	end
 end
 
 function addPower(sClass, nodeSource, nodeCreature, sGroup)
@@ -18,6 +28,18 @@ function addPower(sClass, nodeSource, nodeCreature, sGroup)
 		end
 	else
 		addPowerOriginal(sClass, nodeSource, nodeCreature, sGroup)
+	end
+end
+
+function resetPowers(nodeCaster, bLong)
+	resetPowersOriginal(nodeCaster, bLong);
+	ItemPowerManager.beginRecharging(nodeCaster, bLong);
+end
+
+function resetIntriguePowers(nodeCaster)
+	resetIntriguePowersOriginal(nodeCaster);
+	for _,nodeItem in pairs(DB.getChildren(nodeCaster.getPath("inventorylist"))) do
+		ItemPowerManager.rechargeItemPowers(nodeItem, "intrigue");
 	end
 end
 
