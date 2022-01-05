@@ -8,9 +8,7 @@
 			<frame_record_content name="contentframe" merge="delete" />
 			<frame_record_content_tabbed name="contentframe" insertbefore="content" />
 
-			<subwindow_record name="actions">
-				<class>power_actions</class>
-			</subwindow_record>
+			<subwindow_power_action_record name="actions" />
 
 			<scrollbar_record>
 				<target>actions</target>

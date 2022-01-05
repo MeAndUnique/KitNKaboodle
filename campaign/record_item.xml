@@ -122,31 +122,7 @@
 			</button_iadd>
 
 			<windowlist name="powerlist">
-				<script>
-					function onInit()
-						if not isReadOnly() then
-							registerMenuItem(Interface.getString("list_menu_createitem"), "insert", 5);
-						end
-					end
-					function onMenuSelection(selection)
-						if selection == 5 then
-							addEntry(true);
-						end
-					end
-					function update()
-						local bEditMode = (window.powerlist_iedit.getValue() == 1);
-						for _,win in pairs(getWindows()) do
-							win.idelete.setVisibility(bEditMode);
-						end
-					end
-					function addEntry(bFocus)
-						local win = createWindow();
-						if bFocus and win then
-							win.header.subwindow.nameandactions.subwindow.name.setFocus();
-						end
-						return win;
-					end
-				</script>
+				<script file="campaign/scripts/powerlist.lua" />
 				<anchored>
 					<top parent="powerstitle" anchor="bottom" offset="5" />
 					<left offset="5" />

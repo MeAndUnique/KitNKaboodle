@@ -6,6 +6,7 @@
 local bReadOnly = true;
 local bHideCast = true;
 local bAdding = false;
+local dropWidget;
 
 local rKnownActions = {
 	["cast"] = true,
@@ -26,15 +27,37 @@ function onInit()
 
 	local nodePower = window.getDatabaseNode();
 	DB.addHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.addHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
 	DB.addHandler(nodePower.getPath("actions.*.type"), "onUpdate", onTypeChanged);
 
 	window.onMenuSelection = onMenuSelection;
+
+	ensureOrdering();
 end
 
 function onClose()
 	local nodePower = window.getDatabaseNode();
 	DB.removeHandler(nodePower.getPath("actions"), "onChildAdded", onActionAdded);
+	DB.removeHandler(nodePower.getPath("actions"), "onChildDeleted", onActionDeleted);
 	DB.removeHandler(nodePower.getPath("actions.*.type"), "onUpdate", onTypeChanged);
+end
+
+function ensureOrdering()
+	local bUnordered = false;
+	for _,nodeAction in pairs(DB.getChildren(window.getDatabaseNode(), "actions")) do
+		if not DB.getChild(nodeAction, "order") then
+			bUnordered = true;
+			break;
+		end
+	end
+
+	if bUnordered then
+		local nOrder = 1;
+		for _,nodeAction in pairs(DB.getChildren(window.getDatabaseNode(), "actions")) do
+			DB.setValue(nodeAction, "order", "number", nOrder);
+			nOrder = nOrder + 1;
+		end
+	end
 end
 
 function onMenuSelection(selection, subselection)
@@ -67,6 +90,10 @@ function onActionAdded()
 	bAdding = true;
 end
 
+function onActionDeleted()
+	PowerManagerKNK.fillActionOrderGap(window.getDatabaseNode());
+end
+
 function refreshActions()
 	closeAll()
 	for _,nodeAction in pairs(DB.getChildren(window.getDatabaseNode(), "actions")) do
@@ -82,6 +109,10 @@ function showAction(nodeAction, sType)
 	if ((sType or "") ~= "") and (rKnownActions[sType] ~= nil) then
 		local win = createWindowWithClass("item_action_" .. sType, nodeAction);
 		win.update(bReadOnly, bHideCast);
+	end
+
+	if DB.getValue(nodeAction, "order", 0) == 0 then
+		DB.setValue(nodeAction, "order", "number", DB.getChildCount(nodeAction, ".."));
 	end
 	bAdding = false;
 end
@@ -124,4 +155,72 @@ function update(bNewReadOnly, bNewHideCast)
 	for _,win in ipairs(getWindows()) do
 		win.update(bReadOnly, bHideCast);
 	end
+end
+
+function onHover(bOnControl)
+	if (not bOnControl) and dropWidget then
+		dropWidget.destroy();
+		dropWidget = nil;
+	end
+end
+
+function onHoverUpdate(x, y)
+	if bReadOnly then
+		return;
+	end
+
+	local draginfo = Input.getDragData();
+	if (not draginfo) or (draginfo.getType() ~= "poweraction") then
+		return;
+	end
+	
+	local win = getWindowAt(x, y);
+
+	if not dropWidget then
+		dropWidget = addBitmapWidget("tool_right_30");
+	end
+
+	local widgetWidth, widgetHeight = dropWidget.getSize();
+
+	local nodeDragged = draginfo.getDatabaseNode();
+	local nodeOriginPower = DB.getChild(nodeDragged, "...");
+	local nOrder = DB.getValue(nodeDragged, "order", 0);
+	local nHeight = 0;
+	for nIndex, winChild in ipairs(getWindows()) do
+		local _,windowHeight = winChild.getSize();
+		if winChild == win then
+			if (nIndex > nOrder) or (nodeOriginPower ~= window.getDatabaseNode()) then
+				nHeight = nHeight + windowHeight;
+			end
+			break;
+		end
+		nHeight = nHeight + windowHeight;
+	end
+
+	dropWidget.setPosition("topleft", widgetWidth/2, nHeight);
+end
+
+function onDrop(x, y, draginfo)
+	if bReadOnly then
+		return;
+	end
+
+	if dropWidget then
+		dropWidget.destroy();
+		dropWidget = nil;
+	end
+	
+	if draginfo.getType() ~= "poweraction" then
+		return false;
+	end
+
+	local win = getWindowAt(x, y);
+	local nodeDragged = draginfo.getDatabaseNode();
+	local nodeTarget;
+	if win then
+		nodeTarget = win.getDatabaseNode();
+	end
+	PowerManagerKNK.moveAction(window.getDatabaseNode(), nodeDragged, nodeTarget);
+	applySort();
+	return true;
 end

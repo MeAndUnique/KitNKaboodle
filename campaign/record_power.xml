@@ -71,10 +71,19 @@
 					<right offset="-5" />
 				</anchored>
 				<class>empty</class>
+				<sortby><field>order</field></sortby>
 				<skipempty />
 				<noscroll />
 				<footer>footer_wide</footer>
 			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="power_item" merge="join">
+		<sheetdata>
+			<list_poweraction name="actions">
+				<script file="campaign/scripts/power_item_actionlist.lua" />
+			</list_poweraction>
 		</sheetdata>
 	</windowclass>
 
@@ -105,5 +114,9 @@
 				</script>
 			</button_poweraction_mini>
 		</sheetdata>
+	</windowclass>
+	
+	<windowclass name="power_action" merge="join">
+		<script file="campaign/scripts/power_action.lua" />
 	</windowclass>
 </root>

@@ -44,4 +44,8 @@
 
 	<string name="item_group_send_to_top">Move Under Weapons</string>
 	<string name="item_group_send_to_bottom">Move Under Powers</string>
+
+	<string name="menu_switch_to_powers">Switch to multiple</string>
+	<string name="menu_switch_to_actions">Switch to single</string>
+	<string name="multiple_powers_to_actions_error">Unable to convert multiple powers to a single power. Remove extra powers first.</string>
 </root>

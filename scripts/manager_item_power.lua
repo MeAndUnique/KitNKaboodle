@@ -19,9 +19,6 @@ MIDNIGHT_TIME_OF_DAY = 0;
 FULL_RECHARGE_DAY_THRESHOLD = 5; -- Only a few items could potentially be missing charges after 5 days, and even for those it would be extremely unlikely.
 
 local getItemSourceTypeOriginal;
-local resetPowersOriginal;
-local resetHealthOriginal;
-local resetIntriguePowersOriginal
 
 local addEquippedSpellPCOriginal;
 local nodeItemBeingEquiped = nil;
@@ -39,19 +36,8 @@ function onInit()
 		getItemSourceTypeOriginal = ItemManager.getItemSourceType;
 		ItemManager.getItemSourceType = getItemSourceType;
 
-		resetPowersOriginal = PowerManager.resetPowers;
-		PowerManager.resetPowers = resetPowers;
-
-		resetHealthOriginal = CombatManager2.resetHealth;
-		CombatManager2.resetHealth = resetHealth;
-
 		if LongTermEffects then
 			DB.addHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
-		end
-
-		if PowerManagerKw then
-			resetIntriguePowersOriginal = PowerManagerKw.resetIntriguePowers;
-			PowerManagerKw.resetIntriguePowers = resetIntriguePowers;
 		end
 
 		if EquippedEffectsManager then
@@ -62,16 +48,8 @@ function onInit()
 end
 
 function onClose()
-	ItemManager.getItemSourceType = getItemSourceTypeOriginal;
-	PowerManager.resetPowers = resetPowersOriginal
-	CombatManager2.resetHealth = resetHealthOriginal;
-
 	if LongTermEffects then
 		DB.removeHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
-	end
-
-	if EquippedEffectsManager then
-		addEquippedSpellPCOriginal = EquippedEffectsManager.addEquippedSpellPC;
 	end
 end
 
@@ -120,29 +98,11 @@ function addEquippedSpellPC(nodeActor, nodeCarriedItem, nodeSpell, sName)
 
 		-- Add the power
 		PowerManager.addPower("power", nodeSpell, nodeCarriedItem);
-		
 		nodeItemBeingEquiped = nil; -- No longer tracking
 	end
 end
 
 -- Recharging
-function resetPowers(nodeCaster, bLong)
-	resetPowersOriginal(nodeCaster, bLong);
-	beginRecharging(nodeCaster, bLong);
-end
-
-function resetHealth(nodeCT, bLong)
-	resetHealthOriginal(nodeCT, bLong);
-	beginRecharging(nodeCT, bLong);
-end
-
-function resetIntriguePowers(nodeCaster)
-	resetIntriguePowersOriginal(nodeCaster);
-	for _,nodeItem in pairs(DB.getChildren(nodeCaster.getPath("inventorylist"))) do
-		rechargeItemPowers(nodeItem, "intrigue");
-	end
-end
-
 function beginRecharging(nodeActor, bLong)
 	local sPeriod = "short";
 	if ExtendedRest and ExtendedRest.isExtended() then
@@ -430,8 +390,8 @@ function beginRollDischargedItem(nodeItem)
 				end
 			end
 		end
-		handleRollDischargedItem(messageOOB);
 	end
+	handleRollDischargedItem(messageOOB);
 end
 
 function handleRollDischargedItem(messageOOB)

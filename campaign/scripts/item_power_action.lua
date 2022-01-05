@@ -3,10 +3,14 @@
 -- attribution and copyright information.
 --
 
+local onDragStartOriginal;
+
 -- Initialization
 function onInit()
 	getDatabaseNode().onChildUpdate = onDataChanged;
 	onDataChanged();
+
+	onDragStartOriginal = details.onDragStart;
 end
 
 function onClose()
@@ -16,9 +20,11 @@ end
 function update(bReadOnly, bHideCast)
 	if bReadOnly then
 		resetMenuItems();
+		details.onDragStart = onDragStartOriginal;
 	else
 		registerMenuItem(Interface.getString("power_menu_actiondelete"), "radial_delete_action", 4);
 		registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "radial_delete_action_confirm", 4, 3);
+		details.onDragStart = onDetailsDragStart;
 	end
 
 	details.setVisible(not bReadOnly);
@@ -127,4 +133,11 @@ end
 function onResourceChanged()
 	local sResource = PowerManagerCg.getPCPowerResourceActionText(getDatabaseNode());
 	resourceview.setValue(sResource);
+end
+
+function onDetailsDragStart(button, x, y, draginfo)
+	draginfo.setType("poweraction");
+	draginfo.setIcon("action_roll");
+	draginfo.setDatabaseNode(getDatabaseNode());
+	return true;
 end
