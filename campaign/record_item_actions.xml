@@ -72,6 +72,11 @@
 	</windowclass>
 
 	<windowclass name="item_power_header">
+		<script>
+			function focus()
+				nameandactions.subwindow.name.setFocus();
+			end
+		</script>
 		<sheetdata>
 			<genericcontrol name="leftanchor">
 				<anchored height="0" width="0">

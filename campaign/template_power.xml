@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<template name="subwindow_power_action_record">
+		<subwindow_record>
+			<script file="campaign/scripts/subwindow_power_action_record.lua" />
+		</subwindow_record>
+	</template>
+</root>

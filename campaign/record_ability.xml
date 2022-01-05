@@ -8,9 +8,7 @@
 			<frame_record_content name="contentframe" merge="delete" />
 			<frame_record_content_tabbed name="contentframe" insertbefore="text" />
 
-			<subwindow_record name="actions">
-				<class>power_actions</class>
-			</subwindow_record>
+			<subwindow_power_action_record name="actions" />
 
 			<scrollbar_record>
 				<target>actions</target>
@@ -27,6 +25,150 @@
 				</tab>
 			</tabs_recordsheet>
 
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="ability_powers">
+		<script file="campaign/scripts/ability_powers.lua" />
+		<sheetdata>
+			<label_itemframetop name="powerstitle">
+				<anchored height="20">
+					<top offset="10" />
+					<left offset="15" />
+					<right offset="-10" />
+				</anchored>
+				<static textres="char_label_powers" />
+				<icons>char_powers</icons>
+				<target>powerlist</target>
+			</label_itemframetop>
+
+			<button_iedit name="powerlist_iedit">
+				<anchored to="powerstitle" position="insidetopright" offset="0,0" />
+				<target>powerlist</target>
+			</button_iedit>
+			<button_iadd name="powerlist_iadd">
+				<anchored to="powerlist_iedit" position="lefthigh" offset="5,0" />
+				<target>powerlist</target>
+			</button_iadd>
+
+			<windowlist name="powerlist">
+				<script file="campaign/scripts/powerlist.lua" />
+				<anchored>
+					<top parent="powerstitle" anchor="bottom" offset="5" />
+					<left offset="5" />
+					<right offset="-5" />
+				</anchored>
+				<datasource>.powers</datasource>
+				<class>ability_power</class>
+				<skipempty />
+				<noscroll />
+				<allowcreate />
+				<allowdelete />
+				<footer>footer_wide</footer>
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="ability_power">
+		<script file="campaign/scripts/ability_power.lua" />
+		<margins control="0,0,0,5" />
+		<sheetdata>
+			<genericcontrol name="rightanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<right />
+				</anchored>
+			</genericcontrol>
+			<linkcontrol name="shortcut">
+				<anchored to="rightanchor" width="20" height="20">
+					<top />
+					<right anchor="left" relation="relative" offset="-5" />
+				</anchored>
+				<class>power</class>
+				<readonly />
+			</linkcontrol>
+			<button_idelete name="idelete">
+				<anchored to="rightanchor">
+					<top />
+					<right anchor="left" offset="-5" />
+				</anchored>
+			</button_idelete>
+			<button_toggledetail name="activatedetail">
+				<anchored to="rightanchor">
+					<top />
+					<right anchor="left" relation="relative" offset="0" />
+				</anchored>
+				<invisible />
+			</button_toggledetail>
+
+			<subwindow name="header">
+				<anchored>
+					<top />
+					<left />
+					<right parent="rightanchor" anchor="left" relation="relative" />
+				</anchored>
+				<activate />
+				<fastinit />
+				<class>ability_power_header</class>
+			</subwindow>
+
+			<windowlist name="actions">
+				<script file="campaign/scripts/actionlist.lua" />
+				<anchored>
+					<top parent="header" anchor="bottom" relation="relative" offset="5" />
+					<left offset="5" />
+					<right offset="-5" />
+				</anchored>
+				<class>empty</class>
+				<sortby><field>order</field></sortby>
+				<skipempty />
+				<noscroll />
+				<invisible />
+				<footer>footer_wide</footer>
+			</windowlist>
+		</sheetdata>
+	</windowclass>
+	
+	<windowclass name="ability_power_header">
+		<margins control="0,0,0,5" />
+		<script>
+			function focus()
+				name.setFocus();
+			end
+		</script>
+		<sheetdata>
+			<genericcontrol name="leftanchor">
+				<anchored height="0" width="0">
+					<top offset="2" />
+					<left />
+				</anchored>
+			</genericcontrol>
+			
+			<basicnumber name="prepared">
+				<anchored to="leftanchor" width="30" height="20" >
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
+				<min>0</min>
+			</basicnumber>
+			<cycler_power_useperiod name="usesperiod">
+				<anchored to="leftanchor" width="60" height="20"> 
+					<top />
+					<left anchor="right" relation="relative" offset="10" />
+				</anchored>
+			</cycler_power_useperiod>
+
+			<simplestring name="name">
+				<anchored to="leftanchor">
+					<left anchor="right" relation="relative" offset="10" />
+					<top />
+					<right parent="" offset="-10" />
+				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<nodrag />
+				<empty textres="library_recordtype_empty_spell" />
+				<delaykeyupdate />
+			</simplestring>
 		</sheetdata>
 	</windowclass>
 </root>
