@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<windowclass name="reference_feat" merge="join">
+		<script file="campaign/scripts/insetcontentframe.lua" />
 		<sizelimits>
 			<minimum width="350" />
 		</sizelimits>
 		<sheetdata>
-			<frame_record_content name="contentframe" merge="delete" />
-			<frame_record_content_tabbed name="contentframe" insertbefore="text" />
-
 			<subwindow_power_action_record name="actions" />
 
 			<scrollbar_record>
