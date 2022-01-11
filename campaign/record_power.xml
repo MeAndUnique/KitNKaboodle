@@ -117,4 +117,12 @@
 	<windowclass name="power_action" merge="join">
 		<script file="campaign/scripts/power_action.lua" />
 	</windowclass>
+
+	<windowclass name="power_item_header" merge="join">
+		<sheetdata>
+			<windowlist name="actionsmini">
+				<sortby><field>order</field></sortby>
+			</windowlist>
+		</sheetdata>
+	</windowclass>
 </root>
