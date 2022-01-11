@@ -131,6 +131,7 @@
 				</anchored>
 				<datasource>.actions</datasource>
 				<class>power_action_mini</class>
+				<sortby><field>order</field></sortby>
 				<noscroll />
 				<readonly />
 				<columns width="25" fillwidth="true" />

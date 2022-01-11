@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<windowclass name="power" merge="join">
+		<script file="campaign/scripts/insetcontentframe.lua" />
 		<sizelimits>
 			<minimum width="350" />
 		</sizelimits>
 		<sheetdata>
-			<frame_record_content name="contentframe" merge="delete" />
-			<frame_record_content_tabbed name="contentframe" insertbefore="contents" />
-
 			<subwindow_record name="actions">
 				<class>power_actions</class>
 			</subwindow_record>
@@ -118,5 +116,13 @@
 	
 	<windowclass name="power_action" merge="join">
 		<script file="campaign/scripts/power_action.lua" />
+	</windowclass>
+
+	<windowclass name="power_item_header" merge="join">
+		<sheetdata>
+			<windowlist name="actionsmini">
+				<sortby><field>order</field></sortby>
+			</windowlist>
+		</sheetdata>
 	</windowclass>
 </root>
