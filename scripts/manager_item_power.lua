@@ -444,7 +444,7 @@ end
 -- Utility functions
 function shouldShowItemPowers(nodeItem)
 	return DB.getValue(nodeItem, "count", 0) > 0 and
-		DB.getValue(nodeItem, "carried", 0) == 2 and
+		DB.getValue(nodeItem, "carried", 0) > 0 and
 		DB.getValue(nodeItem, "isidentified", 1) == 1 and
 		((DB.getValue(nodeItem, "attune", 0) == 1) or not CharAttunementManager.doesItemAllowAttunement(nodeItem)) and
 		DB.getChildCount(nodeItem, "powers") ~= 0;
