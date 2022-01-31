@@ -3,6 +3,7 @@
 	<!-- Options -->
 	<string name="option_header_knk">Kit'N'Kaboodle</string>
 	<string name="option_label_IDLU">Remove destroyed items from inventory</string>
+	<string name="option_label_SCIP">Show carried item powers</string>
 
 	<string name="item_label_charges">CHARGES</string>
 
