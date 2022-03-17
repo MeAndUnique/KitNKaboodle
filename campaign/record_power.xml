@@ -17,7 +17,7 @@
 			<tabs_recordsheet name="tabs">
 				<tab>
 					<icon>tab_main</icon>
-					<subwindow>contents</subwindow>
+					<subwindow>content</subwindow>
 				</tab>
 				<tab>
 					<icon>tab_actions</icon>
