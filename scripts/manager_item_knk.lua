@@ -8,8 +8,20 @@ function onInit()
 	{
 		"inventorylist",
 		"cohorts.*.inventorylist",
-		"...ct.list.*.inventorylist",
-		"...npc.*.inventorylist",
-		"...reference.npcdata.*.inventorylist",
+	});
+	ItemManager.setInventoryPaths("combattracker.list",
+	{
+		"inventorylist",
+		"cohorts.*.inventorylist",
+	});
+	ItemManager.setInventoryPaths("npc",
+	{
+		"inventorylist",
+		"cohorts.*.inventorylist",
+	});
+	ItemManager.setInventoryPaths("reference.npcdata",
+	{
+		"inventorylist",
+		"cohorts.*.inventorylist",
 	});
 end

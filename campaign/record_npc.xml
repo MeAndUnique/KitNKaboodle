@@ -30,6 +30,7 @@
 
 	<windowclass name="npc_inventory">
 		<margins>0,3,0,0</margins>
+		<script file="campaign/scripts/npc_inventory.lua" />
 		<sheetdata>
 			<genericcontrol name="inventory_iedit">
 				<script>
