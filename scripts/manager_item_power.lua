@@ -19,9 +19,10 @@ MIDNIGHT_TIME_OF_DAY = 0;
 FULL_RECHARGE_DAY_THRESHOLD = 5; -- Only a few items could potentially be missing charges after 5 days, and even for those it would be extremely unlikely.
 
 local getItemSourceTypeOriginal;
-
 local addEquippedSpellPCOriginal;
+
 local nodeItemBeingEquiped = nil;
+local nPreviousDateInMinutes;
 
 -- Initialization
 function onInit()
@@ -36,20 +37,15 @@ function onInit()
 		getItemSourceTypeOriginal = ItemManager.getItemSourceType;
 		ItemManager.getItemSourceType = getItemSourceType;
 
-		if LongTermEffects then
-			DB.addHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
+		if TimeManager then
+			nPreviousDateInMinutes = TimeManager.getCurrentDateinMinutes();
+			TimeManager.addTimeChangeFunction(onTimeChanged);
 		end
 
 		if EquippedEffectsManager then
 			addEquippedSpellPCOriginal = EquippedEffectsManager.addEquippedSpellPC;
 			EquippedEffectsManager.addEquippedSpellPC = addEquippedSpellPC;
 		end
-	end
-end
-
-function onClose()
-	if LongTermEffects then
-		DB.removeHandler('calendar.dateinminutes', 'onUpdate', onTimeChanged);
 	end
 end
 
@@ -116,11 +112,11 @@ function beginRecharging(nodeActor, bLong)
 	end
 end
 
-function onTimeChanged(nodeDateInMinutes)
-	local nNewDateInMinutes = nodeDateInMinutes.getValue();
-	local nPreviousDateInMinutes = tonumber(DB.getValue("calendar.dateinminutesstring", ""));
+function onTimeChanged()
+	local nNewDateInMinutes = TimeManager.getCurrentDateinMinutes();
 
 	if not nNewDateInMinutes or not nPreviousDateInMinutes or nNewDateInMinutes <= nPreviousDateInMinutes then
+		nPreviousDateInMinutes = nNewDateInMinutes;
 		return;
 	end
 	local nElapsedDays = TimeManager.convertMinutestoDays(nNewDateInMinutes - nPreviousDateInMinutes);
@@ -138,6 +134,8 @@ function onTimeChanged(nodeDateInMinutes)
 			rechargeItemPowers(nodeItem, "daily", nCurrentTimeOfDay, nElapsedDays);
 		end
 	end
+	
+	nPreviousDateInMinutes = nNewDateInMinutes;
 end
 
 function rechargeItemPowers(nodeItem, sPeriod, nCurrentTimeOfDay, nElapsedDays)

@@ -44,8 +44,10 @@ Icons made by pongsakornRed from www.flaticon.com
 		<includefile source="strings/strings.xml" />
 
 		<script name="ActorManagerKNK" file="scripts/manager_actor_KNK.lua" />
+		<script name="CharEncumbranceManagerKNK" file="scripts/manager_char_encumbrance_knk.lua" />
 		<script name="DataOptionsKNK" file="scripts/data_options_knk.lua" />
 		<script name="ForgeManagerItemKNK" file="forge/scripts/manager_forge_item_knk.lua" />
+		<script name="ItemManagerKNK" file="scripts/manager_item_knk.lua" />
 		<script name="ItemPowerManager" file="scripts/manager_item_power.lua" />
 		<script name="PowerManagerKNK" file="scripts/manager_power_knk.lua" />
 
