@@ -1,5 +1,5 @@
--- 
--- Please see the license.txt file included with this distribution for 
+--
+-- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
 --
 
@@ -146,9 +146,9 @@ function update(bNewReadOnly, bNewHideCast)
 			window.registerMenuItem(Interface.getString("power_menu_addresource"), "coins", 3, 6);
 		end
 		if KingdomsAndWarfare then
-			window.registerMenuItem(Interface.getString("power_menu_addetest"), "radial_sword", 3, 8);
+			window.registerMenuItem(Interface.getString("power_menu_addtest"), "radial_sword", 3, 8);
 		end
-		
+
 		window.registerMenuItem(Interface.getString("power_menu_reparse"), "radial_reparse_spell", 4);
 	end
 
@@ -173,7 +173,7 @@ function onHoverUpdate(x, y)
 	if (not draginfo) or (draginfo.getType() ~= "poweraction") then
 		return;
 	end
-	
+
 	local win = getWindowAt(x, y);
 
 	if not dropWidget then
@@ -209,7 +209,7 @@ function onDrop(x, y, draginfo)
 		dropWidget.destroy();
 		dropWidget = nil;
 	end
-	
+
 	if draginfo.getType() ~= "poweraction" then
 		return false;
 	end

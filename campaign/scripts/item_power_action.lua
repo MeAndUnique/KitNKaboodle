@@ -1,5 +1,5 @@
--- 
--- Please see the license.txt file included with this distribution for 
+--
+-- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
 --
 
@@ -89,9 +89,9 @@ function onHealChanged(nodeAction)
 	healview.setValue(sHeal);
 end
 
-function onEffectChanged(nodeAction)	
+function onEffectChanged(nodeAction)
 	local sLabel = DB.getValue(nodeAction, "label", "");
-	
+
 	local sApply = DB.getValue(nodeAction, "apply", "");
 	if sApply == "action" then
 		sLabel = sLabel .. "; [ACTION]";
@@ -100,14 +100,14 @@ function onEffectChanged(nodeAction)
 	elseif sApply == "single" then
 		sLabel = sLabel .. "; [SINGLES]";
 	end
-	
+
 	local sTargeting = DB.getValue(nodeAction, "targeting", "");
 	if sTargeting == "self" then
 		sLabel = sLabel .. "; [SELF]";
 	end
 
 	local sDuration = "" .. DB.getValue(nodeAction, "durmod", 0);
-	
+
 	local sUnits = DB.getValue(nodeAction, "durunit", "");
 	if sDuration ~= "" then
 		if sUnits == "minute" then
@@ -120,7 +120,7 @@ function onEffectChanged(nodeAction)
 			sDuration = sDuration .. " rd";
 		end
 	end
-	
+
 	effectview.setValue(sLabel);
 	durationview.setValue(sDuration);
 end
