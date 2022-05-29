@@ -1,5 +1,5 @@
--- 
--- Please see the license.txt file included with this distribution for 
+--
+-- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
 --
 
@@ -96,7 +96,7 @@ end
 
 function getDescription(nodePower, bShowFull)
 	local s = DB.getValue(nodePower, "name", "");
-	
+
 	if bShowFull then
 		local sShort = DB.getValue(nodePower, "shortdescription", "");
 		if sShort ~= "" then

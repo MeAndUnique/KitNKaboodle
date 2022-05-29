@@ -48,6 +48,18 @@ function onInit()
 			EquippedEffectsManager.addEquippedSpellPC = addEquippedSpellPC;
 		end
 	end
+
+	if ResourceManager then
+		ResourceManager.addSpecialResource("Hit Dice",
+		{
+			fIsMatch = isChargeResource,
+			fGetValue = getCurrentChargeResource,
+			fGetLimit = getAvailableChargeResource,
+			fGetValueSetters = getItemResourceChargeSetters,
+			fAddHandlers = addChargeResourceChangedHandler,
+			fRemoveHandlers = removeChargeResourceChangedHandler
+		});
+	end
 end
 
 -- Overrides
@@ -508,4 +520,69 @@ function countCharges(nodeItem)
 		end
 	end
 	return nCount;
+end
+
+-- A return value of nil indicates that the resource does not
+-- refer to the charges of an item in the actor's possession.
+function getActorResourceItem(rActor, sResource)
+	local sTargetItem, bMatch = sResource:lower():match("(.*) ?(charges)");
+	if (not sTargetItem) or (not bMatch) then
+		return;
+	end
+
+	sTargetItem = StringManager.trim(sTargetItem);
+	local nodeActor = ActorManager.getCreatureNode(rActor);
+	for _,nodeItem in pairs(DB.getChildren(nodeActor, "inventorylist")) do
+		if (DB.getValue(nodeItem, "count", 0) > 0)
+		and (DB.getValue(nodeItem, "prepared", 0) > 0)
+		and (DB.getValue(nodeItem, "isidentified", 0) == 1)
+		and (DB.getValue(nodeItem, "name", ""):lower() == sTargetItem)
+		and ((DB.getValue(nodeItem, "attune", 0) == 1) or not CharAttunementManager.doesItemAllowAttunement(nodeItem)) then
+			return nodeItem;
+		end
+	end
+end
+
+function isChargeResource(rActor, sResource)
+	return getActorResourceItem(rActor, sResource) ~= nil;
+end
+
+function getCurrentChargeResource(rActor, sResource)
+	local nodeItem = getActorResourceItem(rActor, sResource);
+	local nCharges = DB.getValue(nodeItem, "prepared", 0);
+	local nUsed = countCharges(nodeItem);
+	return nCharges - nUsed;
+end
+
+function getAvailableChargeResource(rActor, sResource)
+	local nodeItem = getActorResourceItem(rActor, sResource);
+	return DB.getValue(nodeItem, "prepared", 0);
+end
+
+function getItemResourceChargeSetters(rActor, sResource)
+	local nodeItem = getActorResourceItem(rActor, sResource);
+	return {function(nValue)
+		distributeCharges(nodeItem, nValue);
+		return countCharges(nodeItem), 0;
+	end};
+end
+
+function addChargeResourceChangedHandler(rActor, sResource, fCurrentHandler, fLimitHandler)
+	local nodeItem = getActorResourceItem(rActor, sResource);
+	if fCurrentHandler then
+		DB.addHandler(DB.getPath(nodeItem, "powers.*.cast"), "onUpdate", fCurrentHandler);
+	end
+	if fLimitHandler then
+		DB.addHandler(DB.getPath(nodeItem, "prepared"), "onUpdate", fCurrentHandler);
+	end
+end
+
+function removeChargeResourceChangedHandler(rActor, sResource, fCurrentHandler, fLimitHandler)
+	local nodeItem = getActorResourceItem(rActor, sResource);
+	if fCurrentHandler then
+		DB.removeHandler(DB.getPath(nodeItem, "powers.*.cast"), "onUpdate", fCurrentHandler);
+	end
+	if fLimitHandler then
+		DB.removeHandler(DB.getPath(nodeItem, "prepared"), "onUpdate", fCurrentHandler);
+	end
 end
