@@ -1,5 +1,5 @@
--- 
--- Please see the license.txt file included with this distribution for 
+--
+-- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
 --
 
@@ -53,7 +53,7 @@ function onHoverUpdate(x, y)
 	if (not draginfo) or (draginfo.getType() ~= "poweraction") then
 		return;
 	end
-	
+
 	local win = getWindowAt(x, y);
 
 	if not dropWidget then
@@ -94,7 +94,7 @@ function onDrop(x, y, draginfo)
 		dropWidget.destroy();
 		dropWidget = nil;
 	end
-	
+
 	if draginfo.getType() ~= "poweraction" then
 		return result;
 	end

@@ -9,4 +9,7 @@ function onInit()
 	end
 
 	contentframe.setAnchor("right", "", "right", "absolute", -30);
+	if text then
+		text.setAnchor("right", "contentframe", "right", "absolute", 0);
+	end
 end

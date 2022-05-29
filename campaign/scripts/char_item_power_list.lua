@@ -1,5 +1,5 @@
--- 
--- Please see the license.txt file included with this distribution for 
+--
+-- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
 --
 
@@ -45,7 +45,7 @@ function onClose()
 
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.name"), "onUpdate", onNameChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.displaygroup"), "onUpdate", onDisplayGroupChanged);
-	
+
 	DB.removeHandler(nodeChar.getPath("itemgroups.*.name"), "onAdd", onGroupNamed);
 	DB.removeHandler(nodeChar.getPath("itemgroups.*.listid"), "onUpdate", onFilteredValueChanged);
 end

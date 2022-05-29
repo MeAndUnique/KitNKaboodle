@@ -1,5 +1,5 @@
--- 
--- Please see the license.txt file included with this distribution for 
+--
+-- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
 --
 
@@ -55,7 +55,9 @@ function shouldShowMetaData(nodePower)
 end
 
 function updateToggle()
-	if bHideCast then
+	local nodePower = getDatabaseNode();
+	local bShouldShowToggle = shouldShowToggle(nodePower);
+	if bShouldShowToggle then
 		activatedetail.setValue(1);
 		activatedetail.setVisible(true);
 	else
@@ -96,7 +98,7 @@ end
 
 function getDescription(nodePower, bShowFull)
 	local s = DB.getValue(nodePower, "name", "");
-	
+
 	if bShowFull then
 		local sShort = DB.getValue(nodePower, "shortdescription", "");
 		if sShort ~= "" then
