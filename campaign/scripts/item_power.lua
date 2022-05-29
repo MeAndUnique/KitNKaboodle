@@ -55,7 +55,9 @@ function shouldShowMetaData(nodePower)
 end
 
 function updateToggle()
-	if bHideCast then
+	local nodePower = getDatabaseNode();
+	local bShouldShowToggle = shouldShowToggle(nodePower);
+	if bShouldShowToggle then
 		activatedetail.setValue(1);
 		activatedetail.setVisible(true);
 	else
