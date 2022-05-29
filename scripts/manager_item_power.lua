@@ -50,7 +50,7 @@ function onInit()
 	end
 
 	if ResourceManager then
-		ResourceManager.addSpecialResource("Hit Dice",
+		ResourceManager.addSpecialResource("Item Charges",
 		{
 			fIsMatch = isChargeResource,
 			fGetValue = getCurrentChargeResource,
@@ -330,20 +330,21 @@ function distributeCharges(nodeItem, nChargesToAdd)
 		if nChargesToAdd == 0 then
 			break;
 		end
-
-		local nCast = DB.getValue(nodePower, "cast", 0);
-		if nCast > nChargesToAdd then
-			nCast = nCast - nChargesToAdd;
-			if nCast > nMax then
-				nChargesToAdd = nMax - nCast;
-				nCast = nMax;
-			else
-				nChargesToAdd = 0;
+		if DB.getValue(nodePower, "chargeperiod", "") == "" then
+			local nCast = DB.getValue(nodePower, "cast", 0);
+			if nCast > nChargesToAdd then
+				nCast = nCast - nChargesToAdd;
+				if nCast > nMax then
+					nChargesToAdd = nMax - nCast;
+					nCast = nMax;
+				else
+					nChargesToAdd = 0;
+				end
+				DB.setValue(nodePower, "cast", "number", nCast);
+			elseif nCast > 0 then
+				nChargesToAdd = nChargesToAdd - nCast;
+				DB.setValue(nodePower, "cast", "number", 0);
 			end
-			DB.setValue(nodePower, "cast", "number", nCast);
-		elseif nCast > 0 then
-			nChargesToAdd = nChargesToAdd - nCast;
-			DB.setValue(nodePower, "cast", "number", 0);
 		end
 	end
 
@@ -563,7 +564,9 @@ function getItemResourceChargeSetters(rActor, sResource)
 	local nodeItem = getActorResourceItem(rActor, sResource);
 	return {function(nValue)
 		distributeCharges(nodeItem, nValue);
-		return countCharges(nodeItem), 0;
+		local nCharges = DB.getValue(nodeItem, "prepared", 0);
+		local nUsed = countCharges(nodeItem);
+		return nCharges - nUsed, 0;
 	end};
 end
 

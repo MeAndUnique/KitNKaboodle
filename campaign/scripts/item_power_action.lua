@@ -4,6 +4,7 @@
 --
 
 local onDragStartOriginal;
+local fSpecializedOnClose;
 
 -- Initialization
 function onInit()
@@ -15,6 +16,9 @@ end
 
 function onClose()
 	getDatabaseNode().onChildUpdate = nil;
+	if fSpecializedOnClose then
+		fSpecializedOnClose();
+	end
 end
 
 function update(bReadOnly, bHideCast)
@@ -130,9 +134,38 @@ function onTestChanged(nodeAction)
 	testview.setValue(sTest);
 end
 
-function onResourceChanged()
-	local sResource = PowerManagerCg.getPCPowerResourceActionText(getDatabaseNode());
+local sRegisteredName;
+function onResourceChanged(nodeAction)
+	local sName = DB.getValue(nodeAction, "resource", "");
+	if sName ~= sRegisteredName then
+		if sRegisteredName then
+			removeSpecialHandlers();
+		end
+		addSpecialHandlers();
+	end
+	local sResource = PowerManagerCg.getPCPowerResourceActionText(nodeAction);
 	resourceview.setValue(sResource);
+	fSpecializedOnClose = removeSpecialHandlers;
+end
+
+function onSpecialResourceChanged()
+	local nodeAction = getDatabaseNode()
+	ActorManagerKNK.beginResolvingItem(nodeAction.getChild(".......") or true);
+	onResourceChanged(nodeAction);
+	ActorManagerKNK.endResolvingItem();
+end
+
+function addSpecialHandlers()
+	local nodeAction = getDatabaseNode();
+	local rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
+	sRegisteredName = DB.getValue(nodeAction, "resource", "");
+	ResourceManager.addSpecialResourceChangeHandlers(rActor, sRegisteredName, onSpecialResourceChanged, nil);
+end
+
+function removeSpecialHandlers()
+	local nodeAction = getDatabaseNode();
+	local rActor = ActorManager.resolveActor(nodeAction.getChild("......."));
+	ResourceManager.removeSpecialResourceChangeHandlers(rActor, sRegisteredName, onSpecialResourceChanged, nil);
 end
 
 function onDetailsDragStart(button, x, y, draginfo)
