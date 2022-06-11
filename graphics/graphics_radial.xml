@@ -6,6 +6,7 @@
 -->
 
 <root>
+	<icon name="send" file="graphics/radial/icon_image_view_preload.png" />
 	<icon name="radial_reparse_spell" file="graphics/radial/icon_text_list.png" />
 	<icon name="radial_delete_action_confirm" file="graphics/radial/icon_delete.png" />
 	<icon name="radial_create_action" file="graphics/radial/icon_image_layer_pointer_menu.png" />
