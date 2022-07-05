@@ -13,7 +13,6 @@
 			</scrollbar_record>
 
 			<tabs_recordsheet name="tabs">
-				<script file="campaign/scripts/advancedeffectstab.lua" />
 				<tab>
 					<icon>tab_main</icon>
 					<subwindow>content</subwindow>
