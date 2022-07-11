@@ -8,8 +8,10 @@ function onInit()
 		super.onInit();
 	end
 
-	contentframe.setAnchor("right", "", "right", "absolute", -30);
-	if text then
-		text.setAnchor("right", "contentframe", "right", "absolute", 0);
+	if EffectManagerADND then
+		local sSub, sDisplay = getTab(1);
+		if sSub then
+			setTab(1, sSub .. ",advanced_effects_contents", sDisplay);
+		end
 	end
 end
