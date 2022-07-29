@@ -25,7 +25,7 @@ function onInit()
 
 	nodePower = window.getDatabaseNode();
 	nodeItem = DB.getChild(nodePower, "...");
-	
+
 	onChargesChanged();
 	DB.addHandler(nodeItem.getPath("count"), "onUpdate", onChargesChanged);
 	DB.addHandler(nodeItem.getPath("prepared"), "onUpdate", onChargesChanged);
