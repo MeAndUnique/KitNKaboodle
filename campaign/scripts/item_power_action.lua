@@ -143,7 +143,7 @@ function onResourceChanged(nodeAction)
 		end
 		addSpecialHandlers();
 	end
-	local sResource = PowerManagerCg.getPCPowerResourceActionText(nodeAction);
+	local sResource = PowerManagerCG.getPCPowerResourceActionText(nodeAction);
 	resourceview.setValue(sResource);
 	fSpecializedOnClose = removeSpecialHandlers;
 end
