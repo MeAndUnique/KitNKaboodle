@@ -16,7 +16,7 @@ local rKnownActions = {
 };
 
 function onInit()
-	if PowerManagerCg then
+	if PowerManagerCG then
 		rKnownActions["resource"] = true;
 	end
 	if KingdomsAndWarfare then
@@ -142,7 +142,7 @@ function update(bNewReadOnly, bNewHideCast)
 		window.registerMenuItem(Interface.getString("power_menu_addheal"), "radial_heal", 3, 4);
 		window.registerMenuItem(Interface.getString("power_menu_addeffect"), "radial_effect", 3, 5);
 
-		if PowerManagerCg then
+		if PowerManagerCG then
 			window.registerMenuItem(Interface.getString("power_menu_addresource"), "coins", 3, 6);
 		end
 		if KingdomsAndWarfare then
