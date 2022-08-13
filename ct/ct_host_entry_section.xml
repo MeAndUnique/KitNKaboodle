@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<windowclass name="ct_entry" merge="join">
+	<windowclass name="ct_section_active_npc" merge="join">
 		<sheetdata>
-			<genericcontrol name="spacer_action">
-				<script>
-					function onVisibilityChanged()
-						window.items.setVisible(isVisible());
-					end
-				</script>
-			</genericcontrol>
-			<windowlist name="items" insertbefore="spacer_action2">
+			<windowlist name="items" insertbefore="frame_section">
 				<script>
 					function onFilter(instance)
 						local nodeInstance = instance.getDatabaseNode();
@@ -17,16 +10,20 @@
 					end
 				</script>
 				<anchored>
-					<top parent="active_spacer_top" anchor="bottom" relation="relative" />
-					<left parent="activeicon" anchor="right" />
+					<top parent="anchor_section" anchor="bottom" relation="relative" />
+					<left offset="40" />
 					<right />
 				</anchored>
 				<class>ct_npc_items</class>
 				<datasource>.inventorylist</datasource>
 				<skipempty />
 				<noscroll />
-				<invisible />
 			</windowlist>
+			<frame_ct_section name="frame_section">
+				<anchored>
+					<bottom parent="items" offset="10" />
+				</anchored>
+			</frame_ct_section>
 		</sheetdata>
 	</windowclass>
 
@@ -34,7 +31,7 @@
 		<margins>0,3,0,0</margins>
 		<sheetdata>
 			<stringfield name="name">
-				<anchored position="insidetopleft" offset="10,0" width="60" />
+				<anchored position="insidetopleft" width="70" />
 				<font>sheetlabel</font>
 				<multilinespacing>20</multilinespacing>
 				<nodrag />
@@ -44,7 +41,7 @@
 				<anchored>
 					<top />
 					<left parent="name" anchor="right" offset="5" />
-					<right offset="-17" />
+					<right offset="-10" />
 					<sizelimits><minimum height="24" /></sizelimits>
 				</anchored>
 				<datasource>.powers</datasource>
