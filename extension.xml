@@ -64,7 +64,7 @@ Icons made by pongsakornRed from www.flaticon.com
 		<includefile source="campaign/record_race.xml" />
 		<includefile source="campaign/template_item.xml" />
 		<includefile source="campaign/template_power.xml" />
-		<includefile source="ct/ct_host.xml" />
+		<includefile source="ct/ct_host_entry_section.xml" />
 		<includefile source="graphics/graphics_radial.xml" />
 		
 		<icon name="KNK_icon" file="graphics/icons/KitNKaboodle.png" />
