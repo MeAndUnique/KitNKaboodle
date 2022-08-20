@@ -68,6 +68,14 @@ Icons made by pongsakornRed from www.flaticon.com
 		<includefile source="graphics/graphics_radial.xml" />
 		
 		<icon name="KNK_icon" file="graphics/icons/KitNKaboodle.png" />
+
+		<script name="PowerUpKNK">
+			function onInit()
+				if PowerUp then
+					PowerUp.registerExtension("Kit'N'Kaboodle", "dev_version");
+				end
+			end
+		</script>
 	</base>
 
 	<announcement text="Kit'N'Kaboodle dev_version for 5E by MeAndUnique." icon="KNK_icon" font="emotefont" />
