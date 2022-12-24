@@ -10,7 +10,7 @@ function onInit()
 
 	if EffectManagerADND then
 		local sSub, sDisplay = getTab(1);
-		if sSub then
+		if sSub and sSub == "text" then
 			setTab(1, sSub .. ",advanced_effects_contents", sDisplay);
 		end
 	end
