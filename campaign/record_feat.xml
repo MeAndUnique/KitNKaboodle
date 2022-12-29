@@ -13,6 +13,16 @@
 			</scrollbar_record>
 
 			<tabs_recordsheet name="tabs">
+				<script>
+					function onInit()
+						if window.main and not window.text then
+							tab[1].subwindow[1] = "main";
+						end
+						if super and super.onInit then
+							super.onInit();
+						end
+					end
+				</script>
 				<script file="campaign/scripts/advancedeffectstab.lua" />
 				<tab>
 					<icon>tab_main</icon>
