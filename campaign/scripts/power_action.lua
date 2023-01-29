@@ -8,16 +8,7 @@ function onInit()
 		super.onInit();
 	end
 
-	castdetail.onDragStart = onDetailsDragStart;
-	damagedetail.onDragStart = onDetailsDragStart;
-	healdetail.onDragStart = onDetailsDragStart;
-	effectdetail.onDragStart = onDetailsDragStart;
-	if testdetail then
-		testdetail.onDragStart = onDetailsDragStart;
-	end
-	if resourcedetail then
-		resourcedetail.onDragStart = onDetailsDragStart;
-	end
+	detail.onDragStart = onDetailsDragStart;
 end
 
 function onDetailsDragStart(button, x, y, draginfo)
