@@ -33,8 +33,7 @@ function onActionUpdate(_, bChildUpdated)
 end
 
 function processPower()
-	local nodeNPC = nodePower.getChild(".....");
-	ActorManagerKNK.beginResolvingItem(nodePower.getChild("....."));
+	local nodeNPC = PowerManagerCore.getPowerActorNode(nodePower);
 	local aActions = {}
 	for _,nodeAction in pairs(DB.getChildren(nodePower, "actions")) do
 		local rAction = PowerManager.getPCPowerAction(nodeAction);
@@ -49,7 +48,6 @@ function processPower()
 			table.insert(aActions, getEffectValue(rAction));
 		end
 	end
-	ActorManagerKNK.endResolvingItem();
 
 	local sValue = DB.getValue(nodePower, "name", "");
 	if #aActions > 0 then

@@ -1,5 +1,5 @@
--- 
--- Please see the license.txt file included with this distribution for 
+--
+-- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
 --
 
@@ -23,7 +23,20 @@ function update(bReadOnly)
 
 	if bReadOnly then
 		prepared.setFrame(nil);
+		resetMenuItems();
 	else
 		prepared.setFrame("fielddark", 7, 5, 7, 5);
+
+		if self.parentcontrol then
+			self.windowlist = self.parentcontrol;
+		end
+		PowerManagerCore.registerDefaultPowerMenu(self);
+		if self.parentcontrol then
+			self.windowlist = nil;
+		end
 	end
+end
+
+function onMenuSelection(...)
+	PowerManagerCore.onDefaultPowerMenuSelection(self, ...)
 end

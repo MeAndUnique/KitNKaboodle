@@ -3,6 +3,8 @@
 -- attribution and copyright information.
 --
 
+local bReadOnly = true;
+local bHideCast = true;
 local dropWidget;
 
 function onInit()
@@ -108,4 +110,13 @@ function onDrop(x, y, draginfo)
 	PowerManagerKNK.moveAction(window.getDatabaseNode(), nodeDragged, nodeTarget);
 	applySort();
 	return true;
+end
+
+function update(bNewReadOnly, bNewHideCast)
+	bReadOnly = bNewReadOnly;
+	bHideCast = bNewHideCast;
+	-- TODO check for drag reording on readonly
+	for _,win in ipairs(getWindows()) do
+		win.update(bReadOnly, bHideCast);
+	end
 end

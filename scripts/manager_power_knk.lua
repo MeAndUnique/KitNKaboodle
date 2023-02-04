@@ -5,6 +5,7 @@
 
 local addPowerOriginal;
 local resetPowersOriginal;
+local getPowerActorNodeOriginal;
 local resetIntriguePowersOriginal;
 
 function onInit()
@@ -14,15 +15,25 @@ function onInit()
 	resetPowersOriginal = PowerManager.resetPowers;
 	PowerManager.resetPowers = resetPowers;
 
+	getPowerActorNodeOriginal = PowerManager5E.getPowerActorNode;
+	PowerManager5E.getPowerActorNode = getPowerActorNode;
+
 	if PowerManagerKw then
 		resetIntriguePowersOriginal = PowerManagerKw.resetIntriguePowers;
 		PowerManagerKw.resetIntriguePowers = resetIntriguePowers;
 	end
+
+	local tPowerHandlers = {
+		fnGetActorNode = PowerManager5E.getPowerActorNode,
+		fnParse = PowerManager5E.parsePower,
+		fnUpdateDisplay = PowerManager5E.updatePowerDisplay,
+	};
+	PowerManagerCore.registerPowerHandlers(tPowerHandlers);
 end
 
 function addPower(sClass, nodeSource, nodeCreature, sGroup)
-	if StringManager.contains({"ref_ability", "reference_classfeature", "reference_feat", "reference_racialtrait"}, sClass) and
-	DB.getValue(nodeSource, "hasmultiplepowers") == 1 then
+	if StringManager.contains({"ref_ability", "reference_classfeature", "reference_feat", "reference_racialtrait"}, sClass)
+	and DB.getValue(nodeSource, "hasmultiplepowers") == 1 then
 		for _,nodePower in pairs(DB.getChildren(nodeSource, "powers")) do
 			addPowerOriginal("power", nodePower, nodeCreature, sGroup);
 		end
@@ -40,6 +51,14 @@ function resetIntriguePowers(nodeCaster)
 	resetIntriguePowersOriginal(nodeCaster);
 	for _,nodeItem in pairs(DB.getChildren(nodeCaster.getPath("inventorylist"))) do
 		ItemPowerManager.rechargeItemPowers(nodeItem, "intrigue");
+	end
+end
+
+function getPowerActorNode(node)
+	if node.getPath():match("inventorylist") then
+		return DB.getChild(node, ".....");
+	else
+		return getPowerActorNodeOriginal(node);
 	end
 end
 
