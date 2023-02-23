@@ -55,7 +55,7 @@ function resetIntriguePowers(nodeCaster)
 end
 
 function getPowerActorNode(node)
-	if node.getPath():match("inventorylist") then
+	if ItemManagerKNK.nodeBelongsToItem(node) then
 		return DB.getChild(node, ".....");
 	else
 		return getPowerActorNodeOriginal(node);

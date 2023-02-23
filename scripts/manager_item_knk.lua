@@ -25,3 +25,12 @@ function onInit()
 		"cohorts.*.inventorylist",
 	});
 end
+
+function nodeBelongsToItem(nodePower)
+	if not nodePower then
+		return false;
+	end
+
+	local sPath = nodePower.getPath();
+	return (LibraryData.getRecordTypeFromRecordPath(sPath) == "item") or (sPath:match("inventorylist") ~= nil);
+end

@@ -12,6 +12,15 @@ function onInit()
 
 	onDragStartOriginal = detail.onDragStart;
 	detail.onDragStart = onDetailsDragStart;
+
+	if ItemManagerKNK.nodeBelongsToItem(getDatabaseNode()) then
+		if idelete.editmode then
+			idelete.editmode[1] = "locked";
+		end
+		if ireorder.editmode then
+			ireorder.editmode[1] = "locked";
+		end
+	end
 end
 
 function onDetailsDragStart(_, _, _, draginfo)
@@ -32,7 +41,6 @@ function update(bReadOnly, bHideCast)
 	end
 
 	detail.setVisible(not bReadOnly);
-
 	if contents and contents.subwindow and contents.subwindow.update then
 		contents.subwindow.update(bReadOnly, bHideCast);
 	end
