@@ -87,13 +87,26 @@ function update(bNewReadOnly, bNewHideCast)
 		header.subwindow.nameandactions.subwindow.name.setFrame(nil);
 		metadata.subwindow.charges.setFrame(nil);
 		metadata.subwindow.chargeperiod.setFrame(nil);
+		resetMenuItems();
 	else
 		header.subwindow.nameandactions.subwindow.name.setFrame("fieldlight", 7, 5, 9, 5);
 		metadata.subwindow.charges.setFrame("fieldlight", 7, 5, 9, 5);
 		metadata.subwindow.chargeperiod.setFrame("fieldlight", 7, 5, 9, 5);
+
+		if self.parentcontrol then
+			self.windowlist = self.parentcontrol;
+		end
+		PowerManagerCore.registerDefaultPowerMenu(self);
+		if self.parentcontrol then
+			self.windowlist = nil;
+		end
 	end
 
 	actions.update(bReadOnly, bHideCast);
+end
+
+function onMenuSelection(...)
+	PowerManagerCore.onDefaultPowerMenuSelection(self, ...)
 end
 
 function getDescription(nodePower, bShowFull)

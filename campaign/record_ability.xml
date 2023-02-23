@@ -110,20 +110,9 @@
 				<class>ability_power_header</class>
 			</subwindow>
 
-			<windowlist name="actions">
-				<script file="campaign/scripts/actionlist.lua" />
-				<anchored>
-					<top parent="header" anchor="bottom" relation="relative" offset="5" />
-					<left offset="5" />
-					<right offset="-5" />
-				</anchored>
-				<class>empty</class>
-				<sortby><field>order</field></sortby>
-				<skipempty />
-				<noscroll />
+			<list_poweraction name="actions">
 				<invisible />
-				<footer>footer_wide</footer>
-			</windowlist>
+			</list_poweraction>
 		</sheetdata>
 	</windowclass>
 	

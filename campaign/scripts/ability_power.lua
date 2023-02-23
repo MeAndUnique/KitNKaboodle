@@ -1,5 +1,5 @@
--- 
--- Please see the license.txt file included with this distribution for 
+--
+-- Please see the license.txt file included with this distribution for
 -- attribution and copyright information.
 --
 
@@ -59,9 +59,22 @@ function update(bNewReadOnly, bNewHideCast)
 
 	if bReadOnly then
 		header.subwindow.name.setFrame(nil);
+		resetMenuItems();
 	else
 		header.subwindow.name.setFrame("fieldlight", 7, 5, 9, 5);
+
+		if self.parentcontrol then
+			self.windowlist = self.parentcontrol;
+		end
+		PowerManagerCore.registerDefaultPowerMenu(self);
+		if self.parentcontrol then
+			self.windowlist = nil;
+		end
 	end
 
 	actions.update(bReadOnly, bHideCast);
+end
+
+function onMenuSelection(...)
+	PowerManagerCore.onDefaultPowerMenuSelection(self, ...)
 end

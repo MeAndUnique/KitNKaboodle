@@ -50,6 +50,7 @@ Icons made by pongsakornRed from www.flaticon.com
 		<script name="ItemManagerKNK" file="scripts/manager_item_knk.lua" />
 		<script name="ItemPowerManager" file="scripts/manager_item_power.lua" />
 		<script name="PowerManagerKNK" file="scripts/manager_power_knk.lua" />
+		<script name="WindowManagerKNK" file="scripts/manager_window_knk.lua" />
 
 		<includefile source="campaign/record_ability.xml" />
 		<includefile source="campaign/record_char_actions.xml" />
