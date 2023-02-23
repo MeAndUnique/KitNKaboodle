@@ -34,8 +34,8 @@
 	</template>
 
 	<template name = "counter_item_power">
-		<counter_power>
+		<buttongroup_counter_power>
 			<script file="campaign/scripts/counter_item_power.lua" />
-		</counter_power>
+		</buttongroup_counter_power>
 	</template>
 </root>

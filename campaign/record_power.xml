@@ -72,7 +72,7 @@
 		</sheetdata>
 	</windowclass>
 
-	<windowclass name="power_item_5E" merge="join">
+	<windowclass name="power_item" merge="join">
 		<sheetdata>
 			<list_poweraction name="actions">
 				<script file="campaign/scripts/power_item_actionlist.lua" />
@@ -86,18 +86,29 @@
 
 	<windowclass name="power_action_cast" merge="join">
 		<script>
+			local nInitialWidth;
+			function onInit()
+				if super and super.onInit then
+					super.onInit();
+				end
+				nInitialWidth, _ = castlabel.getSize();
+			end
 			function update(_, bHideCast)
 				castbutton.setVisible(not bHideCast);
 				attackviewlabel.setVisible(not bHideCast);
 				attackbutton.setVisible(not bHideCast);
 				savebutton.setVisible(not bHideCast);
 
+				local nWidth;
 				local sText;
 				if bHideCast then
-					sText = Interface.getString("power_label_atk") .. " ";
+					nWidth = nInitialWidth - 10;
+					sText = Interface.getString("power_label_atk");
 				else
+					nWidth = nInitialWidth;
 					sText = Interface.getString("power_label_cast");
 				end
+				castlabel.setAnchoredWidth(nWidth);
 				castlabel.setValue(sText);
 			end
 		</script>
