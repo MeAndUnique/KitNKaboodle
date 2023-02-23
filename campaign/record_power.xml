@@ -61,19 +61,14 @@
 				<static textres="char_actions_title" />
 				<icons>char_powers</icons>
 			</label_itemframetop>
-			<windowlist name="actions">
-				<script file="campaign/scripts/actionlist.lua" />
+			<list_poweraction name="actions">
+				<script file="campaign/scripts/power_item_actionlist.lua" />
 				<anchored>
 					<top parent="actionstitle" anchor="bottom" relation="relative" offset="5" />
 					<left offset="5" />
 					<right offset="-5" />
 				</anchored>
-				<class>empty</class>
-				<sortby><field>order</field></sortby>
-				<skipempty />
-				<noscroll />
-				<footer>footer_wide</footer>
-			</windowlist>
+			</list_poweraction>
 		</sheetdata>
 	</windowclass>
 
@@ -84,38 +79,71 @@
 			</list_poweraction>
 		</sheetdata>
 	</windowclass>
-
-	<windowclass name="power_action_mini" merge="join">
-		<script file="campaign/scripts/power_action_mini.lua" />
-		<sheetdata>
-			<button_poweraction_mini name="button">
-				<script>
-					local actionOriginal;
-					local bIsItem
-					function onInit()
-						bIsItem = window.getDatabaseNode().getPath():match("inventorylist");
-						actionOriginal = super.action;
-						super.action = action;
-						if super.onInit then
-							super.onInit()
-						end
-					end
-					function action(draginfo)
-						if bIsItem then
-							ActorManagerKNK.beginResolvingItem(window.getDatabaseNode().getChild(".......") or true);
-						end
-						actionOriginal(draginfo);
-						if bIsItem then
-							ActorManagerKNK.endResolvingItem();
-						end
-					end
-				</script>
-			</button_poweraction_mini>
-		</sheetdata>
-	</windowclass>
 	
 	<windowclass name="power_action" merge="join">
 		<script file="campaign/scripts/power_action.lua" />
+	</windowclass>
+
+	<windowclass name="power_action_cast" merge="join">
+		<script>
+			local nInitialWidth;
+			function onInit()
+				if super and super.onInit then
+					super.onInit();
+				end
+				nInitialWidth, _ = castlabel.getSize();
+			end
+			function update(_, bHideCast)
+				castbutton.setVisible(not bHideCast);
+				attackviewlabel.setVisible(not bHideCast);
+				attackbutton.setVisible(not bHideCast);
+				savebutton.setVisible(not bHideCast);
+
+				local nWidth;
+				local sText;
+				if bHideCast then
+					nWidth = nInitialWidth - 10;
+					sText = Interface.getString("power_label_atk");
+				else
+					nWidth = nInitialWidth;
+					sText = Interface.getString("power_label_cast");
+				end
+				castlabel.setAnchoredWidth(nWidth);
+				castlabel.setValue(sText);
+			end
+		</script>
+	</windowclass>
+
+	<windowclass name="power_action_damage" merge="join">
+		<script>
+			function update(_, bHideCast)
+				damagebutton.setVisible(not bHideCast);
+			end
+		</script>
+	</windowclass>
+
+	<windowclass name="power_action_heal" merge="join">
+		<script>
+			function update(_, bHideCast)
+				healbutton.setVisible(not bHideCast);
+			end
+		</script>
+	</windowclass>
+
+	<windowclass name="power_action_effect" merge="join">
+		<script>
+			function update(_, bHideCast)
+				effectbutton.setVisible(not bHideCast);
+			end
+		</script>
+	</windowclass>
+
+	<windowclass name="power_action_resource" merge="join">
+		<script>
+			function update(_, bHideCast)
+				resourcebutton.setVisible(not bHideCast);
+			end
+		</script>
 	</windowclass>
 
 	<windowclass name="power_item_header" merge="join">

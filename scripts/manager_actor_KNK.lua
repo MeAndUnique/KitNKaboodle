@@ -3,43 +3,20 @@
 -- attribution and copyright information.
 --
 
-local vToResolve;
-local resolveActorOriginal;
 local getActorRecordTypeFromPathOriginal;
 
 -- Initialization
 function onInit()
-	resolveActorOriginal = ActorManager.resolveActor;
-	ActorManager.resolveActor = resolveActor;
-
 	getActorRecordTypeFromPathOriginal = ActorManager.getActorRecordTypeFromPath;
 	ActorManager.getActorRecordTypeFromPath = getActorRecordTypeFromPath;
-end
 
-function onClose()
-	ActorManager.resolveActor = resolveActorOriginal;
-end
-
-function beginResolvingItem(v)
-	vToResolve = v;
-end
-
-function endResolvingItem()
-	vToResolve = nil;
-end
-
-function resolveActor(v)
-	local rActor = resolveActorOriginal(v);
-	if not rActor and vToResolve then
-		rActor = resolveActorOriginal(vToResolve) or {sName = ""};
-	end
-	return rActor;
+	ActorManager.registerActorRecordType("item");
 end
 
 -- Internal use only
 function getActorRecordTypeFromPath(sActorNodePath)
 	if sActorNodePath:match("%.inventorylist%.") then
-		return nil;
+		return "item";
 	else
 		return getActorRecordTypeFromPathOriginal(sActorNodePath);
 	end
