@@ -15,8 +15,8 @@ function onInit()
 end
 
 function onDetailsDragStart(_, _, _, draginfo)
-	draginfo.setType("poweraction");
-	draginfo.setIcon("action_roll");
+	draginfo.setType("reorder");
+	draginfo.setIcon("reorder");
 	draginfo.setDatabaseNode(getDatabaseNode());
 	return true;
 end
@@ -36,4 +36,12 @@ function update(bReadOnly, bHideCast)
 	if contents and contents.subwindow and contents.subwindow.update then
 		contents.subwindow.update(bReadOnly, bHideCast);
 	end
+end
+
+function onHover(bOnControl)
+	WindowManagerKNK.handleHoverReorder(self, bOnControl);
+end
+
+function onHoverUpdate(bOnControl)
+	WindowManagerKNK.handleHoverReorder(self, true);
 end
