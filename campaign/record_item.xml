@@ -6,7 +6,7 @@
 		</sizelimits>
 		<sheetdata>
 			<frame_record_content name="contentframe" merge="delete" />
-			<frame_record_content_tabbed name="contentframe" insertbefore="main" />
+			<frame_record_content_tabbed name="contentframe" insertbefore="content" />
 
 			<subwindow_record name="actions">
 				<class>item_actions</class>
@@ -52,7 +52,7 @@
 				</script>
 				<tab>
 					<icon>tab_main</icon>
-					<subwindow>main</subwindow>
+					<subwindow>content</subwindow>
 				</tab>
 				<tab>
 					<icon>tab_actions</icon>
