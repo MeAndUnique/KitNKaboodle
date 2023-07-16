@@ -16,8 +16,8 @@ function onInit()
 	DB.addHandler(nodeChar.getPath("inventorylist.*.carried"), "onUpdate", onFilteredValueChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.count"), "onUpdate", onFilteredValueChanged);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.isidentified"), "onUpdate", onFilteredValueChanged);
-	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onAdd", onPowerListChanged);
-	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onDelete", onPowerListChanged);
+	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onAdd", onPowerAdded);
+	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onDelete", onPowerRemoved);
 	DB.addHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onUpdate", checkForSort);
 end
 
@@ -27,8 +27,8 @@ function onClose()
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.carried"), "onUpdate", onFilteredValueChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.count"), "onUpdate", onFilteredValueChanged);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.isidentified"), "onUpdate", onFilteredValueChanged);
-	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onAdd", onPowerListChanged);
-	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onDelete", onPowerListChanged);
+	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onAdd", onPowerAdded);
+	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onDelete", onPowerRemoved);
 	DB.removeHandler(nodeChar.getPath("inventorylist.*.powers.*.name"), "onUpdate", checkForSort);
 end
 
@@ -167,8 +167,17 @@ function onFilteredValueChanged(node)
 	end
 end
 
-function onPowerListChanged(node)
-	local nodeItem = DB.getChild(node, "....");
+function onPowerAdded(nodeName)
+	local nodeItem = DB.getChild(nodeName, "....");
+	onPowerListChanged(nodeItem);
+end
+
+function onPowerRemoved(nodePower)
+	local nodeItem = DB.getChild(nodePower, "...");
+	onPowerListChanged(nodeItem);
+end
+
+function onPowerListChanged(nodeItem)
 	if name.getValue() == ItemPowerManager.getItemGroupName(nodeItem) then
 		rebuildItemPowers(nodeItem);
 		updateItem(nodeItem);
