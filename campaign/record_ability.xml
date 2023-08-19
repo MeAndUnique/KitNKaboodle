@@ -111,6 +111,7 @@
 			</subwindow>
 
 			<list_poweraction name="actions">
+				<script file="campaign/scripts/power_item_actionlist.lua" />
 				<invisible />
 			</list_poweraction>
 		</sheetdata>
