@@ -1,33 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<windowclass name="npc" merge="join">
-		<sheetdata>
-			<subwindow_record name="npc_inventory" merge="replace">
-				<script>
-					function onInit()
-						local bHasInventory = false;
-						for index=0,window.tabs.getTabCount() do
-							local _,sDisplay = window.tabs.getTab(index);
-							if sDisplay and sDisplay == "tab_inventory" then
-								bHasInventory = true;
-								break;
-							end
-						end
-						if not bHasInventory then
-							window.tabs.addTab("npc_inventory", "tab_inventory", false);
-						end
-					end
-				</script>
-				<class>npc_inventory</class>
-				<invisible />
-			</subwindow_record>
-
-			<scrollbar_record>
-				<target>npc_inventory</target>
-			</scrollbar_record>
-		</sheetdata>
+		<gmexport>npc</gmexport>
+		<tab merge="add">
+			<name>tab_inventory</name>
+			<resource>tab_inventory</resource>
+			<class>npc_inventory</class>
+			<embed />
+		</tab>
+		<script>
+			function onIDChanged()
+				super.onIDChanged();
+				if not Session.IsHost then
+					local bID = LibraryData.getIDState("npc", getDatabaseNode(), true);
+					tabs.setVisible(bID);
+				end
+			end
+		</script>
 	</windowclass>
-
+	
 	<windowclass name="npc_inventory">
 		<margins>0,3,0,0</margins>
 		<script file="campaign/scripts/npc_inventory.lua" />

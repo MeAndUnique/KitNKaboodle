@@ -1,65 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<windowclass name="item" merge="join">
-		<sizelimits>
-			<minimum width="350" />
-		</sizelimits>
-		<sheetdata>
-			<frame_record_content name="contentframe" merge="delete" />
-			<frame_record_content_tabbed name="contentframe" insertbefore="content" />
-
-			<subwindow_record name="actions">
-				<class>item_actions</class>
-			</subwindow_record>
-
-			<subwindow_record name="empty_actions">
-				<class>empty_item_actions</class>
-			</subwindow_record>
-
-			<scrollbar_record>
-				<target>actions</target>
-			</scrollbar_record>
-
-			<tabs_recordsheet name="tabs">
-				<script>
-					function onInit()
-						if super and super.onInit then
-							super.onInit();
-						end
-						local nodeRecord = window.getDatabaseNode();
-						local isIdentifiedPath = nodeRecord.getPath("isidentified");
-						DB.addHandler(isIdentifiedPath, "onUpdate", onIdentifiedChanged);
-						update(DB.getValue(isIdentifiedPath) ~= 0);
-					end
-					function onClose()
-						local nodeRecord = window.getDatabaseNode();
-						DB.removeHandler(nodeRecord.getPath("isidentified"), "onUpdate", onIdentifiedChanged);
-						if super and super.onClose then
-							super.onClose();
-						end
-					end
-					function onIdentifiedChanged(nodeIdentified)
-						local bIdentified = nodeIdentified.getValue() ~= 0;
-						update(bIdentified);
-					end
-					function update(bIdentified)
-						if bIdentified or Session.IsHost then
-							setTab(2, "actions", "tab_actions");
-						else
-							setTab(2, "empty_actions", "tab_actions");
-						end
-					end
-				</script>
-				<tab>
-					<icon>tab_main</icon>
-					<subwindow>content</subwindow>
-				</tab>
-				<tab>
-					<icon>tab_actions</icon>
-					<subwindow>actions</subwindow>
-				</tab>
-			</tabs_recordsheet>
-		</sheetdata>
+		<script>
+			function onInit()
+				if super and super.onInit then
+					super.onInit();
+				end
+				local nodeRecord = self.getDatabaseNode();
+				local isIdentifiedPath = nodeRecord.getPath("isidentified");
+				DB.addHandler(isIdentifiedPath, "onUpdate", onIdentifiedChanged);
+				update(DB.getValue(isIdentifiedPath) ~= 0);
+			end
+			function onClose()
+				local nodeRecord = self.getDatabaseNode();
+				DB.removeHandler(nodeRecord.getPath("isidentified"), "onUpdate", onIdentifiedChanged);
+				if super and super.onClose then
+					super.onClose();
+				end
+			end
+			function onIdentifiedChanged(nodeIdentified)
+				local bIdentified = nodeIdentified.getValue() ~= 0;
+				update(bIdentified);
+			end
+			function update(bIdentified)
+				if bIdentified or Session.IsHost then
+					self.tabs.replaceTabClassByName("actions","item_actions");
+				else
+					self.tabs.replaceTabClassByName("actions","empty_item_actions");
+				end
+			end
+		</script>		
+		<tab merge="add">
+			<name>actions</name>
+			<icon>tab_actions</icon>
+			<subwindow>actions</subwindow>
+			<resource>tab_actions</resource>
+			<class>item_actions</class>
+			<embed />
+		</tab>
 	</windowclass>
 
 	<windowclass name="item_header" merge="join">

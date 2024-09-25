@@ -34,7 +34,7 @@ Icons made by pongsakornRed from www.flaticon.com
 		<loadorder>150</loadorder>
 		<author>MeAndUnique</author>
 		<description>Adds support for adding actions to items and giving items to NPCs.</description>
-		
+
 		<ruleset>
 			<name>5E</name>
 		</ruleset>
@@ -67,13 +67,15 @@ Icons made by pongsakornRed from www.flaticon.com
 		<includefile source="campaign/template_power.xml" />
 		<includefile source="ct/ct_host_entry_section.xml" />
 		<includefile source="graphics/graphics_radial.xml" />
-		
+
 		<icon name="KNK_icon" file="graphics/icons/KitNKaboodle.png" />
 
 		<script name="PowerUpKNK">
 			function onInit()
 				if PowerUp then
-					PowerUp.registerExtension("Kit'N'Kaboodle", "dev_version");
+					PowerUp.registerExtension("Kit'N'Kaboodle", "dev_version", {
+                        ['message'] = "v3.0.4-rc4\nNew QoL feature: Editable group field on actions tab for spell records."
+                    });
 				end
 			end
 		</script>

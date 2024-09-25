@@ -24,6 +24,10 @@ function onInit()
 		"inventorylist",
 		"cohorts.*.inventorylist",
 	});
+	local tData = {
+		tCurrencyPaths = ItemManager.getDefaultCurrencyPaths()
+				  };
+	ItemManager.setActorTypeInfo("npc", tData);
 end
 
 function nodeBelongsToItem(nodePower)

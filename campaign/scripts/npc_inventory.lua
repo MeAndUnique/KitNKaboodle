@@ -3,6 +3,8 @@
 -- attribution and copyright information.
 --
 
+local _tDefaultCurrencyPaths = { "coins" };
+
 function onInit()
 	if isRecord then
 		onCurrencyUpdate();

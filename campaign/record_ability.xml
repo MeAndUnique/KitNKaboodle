@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<windowclass name="ref_ability" merge="join">
+    <!-- To restore tabs later, Uncomment this.
+	<windowclass name="ref_ability" merge="join" copy="record_window_tabbed">
 		<script file="campaign/scripts/insetcontentframe.lua" />
 		<sizelimits>
 			<minimum width="350" />
 		</sizelimits>
+		<tab>
+			<name>notes</name>
+			<resource>tab_main</resource>
+			<class>record_content_text</class>
+			<embed />
+		</tab>
+		<tab merge="add">
+			<name>actions</name>
+			<icon>tab_actions</icon>
+			<subwindow>actions</subwindow>
+			<resource>tab_actions</resource>
+			<embed />
+		</tab>
 		<sheetdata>
-			<subwindow_power_action_record name="actions" />
-
-			<scrollbar_record>
-				<target>actions</target>
-			</scrollbar_record>
-
-			<tabs_recordsheet name="tabs">
-				<tab>
-					<icon>tab_main</icon>
-					<subwindow>text</subwindow>
-				</tab>
-				<tab>
-					<icon>tab_actions</icon>
-					<subwindow>actions</subwindow>
-				</tab>
-			</tabs_recordsheet>
-
+			<frame_record_content name="contentframe" merge="delete" />
+			<subwindow_power_action_record name="actions"/>
+				<scrollbar_record>
+					<target>actions</target>
+				</scrollbar_record>
 		</sheetdata>
 	</windowclass>
 
@@ -159,4 +161,5 @@
 			</simplestring>
 		</sheetdata>
 	</windowclass>
+	-->
 </root>

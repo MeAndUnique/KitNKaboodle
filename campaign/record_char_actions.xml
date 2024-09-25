@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <root>
 	<windowclass name="charsheet_actions_contents" merge="join">
 		<sheetdata>
 			<subwindow name="item_actions_top" insertbefore="spellslots_prep">
 				<anchored>
-					<top parent="columnanchor" anchor="bottom" relation="relative" offset="0" />
+					<top parent="contentanchor" anchor="bottom" relation="relative" offset="0" />
 					<left />
 					<right />
 				</anchored>
@@ -16,7 +17,7 @@
 
 			<subwindow name="item_actions">
 				<anchored>
-					<top parent="columnanchor" anchor="bottom" relation="relative" offset="0" />
+					<top parent="contentanchor" anchor="bottom" relation="relative" offset="0" />
 					<left />
 					<right />
 				</anchored>
@@ -120,7 +121,7 @@
 		<playercontrol />
 		<script file="campaign/scripts/itemgroup.lua" />
 		<sheetdata>
-			<windowtitlebar_char name="title" />
+			<windowtitlebar_charselect name="title" />
 			<anchor_title_charsheethelper name="contentanchor" />
 			<windowlist name="list">
 				<anchored to="contentanchor">

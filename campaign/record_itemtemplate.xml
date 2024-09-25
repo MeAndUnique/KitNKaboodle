@@ -1,31 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<windowclass name="itemtemplate" merge="join">
-		<sizelimits>
-			<minimum width="350" />
-		</sizelimits>
-		<sheetdata>
-			<frame_record_content name="contentframe" merge="delete" />
-			<frame_record_content_tabbed name="contentframe" insertbefore="main" />
-
-			<subwindow_record name="actions">
-				<class>item_actions</class>
-			</subwindow_record>
-
-			<scrollbar_record>
-				<target>actions</target>
-			</scrollbar_record>
-
-			<tabs_recordsheet name="tabs">
-				<tab>
-					<icon>tab_main</icon>
-					<subwindow>main</subwindow>
-				</tab>
-				<tab>
-					<icon>tab_actions</icon>
-					<subwindow>actions</subwindow>
-				</tab>
-			</tabs_recordsheet>
-		</sheetdata>
+	<windowclass name="itemtemplate" merge="join" copy="record_window_tabbed">
+		<minimize>minimized_item</minimize>
+		<tab>
+			<name>main</name>
+			<resource>tab_main</resource>
+			<class>item_main</class>
+			<embed />
+		</tab>
+		<tab merge="add">
+			<name>actions</name>
+			<icon>tab_actions</icon>
+			<subwindow>actions</subwindow>
+			<resource>tab_actions</resource>
+			<class>item_actions</class>
+			<embed />
+		</tab>
+		<script>
+			function onStateChanged()
+				super.onStateChanged();
+				-- Im commenting out just in case a new problem arises later.  This is throwing nil errors.
+				-- sub_version.subwindow.update()
+			end
+		</script>
 	</windowclass>
 </root>

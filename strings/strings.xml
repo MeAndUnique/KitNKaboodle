@@ -4,8 +4,10 @@
 	<string name="option_header_knk">Kit'N'Kaboodle</string>
 	<string name="option_label_IDLU">Remove destroyed items from inventory</string>
 	<string name="option_label_SCIP">Show carried item powers</string>
+	<string name="option_label_ASED">Attach spell effects directly to non-spell records. (Convenience only)</string>
 
 	<string name="item_label_charges">CHARGES</string>
+	<string name="power_label_groupmember">Group</string>
 
 	<string name="item_use_atwill">At Will</string>
 	<string name="item_use_charges">Charges</string>

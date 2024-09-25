@@ -11,4 +11,5 @@
 	<icon name="radial_delete_action_confirm" file="graphics/radial/icon_delete.png" />
 	<icon name="radial_create_action" file="graphics/radial/icon_image_layer_pointer_menu.png" />
 	<icon name="radial_delete_action" file="graphics/radial/icon_image_layer_pointer_delete.png" />
+	<icon name="refresh" file="graphics/buttons/button_toolbar_refresh.png" />
 </root>

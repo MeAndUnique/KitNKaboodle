@@ -1,31 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<windowclass name="power" merge="join">
-		<script file="campaign/scripts/insetcontentframe.lua" />
-		<sizelimits>
-			<minimum width="350" />
-		</sizelimits>
-		<sheetdata>
-			<subwindow_record name="actions">
-				<class>power_actions</class>
-			</subwindow_record>
-
-			<scrollbar_record>
-				<target>actions</target>
-			</scrollbar_record>
-
-			<tabs_recordsheet name="tabs">
-				<tab>
-					<icon>tab_main</icon>
-					<subwindow>content</subwindow>
-				</tab>
-				<tab>
-					<icon>tab_actions</icon>
-					<subwindow>actions</subwindow>
-				</tab>
-			</tabs_recordsheet>
-
-		</sheetdata>
+		<tab merge="add">
+			<name>actions</name>
+			<icon>tab_actions</icon>
+			<subwindow>actions</subwindow>
+			<resource>tab_actions</resource>
+			<class>power_actions</class>
+			<embed />
+		</tab>
 	</windowclass>
 
 	<windowclass name="power_actions">
@@ -46,15 +29,28 @@
 				<min>0</min>
 			</basicnumber>
 			<cycler_power_useperiod name="usesperiod">
-				<anchored to="useslabel" width="60" height="20"> 
+				<anchored to="useslabel" width="60" height="20">
 					<top />
 					<left anchor="right" relation="relative" offset="10" />
 				</anchored>
 			</cycler_power_useperiod>
+			<label name="grouplabel">
+				<anchored width="40">
+				    <top parent="useslabel" anchor="bottom" offset="5" />
+					<left offset="10" />
+				</anchored>
+				<static textres="power_label_groupmember" />
+			</label>
+			<basicstring name="group">
+				<anchored to="grouplabel" width="250" height="20" >
+					<top />
+					<left anchor="right" relation="relative" offset="5" />
+				</anchored>
+			</basicstring>
 
 			<label_itemframetop name="actionstitle">
 				<anchored height="20">
-					<top parent="useslabel" anchor="bottom" offset="10" />
+					<top parent="grouplabel" anchor="bottom" offset="10" />
 					<left offset="15" />
 					<right offset="-10" />
 				</anchored>
@@ -79,7 +75,7 @@
 			</list_poweraction>
 		</sheetdata>
 	</windowclass>
-	
+
 	<windowclass name="power_action" merge="join">
 		<script file="campaign/scripts/power_action.lua" />
 	</windowclass>
